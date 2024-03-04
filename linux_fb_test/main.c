@@ -54,11 +54,13 @@ int main(int argc, char* argv[]) {
     int red[4] = {0x00, 0x00, 0xFF, 0xFF};
     int green[4] = {0x00, 0xFF, 0x00, 0xFF};
     int white[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+    int black[4] = {0x00, 0x00, 0x00, 0x00};
 
+    draw_rectangle(fb_ptr, &vinfo, &finfo, 0, 0, 2560, 800, black);
     draw_rectangle(fb_ptr, &vinfo, &finfo, 50, 50, 10, 10, blue);
     draw_rectangle(fb_ptr, &vinfo, &finfo, 150, 50, 10, 10, red);
-    draw_rectangle(fb_ptr, &vinfo, &finfo, 10, 200, 25, 5, green);
-    draw_rectangle(fb_ptr, &vinfo, &finfo, 300, 300, 10, 10, white);
+    draw_rectangle(fb_ptr, &vinfo, &finfo, 10, 200, 25, 45, green);
+    draw_rectangle(fb_ptr, &vinfo, &finfo, 300, 300, 100, 100, white);
 
     // Cleanup
     munmap(fb_ptr, screensize);

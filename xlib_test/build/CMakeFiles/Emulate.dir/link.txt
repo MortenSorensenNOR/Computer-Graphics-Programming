@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/Emulate.dir/main.cpp.o -o Emulate  -lX11 -lstdc++ 

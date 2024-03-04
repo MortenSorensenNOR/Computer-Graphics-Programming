@@ -5,3 +5,5 @@ show its contets on the screen.
 OpenGL is an obvious choice, but I feel it might be a bit too feature rich for what I'm trying to do.
 It seems writing directly to the linux framebuffer might be an option. 
 
+Direct to linux framebuffer is a bad idea. It means I have to use the emulator only in a virtual console,
+and it seems to be a bit bugged anyways.
