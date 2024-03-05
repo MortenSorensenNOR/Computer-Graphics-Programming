@@ -7,3 +7,6 @@ It seems writing directly to the linux framebuffer might be an option.
 
 Direct to linux framebuffer is a bad idea. It means I have to use the emulator only in a virtual console,
 and it seems to be a bit bugged anyways.
+
+Using the X11 graphics library seems to be the best choice. It is well supported, and writing directly to the framebuffer
+is a possibility. Alaso, it means I can work directly in I3, which is a big bonus.

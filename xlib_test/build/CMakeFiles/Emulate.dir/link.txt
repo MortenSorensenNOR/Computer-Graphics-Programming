@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/Emulate.dir/main.c.o CMakeFiles/Emulate.dir/GAEDisplay.c.o -o Emulate  -lX11 
