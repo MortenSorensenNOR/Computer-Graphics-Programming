@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.cpp" "CMakeFiles/Emulate.dir/main.cpp.o" "gcc" "CMakeFiles/Emulate.dir/main.cpp.o.d"
+  "/home/morten/dev/GPU-Architecture-Emulator/xlib_test/GAEDisplay.c" "CMakeFiles/Emulate.dir/GAEDisplay.c.o" "gcc" "CMakeFiles/Emulate.dir/GAEDisplay.c.o.d"
+  "/home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.c" "CMakeFiles/Emulate.dir/main.c.o" "gcc" "CMakeFiles/Emulate.dir/main.c.o.d"
   )
 
 # Targets to which this target links.

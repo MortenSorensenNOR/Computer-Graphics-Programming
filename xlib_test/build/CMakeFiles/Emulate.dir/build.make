@@ -69,31 +69,47 @@ include CMakeFiles/Emulate.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Emulate.dir/flags.make
 
-CMakeFiles/Emulate.dir/main.cpp.o: CMakeFiles/Emulate.dir/flags.make
-CMakeFiles/Emulate.dir/main.cpp.o: ../main.cpp
-CMakeFiles/Emulate.dir/main.cpp.o: CMakeFiles/Emulate.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/morten/dev/GPU-Architecture-Emulator/xlib_test/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Emulate.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/Emulate.dir/main.cpp.o -MF CMakeFiles/Emulate.dir/main.cpp.o.d -o CMakeFiles/Emulate.dir/main.cpp.o -c /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.cpp
+CMakeFiles/Emulate.dir/main.c.o: CMakeFiles/Emulate.dir/flags.make
+CMakeFiles/Emulate.dir/main.c.o: ../main.c
+CMakeFiles/Emulate.dir/main.c.o: CMakeFiles/Emulate.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/morten/dev/GPU-Architecture-Emulator/xlib_test/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/Emulate.dir/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Emulate.dir/main.c.o -MF CMakeFiles/Emulate.dir/main.c.o.d -o CMakeFiles/Emulate.dir/main.c.o -c /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.c
 
-CMakeFiles/Emulate.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Emulate.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.cpp > CMakeFiles/Emulate.dir/main.cpp.i
+CMakeFiles/Emulate.dir/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Emulate.dir/main.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.c > CMakeFiles/Emulate.dir/main.c.i
 
-CMakeFiles/Emulate.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Emulate.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.cpp -o CMakeFiles/Emulate.dir/main.cpp.s
+CMakeFiles/Emulate.dir/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Emulate.dir/main.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/morten/dev/GPU-Architecture-Emulator/xlib_test/main.c -o CMakeFiles/Emulate.dir/main.c.s
+
+CMakeFiles/Emulate.dir/GAEDisplay.c.o: CMakeFiles/Emulate.dir/flags.make
+CMakeFiles/Emulate.dir/GAEDisplay.c.o: ../GAEDisplay.c
+CMakeFiles/Emulate.dir/GAEDisplay.c.o: CMakeFiles/Emulate.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/morten/dev/GPU-Architecture-Emulator/xlib_test/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/Emulate.dir/GAEDisplay.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/Emulate.dir/GAEDisplay.c.o -MF CMakeFiles/Emulate.dir/GAEDisplay.c.o.d -o CMakeFiles/Emulate.dir/GAEDisplay.c.o -c /home/morten/dev/GPU-Architecture-Emulator/xlib_test/GAEDisplay.c
+
+CMakeFiles/Emulate.dir/GAEDisplay.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/Emulate.dir/GAEDisplay.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/morten/dev/GPU-Architecture-Emulator/xlib_test/GAEDisplay.c > CMakeFiles/Emulate.dir/GAEDisplay.c.i
+
+CMakeFiles/Emulate.dir/GAEDisplay.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/Emulate.dir/GAEDisplay.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/morten/dev/GPU-Architecture-Emulator/xlib_test/GAEDisplay.c -o CMakeFiles/Emulate.dir/GAEDisplay.c.s
 
 # Object files for target Emulate
 Emulate_OBJECTS = \
-"CMakeFiles/Emulate.dir/main.cpp.o"
+"CMakeFiles/Emulate.dir/main.c.o" \
+"CMakeFiles/Emulate.dir/GAEDisplay.c.o"
 
 # External object files for target Emulate
 Emulate_EXTERNAL_OBJECTS =
 
-Emulate: CMakeFiles/Emulate.dir/main.cpp.o
+Emulate: CMakeFiles/Emulate.dir/main.c.o
+Emulate: CMakeFiles/Emulate.dir/GAEDisplay.c.o
 Emulate: CMakeFiles/Emulate.dir/build.make
 Emulate: CMakeFiles/Emulate.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/morten/dev/GPU-Architecture-Emulator/xlib_test/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable Emulate"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/morten/dev/GPU-Architecture-Emulator/xlib_test/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking C executable Emulate"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Emulate.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

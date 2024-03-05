@@ -129,29 +129,53 @@ Emulate/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/build
 .PHONY : Emulate/fast
 
-main.o: main.cpp.o
+GAEDisplay.o: GAEDisplay.c.o
+.PHONY : GAEDisplay.o
+
+# target to build an object file
+GAEDisplay.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/GAEDisplay.c.o
+.PHONY : GAEDisplay.c.o
+
+GAEDisplay.i: GAEDisplay.c.i
+.PHONY : GAEDisplay.i
+
+# target to preprocess a source file
+GAEDisplay.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/GAEDisplay.c.i
+.PHONY : GAEDisplay.c.i
+
+GAEDisplay.s: GAEDisplay.c.s
+.PHONY : GAEDisplay.s
+
+# target to generate assembly for a file
+GAEDisplay.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/GAEDisplay.c.s
+.PHONY : GAEDisplay.c.s
+
+main.o: main.c.o
 .PHONY : main.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.cpp.o
-.PHONY : main.cpp.o
+main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.c.o
+.PHONY : main.c.o
 
-main.i: main.cpp.i
+main.i: main.c.i
 .PHONY : main.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.cpp.i
-.PHONY : main.cpp.i
+main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.c.i
+.PHONY : main.c.i
 
-main.s: main.cpp.s
+main.s: main.c.s
 .PHONY : main.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.cpp.s
-.PHONY : main.cpp.s
+main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Emulate.dir/build.make CMakeFiles/Emulate.dir/main.c.s
+.PHONY : main.c.s
 
 # Help Target
 help:
@@ -162,6 +186,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Emulate"
+	@echo "... GAEDisplay.o"
+	@echo "... GAEDisplay.i"
+	@echo "... GAEDisplay.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
