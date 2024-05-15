@@ -33,6 +33,12 @@ struct vec2 vec2_normalize(const struct vec2* v) {
     return vec2_div(v, vec2_length(v));
 }
 
+void swap_vec2(struct vec2* v, struct vec2* w) {
+    struct vec2 tmp = *v;
+    *v = *w;
+    *w = tmp;
+}
+
 /*=============== VEC3 ===============*/
 struct vec3 vec3_add(const struct vec3* v, const struct vec3* w) {
     return (struct vec3){v->x + w->x, v->y + w->y, v->z + w->z};
@@ -64,6 +70,12 @@ double vec3_length(const struct vec3* v) {
 
 struct vec3 vec3_normalize(const struct vec3* v) {
     return vec3_div(v, vec3_length(v));
+}
+
+void swap_vec3(struct vec3* v, struct vec3* w) {
+    struct vec3 tmp = *v;
+    *v = *w;
+    *w = tmp;
 }
 
 /*=============== VEC4 ===============*/
@@ -99,98 +111,26 @@ struct vec4 vec4_normalize(const struct vec4* v) {
     return vec4_div(v, vec4_length(v));
 }
 
+void swap_vec4(struct vec4* v, struct vec4* w) {
+    struct vec4 tmp = *v;
+    *v = *w;
+    *w = tmp;
+}
+
+/*=============== GENERAL MATH ===============*/
 double lerp(double v, double w, double t) {
     return v + t * (w - v);
 }
 
-void swap_ivec3(struct ivec3_t* v, struct ivec3_t* w) {
-    struct ivec3_t tmp = (struct ivec3_t){v->x, v->y, v->z};
-    v->x = w->x;
-    v->y = w->y;
-    v->z = w->z;
-    w->x = tmp.x;
-    w->y = tmp.y;
-    w->z = tmp.z;
+struct vec2 vec2_lerp(const struct vec2* v, const struct vec2* w, double t) {
+    return (struct vec2){lerp(v->x, w->x, t), lerp(v->y, w->y, t)};
 }
 
-void swap_dvec3(struct dvec3_t* v, struct dvec3_t* w) {
-    struct dvec3_t tmp = (struct dvec3_t){v->x, v->y, v->z};
-    v->x = w->x;
-    v->y = w->y;
-    v->z = w->z;
-    w->x = tmp.x;
-    w->y = tmp.y;
-    w->z = tmp.z;
+struct vec3 vec3_lerp(const struct vec3* v, const struct vec3* w, double t) {
+    return (struct vec3){lerp(v->x, w->x, t), lerp(v->y, w->y, t), lerp(v->z, w->z, t)};
 }
 
-struct ivec3_t ivec2_to_ivec3(const struct ivec2_t v) {
-    return (struct ivec3_t){v.x, v.y, 0};
+struct vec4 vec4_lerp(const struct vec4* v, const struct vec4* w, double t) {
+    return (struct vec4){lerp(v->x, w->x, t), lerp(v->y, w->y, t), lerp(v->z, w->z, t), lerp(v->w, w->w, t)};
 }
 
-struct dvec3_t dvec2_to_dvec3(const struct dvec2_t v) {
-    return (struct dvec3_t){v.x, v.y, 0};
-}
-
-struct dvec3_t ivec3_to_dvec3(const struct ivec3_t v) {
-    return (struct dvec3_t){v.x, v.y, v.z};
-}
-
-struct ivec3_t dvec3_to_ivec3(const struct dvec3_t v) {
-    return (struct ivec3_t){v.x, v.y, v.z};
-}
-
-struct ivec3_t add_ivec3(const struct ivec3_t v, const struct ivec3_t w) {
-    return (struct ivec3_t){v.x + w.x, v.y + w.y, v.z + w.z};
-}
-
-struct dvec3_t add_dvec3(const struct dvec3_t v, const struct dvec3_t w) {
-    return (struct dvec3_t){v.x + w.x, v.y + w.y, v.z + w.z};
-}
-
-struct ivec2_t add_ivec2(const struct ivec2_t v, const struct ivec2_t w) {
-    return (struct ivec2_t){v.x + w.x, v.y + w.y};
-}
-
-struct dvec2_t add_dvec2(const struct dvec2_t v, const struct dvec2_t w) {
-    return (struct dvec2_t){v.x + w.x, v.y + w.y};
-}
-
-struct ivec3_t sub_ivec3(const struct ivec3_t v, const struct ivec3_t w) {
-    return (struct ivec3_t){v.x - w.x, v.y - w.y, v.z - w.z};
-}
-
-struct dvec3_t sub_dvec3(const struct dvec3_t v, const struct dvec3_t w) {
-    return (struct dvec3_t){v.x - w.x, v.y - w.y, v.z - w.z};
-}
-
-struct ivec2_t sub_ivec2(const struct ivec2_t v, const struct ivec2_t w) {
-    return (struct ivec2_t){v.x - w.x, v.y - w.y};
-}
-
-struct dvec2_t sub_dvec2(const struct dvec2_t v, const struct dvec2_t w) {
-    return (struct dvec2_t){v.x - w.x, v.y - w.y};
-}
-
-struct dvec2_t mul_dvec2_d(const struct dvec2_t v, double k) {
-    return (struct dvec2_t){v.x * k, v.y * k};
-}
-
-struct dvec3_t mul_dvec3_d(const struct dvec3_t v, double k) {
-    return (struct dvec3_t){v.x * k, v.y * k, v.z * k};
-}
-
-double dot_dvec3(const struct dvec3_t v, const struct dvec3_t w) {
-    return v.x * w.x + v.y * w.y + v.z * w.z;
-}
-
-int dot_ivec3(const struct ivec3_t v, const struct ivec3_t w) {
-    return v.x * w.x + v.y * w.y + v.z * w.z;
-}
-
-int dot_ivec2(const struct ivec2_t v, const struct ivec2_t w) {
-    return v.x * w.x + v.y * w.y;
-}
-
-double dot_dvec2(const struct dvec2_t v, const struct dvec2_t w) {
-    return v.x * w.x + v.y * w.y;
-}
