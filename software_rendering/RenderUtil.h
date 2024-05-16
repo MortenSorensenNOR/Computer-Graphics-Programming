@@ -2,32 +2,33 @@
 #include "display/GAEDisplay.h"
 #include "gml/GML.h"
 
-struct color_t {
+typedef struct {
     int r, g, b;   
-};
+} color_t;
 
-struct triangle_t {
-    struct vec3 vert[3];
-    struct vec2 uv[3];
-    struct color_t color[3];
-};
+typedef struct {
+    vec4 vert[3];
+    vec2 uv[3];
+    color_t color[3];
+} triangle_t;
 
-struct mesh_t {
-    struct vec4 pos;
+typedef struct {
+    vec4 pos;
     int* prim;
-    struct vec3* vert;
-    struct vec2* uv;
-    struct color_t* colors;
-};
+    vec4* vert;
+    vec2* uv;
+    color_t* colors;
+} mesh_t;
 
-int color_to_int(const struct color_t c);
-struct vec3 color_to_vec3(const struct color_t c);
-struct color_t color_interpolate(const struct color_t a, const struct color_t b, double t);
+int color_to_int(const color_t c);
+vec3 color_to_vec3(const color_t c);
+color_t color_interpolate(const color_t a, const color_t b, double t);
 
-struct vec3 get_barycentric_coordinate(const struct triangle_t* t, const struct vec3* p);
-struct vec2 get_uv_coord(const struct triangle_t* t, const struct vec3* p);
+vec3 get_barycentric_coordinate(const vec2 vert[3], const vec2* p);
+vec2 get_uv_coord(const triangle_t* t, const vec3* p);
 
-void bresenham(struct GAEDisplay* disp, int x0, int y0, int x1, int y1, int color);
-void draw_triangle_wireframe(struct GAEDisplay* disp, struct triangle_t* tri, int color);
+void transform_triangle(const vec4 vert[3], vec2 transformed_vert[3], const mat4* model, const mat4* view, const mat4* projection, int s_width, int s_height);
 
-void drawTriangle_filled(struct GAEDisplay* disp, struct triangle_t* tri);
+void bresenham(GAEDisplay_t* disp, int x0, int y0, int x1, int y1, int color);
+void draw_triangle_wireframe(GAEDisplay_t* disp, const vec2 vert[3], int color);
+void draw_triangle_filled(GAEDisplay_t* disp, const vec2 vert[3], const vec2 uv[3], const color_t color[3]);

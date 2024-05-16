@@ -1,6 +1,6 @@
 #include "GAEDisplay.h"
 
-int GAEDisplay_init(struct GAEDisplay* disp) {
+int GAEDisplay_init(GAEDisplay_t* disp) {
     disp->display = XOpenDisplay(NULL);    
 
     disp->nxvisual = 0;
@@ -72,7 +72,7 @@ int GAEDisplay_currentMonitorDimensions(Display* display, int* width, int* heigh
     return 0;
 }
 
-int GAEDisplay_setFrameBufferSize(struct GAEDisplay* disp) {
+int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
     // Get display dimentions
     /* int snum = DefaultScreen(disp->display); */
     /* disp->width = DisplayWidth(disp->display, snum); */
@@ -91,7 +91,7 @@ int GAEDisplay_setFrameBufferSize(struct GAEDisplay* disp) {
     return disp->framebuffer == NULL;
 }
 
-int GAEDisplay_setPixel(struct GAEDisplay* disp, int x, int y, int color) {
+int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color) {
     if (x < 0 || x >= disp->width || y < 0 || y >= disp->height) {
         perror("Pixel index out of range\n");
         return 1;
@@ -105,7 +105,7 @@ int GAEDisplay_setPixel(struct GAEDisplay* disp, int x, int y, int color) {
     return 0;
 }
 
-int GAEDisplay_update(struct GAEDisplay* disp) {
+int GAEDisplay_update(GAEDisplay_t* disp) {
     // Uncomment for input
     /* if (!XNextEvent(disp->display, &disp->event)) { */
     /*     switch (disp->event.type) { */
@@ -123,7 +123,7 @@ int GAEDisplay_update(struct GAEDisplay* disp) {
     return XPutImage(disp->display, disp->window, disp->NormalGC, disp->ximage, 0, 0, 0, 0, disp->width, disp->height);
 }
 
-int GAEDisplay_clear(struct GAEDisplay* disp, int color) {
+int GAEDisplay_clear(GAEDisplay_t* disp, int color) {
     for (int y = 0; y < disp->height; y++) {
         for (int x = 0; x < disp->width; x++) {
             int index = x + y * disp->width;
@@ -133,7 +133,7 @@ int GAEDisplay_clear(struct GAEDisplay* disp, int color) {
     return 0;
 }
 
-int GAEDisplay_destroy(struct GAEDisplay* disp) {
+int GAEDisplay_destroy(GAEDisplay_t* disp) {
     if (disp != NULL) {
         /* Destroy window */
         XDestroyWindow(disp->display, disp->window);
@@ -143,7 +143,7 @@ int GAEDisplay_destroy(struct GAEDisplay* disp) {
 
         free(disp->framebuffer);
 
-        /* Finnaly free the GAEDisplay struct */
+        /* Finnaly free the GAEDisplay_t struct */
         free(disp);
     }
 
