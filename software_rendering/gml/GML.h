@@ -80,6 +80,11 @@ vec2 vec2_lerp(const vec2* v, const vec2* w, double t);
 vec3 vec3_lerp(const vec3* v, const vec3* w, double t);
 vec4 vec4_lerp(const vec4* v, const vec4* w, double t);
 
+vec2 vec3_to_vec2(const vec3* v);
+vec3 vec4_to_vec3(const vec4* v);
+vec3 vec2_to_vec3(const vec2* v);
+vec4 vec3_to_vec4(const vec3* v);
+
 /*=============== GRAPHICS MATH ===============*/
 mat4 mat4_translate(double tx, double ty, double tz);
 mat4 mat4_rotate_x(float angle);
@@ -87,8 +92,7 @@ mat4 mat4_rotate_y(float angle);
 mat4 mat4_rotate_z(float angle);
 mat4 mat4_rotate(double pitch, double yaw, double roll); 
 mat4 mat4_perspective(float fov, float aspect, float znear, float zfar);
-vec2 perspective_divide(const vec4*  v);
-vec2 viewport_transform(const vec2*  ndc, int width, int height);
-vec2 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int width, int height);
+vec3 perspective_divide(const vec4*  v);
+vec3 viewport_transform(const vec3*  ndc, int width, int height, double z_near, double z_far);
+vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int s_width, int s_height, double z_near, double z_far);
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up);
-

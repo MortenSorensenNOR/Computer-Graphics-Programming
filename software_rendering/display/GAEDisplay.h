@@ -28,6 +28,7 @@ typedef struct {
 
     int depth;
     int* framebuffer;
+    double* zbuffer;
     int width, height;
     int nxvisual;
 
@@ -68,6 +69,17 @@ int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp);
  * @return Returns 0 for success and 1 for error
  */
 int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color);
+
+/**
+ * @brief Checks if the z-buffer value at the pixel position is lower than the given value. 
+ *      If not, it is set to that value and returns true.
+ * @param disp      The GAEDisplay struct for which the pixel in the framebuffer is to be set
+ * @param x         Horizontal index
+ * @param y         Vertical index 
+ * @param z         Z-value being tested
+ * @return Returns 1 if z < z_buffer[x][y], else 0
+ */
+int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z);
 
 /**
  * @brief Main update function for the GAEDisplay. Upon update, the new framebuffer gets displayed

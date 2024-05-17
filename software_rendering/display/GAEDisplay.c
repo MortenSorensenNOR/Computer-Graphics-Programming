@@ -86,9 +86,10 @@ int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
 
     // Free and allocate new memory to the framebuffer
     free(disp->framebuffer);
-    disp->framebuffer = (int *)malloc((disp->width * disp->height) * 4);
+    disp->framebuffer = (int *)malloc((disp->width * disp->height) * sizeof(int));
+    disp->zbuffer = (double *)malloc((disp->width * disp->height) * sizeof(double));
 
-    return disp->framebuffer == NULL;
+    return disp->framebuffer == NULL || disp->zbuffer == NULL;
 }
 
 int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color) {
@@ -100,6 +101,21 @@ int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color) {
     int index = x + y * disp->width;
     if (disp->framebuffer != NULL) {
         disp->framebuffer[index] = color;
+    }
+
+    return 0;
+}
+
+int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z) {
+    if (x < 0 || x >= disp->width || y < 0 || y >= disp->height) {
+        perror("Pixel index out of range\n");
+        return 1;
+    }
+
+    int index = x + y * disp->width;
+    if (disp->zbuffer != NULL && z < disp->zbuffer[index]) {
+        disp->zbuffer[index] = z;
+        return 1;
     }
 
     return 0;
@@ -128,6 +144,7 @@ int GAEDisplay_clear(GAEDisplay_t* disp, int color) {
         for (int x = 0; x < disp->width; x++) {
             int index = x + y * disp->width;
             disp->framebuffer[index] = color;
+            disp->zbuffer[index] = 1.0;
         }
     }
     return 0;

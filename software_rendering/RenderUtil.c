@@ -1,4 +1,5 @@
 #include "RenderUtil.h"
+#include <math.h>
 
 /*=============== COLOR ===============*/
 int color_to_int(const color_t c) {
@@ -32,9 +33,9 @@ vec3 get_barycentric_coordinate(const vec2 vert[3], const vec2* p) {
     return (vec3){u, v, w};
 }
 
-void transform_triangle(const vec4 vert[3], vec2 transformed_vert[3], const mat4* model, const mat4* view, const mat4* projection, int s_width, int s_height) {
+void transform_triangle(const vec4 vert[3], vec3 transformed_vert[3], const mat4* model, const mat4* view, const mat4* projection, int s_width, int s_height, double z_near, double z_far) {
     for (int i = 0; i < 3; ++i) {
-        transformed_vert[i] = transform_vertex(&vert[i], model, view, projection, s_width, s_height);
+        transformed_vert[i] = transform_vertex(&vert[i], model, view, projection, s_width, s_height, z_near, z_far);
     }
 }
 
@@ -59,14 +60,14 @@ void draw_triangle_wireframe(GAEDisplay_t* disp, const vec2 vert[3], int color) 
     bresenham(disp, (int)vert[2].x, vert[2].y, (int)vert[0].x, (int)vert[0].y, color);
 }
 
-void draw_triangle_filled(GAEDisplay_t* disp, const vec2 vert[3], const vec2 uv[3], const color_t vert_color[3]) {
-    vec2 p0 = vert[0];
-    vec2 p1 = vert[1];
-    vec2 p2 = vert[2];
+void draw_triangle_filled(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[3], const color_t vert_color[3], const vec3 normals[3], const light_t* light) {
+    vec3 p0 = vert[0];
+    vec3 p1 = vert[1];
+    vec3 p2 = vert[2];
 
-    if (p1.y < p0.y) swap_vec2(&p0, &p1);
-    if (p2.y < p0.y) swap_vec2(&p2, &p0);
-    if (p2.y < p1.y) swap_vec2(&p2, &p1);
+    if (p1.y < p0.y) swap_vec3(&p0, &p1);
+    if (p2.y < p0.y) swap_vec3(&p2, &p0);
+    if (p2.y < p1.y) swap_vec3(&p2, &p1);
 
     int total_height = (int)(p2.y - p0.y);
     for (int i = 0; i < total_height; i++) {
@@ -96,15 +97,227 @@ void draw_triangle_filled(GAEDisplay_t* disp, const vec2 vert[3], const vec2 uv[
         for (int x = (int)A.x; x < (int)B.x; x++) {
             if (x < 0 || x >=disp->width) continue;
             vec2 p = (vec2){x, (int)p0.y + i};
-            vec3 coords = get_barycentric_coordinate(vert, &p);
+            
+            vec2 xy_vert_pos[3] = {
+                vec3_to_vec2(&vert[0]),
+                vec3_to_vec2(&vert[1]),
+                vec3_to_vec2(&vert[2]),
+            };
+            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+
+            double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
+            int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
+            if (not_covered == 0) {
+                continue;
+            }
+
             color_t color = (color_t){
                 coords.x * vert_color[0].r + coords.y * vert_color[1].r + coords.z * vert_color[2].r,
                 coords.x * vert_color[0].g + coords.y * vert_color[1].g + coords.z * vert_color[2].g,
                 coords.x * vert_color[0].b + coords.y * vert_color[1].b + coords.z * vert_color[2].b,
             };
-            int color_int = color_to_int(color);
+            vec3 color_ambient = {
+                color.r * light->ambient.x, 
+                color.g * light->ambient.y, 
+                color.b * light->ambient.z
+            };
 
+            vec3 barycentric_vert[3] = {
+                vec3_mul(&vert[0], coords.x),
+                vec3_mul(&vert[1], coords.y),
+                vec3_mul(&vert[2], coords.z)
+            };
+            vec3 fragPos = vec3_add(&barycentric_vert[0], &barycentric_vert[1]);
+            fragPos = vec3_add(&fragPos, &barycentric_vert[2]);
+
+            vec3 norm = vec3_normalize(&normals[0]);
+            vec3 lightDir = vec3_sub(&light->pos, &fragPos);
+            double diff = vec3_dot(&norm, &lightDir);
+            if (diff < 0.0) diff = 0.0;
+            vec3 color_diffuse = {
+                diff * color.r * light->diffuse.x, 
+                diff * color.g * light->diffuse.y, 
+                diff * color.b * light->diffuse.z
+            };
+
+            color_t color_light = {
+                (int)(color_ambient.x + color_diffuse.x),
+                (int)(color_ambient.y + color_diffuse.y),
+                (int)(color_ambient.z + color_diffuse.z),
+            }; 
+
+            int color_int = color_to_int(color);
             GAEDisplay_setPixel(disp, p.x, p.y, color_int);
         }
     }
 }
+
+void fill_bottom_flat_triangle(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[3], const color_t vert_color[3], const vec3 normals[3], const light_t* light) {
+    double inverse_slope1 = (vert[1].x - vert[0].x) / (vert[1].y - vert[0].y);
+    double inverse_slope2 = (vert[2].x - vert[0].x) / (vert[2].y - vert[0].y);
+
+    double current_x1 = vert[0].x;
+    double current_x2 = vert[0].x;
+
+    for (int y = (int)vert[0].y; y <= (int)vert[1].y; y++) {
+        for (int x = (int)current_x1; x <= (int)current_x2; x++) {
+            if (x < 0 || x >=disp->width) continue;
+            vec2 p = {x, y};
+            
+            vec2 xy_vert_pos[3] = {
+                vec3_to_vec2(&vert[0]),
+                vec3_to_vec2(&vert[1]),
+                vec3_to_vec2(&vert[2]),
+            };
+            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+
+            double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
+            int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
+            if (not_covered == 0) {
+                continue;
+            }
+
+            color_t color = (color_t){
+                coords.x * vert_color[0].r + coords.y * vert_color[1].r + coords.z * vert_color[2].r,
+                coords.x * vert_color[0].g + coords.y * vert_color[1].g + coords.z * vert_color[2].g,
+                coords.x * vert_color[0].b + coords.y * vert_color[1].b + coords.z * vert_color[2].b,
+            };
+
+            int color_int = color_to_int(color);
+            GAEDisplay_setPixel(disp, p.x, p.y, color_int);
+        }
+        current_x1 += inverse_slope1;
+        current_x2 += inverse_slope2;
+    }
+}
+
+void fill_top_flat_triangle(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[3], const color_t vert_color[3], const vec3 normals[3], const light_t* light) {
+    double inverse_slope1 = (vert[2].x - vert[0].x) / (vert[2].y - vert[0].y);
+    double inverse_slope2 = (vert[2].x - vert[1].x) / (vert[2].y - vert[1].y);
+
+    double current_x1 = vert[2].x;
+    double current_x2 = vert[2].x;
+
+    for (int y = (int)vert[2].y; y > (int)vert[0].y; y--) {
+        for (int x = (int)current_x1; x <= (int)current_x2; x++) {
+            if (x < 0 || x >=disp->width) continue;
+            vec2 p = {x, y};
+            
+            vec2 xy_vert_pos[3] = {
+                vec3_to_vec2(&vert[0]),
+                vec3_to_vec2(&vert[1]),
+                vec3_to_vec2(&vert[2]),
+            };
+            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+
+            double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
+            int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
+            if (not_covered == 0) {
+                continue;
+            }
+
+            color_t color = (color_t){
+                coords.x * vert_color[0].r + coords.y * vert_color[1].r + coords.z * vert_color[2].r,
+                coords.x * vert_color[0].g + coords.y * vert_color[1].g + coords.z * vert_color[2].g,
+                coords.x * vert_color[0].b + coords.y * vert_color[1].b + coords.z * vert_color[2].b,
+            };
+
+            int color_int = color_to_int(color);
+            GAEDisplay_setPixel(disp, p.x, p.y, color_int);
+        }
+        current_x1 -= inverse_slope1;
+        current_x2 -= inverse_slope2;
+    }
+}
+
+void draw_triangle_filled2(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[3], const color_t vert_color[3], const vec3 normals[3], const light_t* light) {
+    vec3 p0 = {(int)vert[0].x, (int)vert[0].y, vert[0].z};
+    vec3 p1 = {(int)vert[1].x, (int)vert[1].y, vert[0].z};
+    vec3 p2 = {(int)vert[2].x, (int)vert[2].y, vert[0].z};
+
+    if (p1.y < p0.y) swap_vec3(&p0, &p1);
+    if (p2.y < p0.y) swap_vec3(&p2, &p0);
+    if (p2.y < p1.y) swap_vec3(&p2, &p1);
+
+    if (p1.y == p2.y) {
+        // Bottom-flat triangle
+        vec3 vert_bottom[3] = {p0, p1, p2};
+        fill_bottom_flat_triangle(disp, vert_bottom, uv, vert_color, normals, light);
+    } else if (p0.y == p1.y) {
+        // Top-flag triangle
+        vec3 vert_top[3] = {p0, p1, p2};
+        fill_top_flat_triangle(disp, vert_top, uv, vert_color, normals, light);
+    } else {
+        vec3 p3 = {
+            p0.x + ((p1.y - p0.y) / (p2.y - p0.y)) * (p2.x - p0.x),
+            p1.y, 
+            1.0
+        };
+
+        // Compute berycentric coordinates of input triangle
+        vec2 xy_vert_pos[3] = {
+            vec3_to_vec2(&vert[0]),
+            vec3_to_vec2(&vert[1]),
+            vec3_to_vec2(&vert[2]),
+        };
+        vec2 p3_vec2 = vec3_to_vec2(&p3);
+        vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p3_vec2);
+
+        // Get attributes for p3
+        double p3_z_value = vert[0].z * coords.x + vert[1].z * coords.y + vert[2].z * coords.z;
+        p3.z = p3_z_value;
+
+        vec2 p3_uv_coord = {
+            uv[0].x * coords.x + uv[1].x * coords.y + uv[2].x * coords.z,
+            uv[0].y * coords.x + uv[1].y * coords.y + uv[2].y * coords.z,
+        };
+
+        color_t p3_color = {
+            (int)(vert_color[0].r * coords.x + vert_color[1].r * coords.y + vert_color[2].r * coords.z),
+            (int)(vert_color[0].g * coords.x + vert_color[1].g * coords.y + vert_color[2].g * coords.z),
+            (int)(vert_color[0].b * coords.x + vert_color[1].b * coords.y + vert_color[2].b * coords.z),
+        };
+
+        vec3 p3_normal = {1, 1, 1};
+
+        // Bottom-flat triangle
+        vec3 vert_bottom[3] = {
+            p0, p1, p3
+        };
+
+        vec2 uv_bottom[3] = {
+            uv[0], uv[1], p3_uv_coord
+        };
+
+        color_t color_bottom[3] = {
+            vert_color[0], vert_color[1], p3_color
+        };
+
+        vec3 norm_bottom[3] = {
+            normals[0], normals[1], p3_normal
+        };
+
+        fill_bottom_flat_triangle(disp, vert_bottom, uv_bottom, color_bottom, norm_bottom, light);
+        
+        // Top-flat triangle
+        vec3 vert_top[3] = {
+            p1, p3, p2
+        };
+
+        vec2 uv_top[3] = {
+            uv[1], p3_uv_coord, uv[2]
+        };
+
+        color_t color_top[3] = {
+            vert_color[1], p3_color, vert_color[2]
+        };
+
+        vec3 norm_top[3] = {
+            normals[1], p3_normal, normals[2]
+        };
+
+        fill_top_flat_triangle(disp, vert_top, uv_top, color_top, norm_top, light);
+    }
+}
+
+

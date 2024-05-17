@@ -264,7 +264,6 @@ vec4 mat4_vec4_mul(const mat4*  a, const vec4*  v) {
     return result;
 }
 
-
 /*=============== GENERAL MATH ===============*/
 double lerp(double v, double w, double t) {
     return v + t * (w - v);
@@ -280,6 +279,22 @@ vec3 vec3_lerp(const vec3* v, const vec3* w, double t) {
 
 vec4 vec4_lerp(const vec4* v, const vec4* w, double t) {
     return (vec4){lerp(v->x, w->x, t), lerp(v->y, w->y, t), lerp(v->z, w->z, t), lerp(v->w, w->w, t)};
+}
+
+vec2 vec3_to_vec2(const vec3* v) {
+    return (vec2){v->x, v->y};
+}
+
+vec3 vec4_to_vec3(const vec4* v) {
+    return (vec3){v->x, v->y, v->z};
+}
+
+vec3 vec2_to_vec3(const vec2* v) {
+    return (vec3){v->x, v->y, 1.0};
+}
+
+vec4 vec3_to_vec4(const vec3* v) {
+    return (vec4){v->x, v->y, v->z, 1.0};
 }
 
 /*=============== GRAPHICS MATH ===============*/
@@ -349,20 +364,20 @@ mat4 mat4_perspective(float fov, float aspect, float znear, float zfar) {
     return res;
 }
 
-vec2 perspective_divide(const vec4*  v) {
-    return (vec2){v->x / v->w, v->y / v->w};
+vec3 perspective_divide(const vec4*  v) {
+    return (vec3){v->x / v->w, v->y / v->w, v->z / v->w};
 }
 
-vec2 viewport_transform(const vec2*  ndc, int width, int height) {
-    return (vec2){(ndc->x + 1.0) * width * 0.5, (1.0 - ndc->y) * height * 0.5};
+vec3 viewport_transform(const vec3*  ndc, int width, int height, double z_near, double z_far) {
+    return (vec3){(ndc->x + 1.0) * width * 0.5, (ndc->y + 1) * height * 0.5, ndc->z / (z_near - z_far)};
 }
 
-vec2 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int width, int height) {
+vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int s_width, int s_height, double z_near, double z_far) {
     vec4 world_pos = mat4_vec4_mul(model, v);
     vec4 view_pos = mat4_vec4_mul(view, &world_pos);
     vec4 clip_pos = mat4_vec4_mul(projection, &view_pos);
-    vec2 ndc_pos = perspective_divide(&clip_pos);
-    return viewport_transform(&ndc_pos, width, height);
+    vec3 ndc = perspective_divide(&clip_pos);
+    return viewport_transform(&ndc, s_width, s_height, z_near, z_far);
 }
 
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up) {
