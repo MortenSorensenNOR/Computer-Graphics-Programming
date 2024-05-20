@@ -39,7 +39,8 @@ int color_to_int(const color_t c);
 vec3 color_to_vec3(const color_t c);
 color_t color_interpolate(const color_t a, const color_t b, double t);
 
-vec3 get_barycentric_coordinate(const vec2 vert[3], const vec2* p);
+vec3 get_barycentric_coordinate2d(const vec2 vert[3], const vec2* p);
+vec3 get_barycentric_coordinate3d(const vec3 vert[3], const vec3* p);
 vec2 get_uv_coord(const triangle_t* t, const vec3* p);
 
 void transform_triangle(const vec4 vert[3], vec3 transformed_vert[3], const mat4* model, const mat4* view, const mat4* projection, int s_width, int s_height, double z_near, double z_far);

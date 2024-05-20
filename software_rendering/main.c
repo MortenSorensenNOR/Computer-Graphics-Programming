@@ -83,7 +83,6 @@ int main(int argc, char** argv) {
     light.ambient = (vec3){0.25, 0.25, 0.25};
     light.diffuse = (vec3){5, 0.5, 0.5};
 
-    mat4 model = mat4_translate(0, 0, 50);
 
     vec3 up = { 0.0f, 1.0f, 0.0f };
     vec3 eye = { 0.0f, 0.0f, 10.0f };
@@ -96,11 +95,17 @@ int main(int argc, char** argv) {
     float zfar = 100.0f;
     mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
 
+    double dir = 1;
+    double dist = 40;
     double angle = 0;
     clock_t start, end;
     while (1) {
         start = clock();
         GAEDisplay_clear(&disp, 0x1C1D1E);
+
+        dist += dir * 0.1;
+        if (dist > 70 || dist < 30) dir = -dir;
+        mat4 model = mat4_translate(0, 0, dist);
 
         angle = (angle + 0.01) - (int)(angle / (2 * M_PI)) * 2 * M_PI;
         mat4 rotation = mat4_rotate(angle, angle, 0);
@@ -129,12 +134,12 @@ int main(int argc, char** argv) {
             };
             vec3 tri_vert_trans[3];
             transform_triangle(tri_vert, tri_vert_trans, &model_rotated, &view, &projection, disp.width, disp.height, znear, zfar);
-            draw_triangle_filled2(&disp, tri_vert_trans, tri_uv, tri_col, tri_norm, &light);
+            draw_triangle_filled(&disp, tri_vert_trans, tri_uv, tri_col, tri_norm, &light);
         }
 
         GAEDisplay_update(&disp);
         end = clock();
-        printf("FPS: %f\n", 1/((double)(end - start)/CLOCKS_PER_SEC));
+        /* printf("FPS: %f\n", 1/((double)(end - start)/CLOCKS_PER_SEC)); */
     }
 
     GAEDisplay_destroy(&disp);

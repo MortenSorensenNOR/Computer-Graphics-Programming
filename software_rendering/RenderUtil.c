@@ -3,11 +3,29 @@
 
 /*=============== COLOR ===============*/
 int color_to_int(const color_t c) {
-    return c.r << 16 | c.g << 8 | c.b;
+    int r = c.r;
+    int g = c.g;
+    int b = c.b;
+    if (r > 255) r = 255;
+    if (g > 255) g = 255;
+    if (b > 255) b = 255;
+    if (r < 0) r = 0;
+    if (g < 0) g = 0;
+    if (b < 0) b = 0;
+    return r << 16 | g << 8 | b;
 }
 
 vec3 color_to_vec3(const color_t c) {
-    return (vec3){c.r, c.g, c.b};
+    int r = c.r;
+    int g = c.g;
+    int b = c.b;
+    if (r > 255) r = 255;
+    if (g > 255) g = 255;
+    if (b > 255) b = 255;
+    if (r < 0) r = 0;
+    if (g < 0) g = 0;
+    if (b < 0) b = 0;
+    return (vec3){r, g, b};
 }
 
 color_t color_interpolate(const color_t a, const color_t b, double t) {
@@ -15,7 +33,7 @@ color_t color_interpolate(const color_t a, const color_t b, double t) {
 }
 
 /*=============== MATH-STUFF ===============*/
-vec3 get_barycentric_coordinate(const vec2 vert[3], const vec2* p) {
+vec3 get_barycentric_coordinate2d(const vec2 vert[3], const vec2* p) {
     vec2 v0 = vec2_sub(&vert[1], &vert[0]);
     vec2 v1 = vec2_sub(&vert[2], &vert[0]);
     vec2 v2 = vec2_sub(p, &vert[0]);
@@ -25,6 +43,24 @@ vec3 get_barycentric_coordinate(const vec2 vert[3], const vec2* p) {
     double d11 = vec2_dot(&v1, &v1);
     double d20 = vec2_dot(&v2, &v0);
     double d21 = vec2_dot(&v2, &v1);
+
+    double det = (d00 * d11 - d01 * d01);
+    double v = (d11 * d20 - d01 * d21) / det;
+    double w = (d00 * d21 - d01 * d20) / det;
+    double u = 1.0f - v - w;
+    return (vec3){u, v, w};
+}
+
+vec3 get_barycentric_coordinate3d(const vec3 vert[3], const vec3* p) {
+    vec3 v0 = vec3_sub(&vert[1], &vert[0]);
+    vec3 v1 = vec3_sub(&vert[2], &vert[0]);
+    vec3 v2 = vec3_sub(p, &vert[0]);
+
+    double d00 = vec3_dot(&v0, &v0);
+    double d01 = vec3_dot(&v0, &v1);
+    double d11 = vec3_dot(&v1, &v1);
+    double d20 = vec3_dot(&v2, &v0);
+    double d21 = vec3_dot(&v2, &v1);
 
     double det = (d00 * d11 - d01 * d01);
     double v = (d11 * d20 - d01 * d21) / det;
@@ -61,9 +97,9 @@ void draw_triangle_wireframe(GAEDisplay_t* disp, const vec2 vert[3], int color) 
 }
 
 void draw_triangle_filled(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[3], const color_t vert_color[3], const vec3 normals[3], const light_t* light) {
-    vec3 p0 = vert[0];
-    vec3 p1 = vert[1];
-    vec3 p2 = vert[2];
+    vec3 p0 = {(int)vert[0].x, (int)vert[0].y, vert[0].z};
+    vec3 p1 = {(int)vert[1].x, (int)vert[1].y, vert[1].z};
+    vec3 p2 = {(int)vert[2].x, (int)vert[2].y, vert[2].z};
 
     if (p1.y < p0.y) swap_vec3(&p0, &p1);
     if (p2.y < p0.y) swap_vec3(&p2, &p0);
@@ -103,7 +139,7 @@ void draw_triangle_filled(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[
                 vec3_to_vec2(&vert[1]),
                 vec3_to_vec2(&vert[2]),
             };
-            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+            vec3 coords = get_barycentric_coordinate2d(xy_vert_pos, &p);
 
             double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
             int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
@@ -116,35 +152,6 @@ void draw_triangle_filled(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv[
                 coords.x * vert_color[0].g + coords.y * vert_color[1].g + coords.z * vert_color[2].g,
                 coords.x * vert_color[0].b + coords.y * vert_color[1].b + coords.z * vert_color[2].b,
             };
-            vec3 color_ambient = {
-                color.r * light->ambient.x, 
-                color.g * light->ambient.y, 
-                color.b * light->ambient.z
-            };
-
-            vec3 barycentric_vert[3] = {
-                vec3_mul(&vert[0], coords.x),
-                vec3_mul(&vert[1], coords.y),
-                vec3_mul(&vert[2], coords.z)
-            };
-            vec3 fragPos = vec3_add(&barycentric_vert[0], &barycentric_vert[1]);
-            fragPos = vec3_add(&fragPos, &barycentric_vert[2]);
-
-            vec3 norm = vec3_normalize(&normals[0]);
-            vec3 lightDir = vec3_sub(&light->pos, &fragPos);
-            double diff = vec3_dot(&norm, &lightDir);
-            if (diff < 0.0) diff = 0.0;
-            vec3 color_diffuse = {
-                diff * color.r * light->diffuse.x, 
-                diff * color.g * light->diffuse.y, 
-                diff * color.b * light->diffuse.z
-            };
-
-            color_t color_light = {
-                (int)(color_ambient.x + color_diffuse.x),
-                (int)(color_ambient.y + color_diffuse.y),
-                (int)(color_ambient.z + color_diffuse.z),
-            }; 
 
             int color_int = color_to_int(color);
             GAEDisplay_setPixel(disp, p.x, p.y, color_int);
@@ -169,7 +176,7 @@ void fill_bottom_flat_triangle(GAEDisplay_t* disp, const vec3 vert[3], const vec
                 vec3_to_vec2(&vert[1]),
                 vec3_to_vec2(&vert[2]),
             };
-            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+            vec3 coords = get_barycentric_coordinate2d(xy_vert_pos, &p);
 
             double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
             int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
@@ -208,7 +215,7 @@ void fill_top_flat_triangle(GAEDisplay_t* disp, const vec3 vert[3], const vec2 u
                 vec3_to_vec2(&vert[1]),
                 vec3_to_vec2(&vert[2]),
             };
-            vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p);
+            vec3 coords = get_barycentric_coordinate2d(xy_vert_pos, &p);
 
             double z_buffer_val = coords.x * vert[0].z + coords.y * vert[1].z + coords.z * vert[2].z;
             int not_covered = GAEDisplay_testAndSetZBuffer(disp, p.x, p.y, z_buffer_val);
@@ -261,7 +268,7 @@ void draw_triangle_filled2(GAEDisplay_t* disp, const vec3 vert[3], const vec2 uv
             vec3_to_vec2(&vert[2]),
         };
         vec2 p3_vec2 = vec3_to_vec2(&p3);
-        vec3 coords = get_barycentric_coordinate(xy_vert_pos, &p3_vec2);
+        vec3 coords = get_barycentric_coordinate2d(xy_vert_pos, &p3_vec2);
 
         // Get attributes for p3
         double p3_z_value = vert[0].z * coords.x + vert[1].z * coords.y + vert[2].z * coords.z;
