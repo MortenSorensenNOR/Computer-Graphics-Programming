@@ -37,6 +37,14 @@ typedef struct {
     GC NormalGC;
 } GAEDisplay_t;
 
+typedef struct {
+    int keyPressDown;
+    int keyPressRelease;
+
+    int keyPressDownKeycode;
+    int keyPressReleaseKeycode;
+} user_input;
+
 /**
  * @brief Sets up the GAEDisplay struct for an X11 window
  * @param disp   The GAEDisplay instance to initilize
@@ -80,6 +88,13 @@ int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color);
  * @return Returns 1 if z < z_buffer[x][y], else 0
  */
 int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z);
+
+/**
+ * @brief Get user input for the display such as mouse and keyboard interaction
+ * @param disp   The GAEDisplay struct being updated
+ * @return Returns 0 for success and 1 for error
+ */
+int GAEDisplay_getInput(GAEDisplay_t* disp, user_input* input_buffer);
 
 /**
  * @brief Main update function for the GAEDisplay. Upon update, the new framebuffer gets displayed

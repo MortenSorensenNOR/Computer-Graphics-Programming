@@ -38,7 +38,7 @@ int GAEDisplay_init(GAEDisplay_t* disp) {
     }
 
     XSync(disp->display, True);
-    XSelectInput(disp->display, disp->window, ExposureMask);
+    XSelectInput(disp->display, disp->window, ExposureMask | KeyPressMask);
 
     disp->gcm = GCGraphicsExposures;
     disp->gcv.graphics_exposures = 0;
@@ -73,16 +73,10 @@ int GAEDisplay_currentMonitorDimensions(Display* display, int* width, int* heigh
 }
 
 int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
-    // Get display dimentions
-    /* int snum = DefaultScreen(disp->display); */
-    /* disp->width = DisplayWidth(disp->display, snum); */
-    /* disp->height = DisplayHeight(disp->display, snum); */
-
     int width, height;
     GAEDisplay_currentMonitorDimensions(disp->display, &width, &height);
     disp->width = width;
     disp->height = height;
-    printf("1. %d %d\n", width, height);
 
     // Free and allocate new memory to the framebuffer
     free(disp->framebuffer);
@@ -121,19 +115,30 @@ int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z) {
     return 0;
 }
 
+int GAEDisplay_getInput(GAEDisplay_t* disp, user_input* input_buffer) {
+    // Check user keypress down
+    XEvent event_keydown;
+    int keydown = XCheckWindowEvent(disp->display, disp->window, KeyPressMask, &event_keydown);
+
+    if (keydown) {
+        printf("Keycode: %d\n", event_keydown.xkey.keycode);
+        input_buffer->keyPressDown = 1;
+        input_buffer->keyPressDownKeycode = event_keydown.xkey.keycode;
+    }
+
+    XEvent event_keyrelease;
+    int keyrelease = XCheckWindowEvent(disp->display, disp->window, KeyReleaseMask, &event_keyrelease);
+
+    if (keyrelease) {
+        printf("Keycode: %d\n", event_keyrelease.xkey.keycode);
+        input_buffer->keyPressRelease = 1;
+        input_buffer->keyPressReleaseKeycode = event_keyrelease.xkey.keycode;
+    }
+
+    return 0;
+}
+
 int GAEDisplay_update(GAEDisplay_t* disp) {
-    // Uncomment for input
-    /* if (!XNextEvent(disp->display, &disp->event)) { */
-    /*     switch (disp->event.type) { */
-    /*         case Expose: */
-    /*             printf("I have been exposed\n"); */
-    /*             XPutImage(disp->display, disp->window, disp->NormalGC, disp->ximage, 0, 0, 0, 0, disp->width, disp->height); */
-    /*             break; */
-    /*         case ConfigureNotify: */
-    /*             GAEDisplay_setFrameBufferSize(disp); */
-    /*             break; */
-    /*     } */
-    /* } */
 
     // Write the framebuffer to the display
     return XPutImage(disp->display, disp->window, disp->NormalGC, disp->ximage, 0, 0, 0, 0, disp->width, disp->height);

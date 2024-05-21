@@ -8,11 +8,11 @@ project(
 
 add_subdirectory(display)
 add_subdirectory(gml)
+add_subdirectory(rutil)
 
 add_executable(
     render
     main.c
-    RenderUtil.c
 )
 
-target_link_libraries(render PRIVATE display gml)
+target_link_libraries(render PRIVATE display gml rutil)
