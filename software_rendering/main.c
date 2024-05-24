@@ -103,8 +103,8 @@ int main(int argc, char** argv) {
         start = clock();
         GAEDisplay_clear(&disp, 0x1C1D1E);
 
-        dist += dir * 0.1;
-        if (dist > 70 || dist < 30) dir = -dir;
+        dist += dir * 0.2;
+        if (dist > 70 || dist < 15) dir = -dir;
         mat4 model = mat4_translate(0, 0, dist);
 
         angle = (angle + 0.01) - (int)(angle / (2 * M_PI)) * 2 * M_PI;
