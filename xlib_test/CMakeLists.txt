@@ -12,4 +12,4 @@ add_executable(
     GAEDisplay.c
 )
 
-target_link_libraries(Emulate PRIVATE X11)
+target_link_libraries(Emulate PRIVATE X11 Xrandr m)
