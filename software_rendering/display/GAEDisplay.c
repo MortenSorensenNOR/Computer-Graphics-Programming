@@ -1,5 +1,7 @@
 #include "GAEDisplay.h"
+#include <X11/Xlib.h>
 
+/*========== GAEDisplay ==========*/
 int GAEDisplay_init(GAEDisplay_t* disp) {
     disp->display = XOpenDisplay(NULL);    
 
@@ -38,7 +40,7 @@ int GAEDisplay_init(GAEDisplay_t* disp) {
     }
 
     XSync(disp->display, True);
-    XSelectInput(disp->display, disp->window, ExposureMask | KeyPressMask);
+    XSelectInput(disp->display, disp->window, ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask);
 
     disp->gcm = GCGraphicsExposures;
     disp->gcv.graphics_exposures = 0;
@@ -115,29 +117,6 @@ int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z) {
     return 0;
 }
 
-int GAEDisplay_getInput(GAEDisplay_t* disp, user_input* input_buffer) {
-    // Check user keypress down
-    XEvent event_keydown;
-    int keydown = XCheckWindowEvent(disp->display, disp->window, KeyPressMask, &event_keydown);
-
-    if (keydown) {
-        printf("Keycode: %d\n", event_keydown.xkey.keycode);
-        input_buffer->keyPressDown = 1;
-        input_buffer->keyPressDownKeycode = event_keydown.xkey.keycode;
-    }
-
-    XEvent event_keyrelease;
-    int keyrelease = XCheckWindowEvent(disp->display, disp->window, KeyReleaseMask, &event_keyrelease);
-
-    if (keyrelease) {
-        printf("Keycode: %d\n", event_keyrelease.xkey.keycode);
-        input_buffer->keyPressRelease = 1;
-        input_buffer->keyPressReleaseKeycode = event_keyrelease.xkey.keycode;
-    }
-
-    return 0;
-}
-
 int GAEDisplay_update(GAEDisplay_t* disp) {
 
     // Write the framebuffer to the display
@@ -171,3 +150,52 @@ int GAEDisplay_destroy(GAEDisplay_t* disp) {
 
     return 0;
 }
+
+/*========== GAEInput ==========*/
+int GAEInput_init(GAEInput_t* input, GAEDisplay_t* disp) {
+    input->display = disp;
+    memset(input->held_keys, 0, KEYSTATE_SIZE);
+    return 0;
+}
+
+int GAEInput_setKey(GAEInput_t* input, int keycode) {
+    input->held_keys[keycode / 8] |= (1 << (keycode % 8));
+    return 0;
+}
+
+int GAEInput_clearKey(GAEInput_t* input, int keycode) {
+    input->held_keys[keycode / 8] &= ~(1 << (keycode % 8));
+    return 0;
+}
+
+int GAEInput_update(GAEDisplay_t* disp, GAEInput_t* input) {
+    // Check user keypress down
+    XEvent event;
+    int keyevent = XCheckWindowEvent(disp->display, disp->window, KeyPressMask | KeyReleaseMask, &event);
+    if (keyevent) {
+        if (event.xkey.type == KeyPress) {
+            GAEInput_setKey(input, event.xkey.keycode);
+        } else if (event.xkey.type == KeyRelease) {
+            GAEInput_clearKey(input, event.xkey.keycode);
+        }
+    }
+
+    int mouse_event = XCheckWindowEvent(disp->display, disp->window, PointerMotionMask, &event);
+    if (mouse_event) {
+        if (event.type == MotionNotify) {
+            input->mouse_x = event.xmotion.x;
+            input->mouse_y = event.xmotion.y;
+        }
+    }
+
+    return 0;
+}
+
+int GAEInput_getKeyState(const GAEInput_t* input, char key) {
+    unsigned long keysym = XStringToKeysym(&key);
+    int keycode = XKeysymToKeycode(input->display->display, keysym);
+    int byte_index = keycode / 8;
+    int bit_index = keycode % 8;
+    return input->held_keys[byte_index] & (1 << bit_index);
+}
+

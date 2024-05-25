@@ -5,12 +5,15 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/Xrandr.h>
 
+#define KEYSTATE_SIZE 32    // 256 keys / 8 bits per char
+
 /**
- * @brief Wrapper class for exposing a framebuffer from X11/Xlib
+ * @brief Wrapper struct for exposing a framebuffer from X11/Xlib
  */
 typedef struct {
     Display* display;
@@ -36,14 +39,6 @@ typedef struct {
     unsigned long gcm;
     GC NormalGC;
 } GAEDisplay_t;
-
-typedef struct {
-    int keyPressDown;
-    int keyPressRelease;
-
-    int keyPressDownKeycode;
-    int keyPressReleaseKeycode;
-} user_input;
 
 /**
  * @brief Sets up the GAEDisplay struct for an X11 window
@@ -90,13 +85,6 @@ int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color);
 int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z);
 
 /**
- * @brief Get user input for the display such as mouse and keyboard interaction
- * @param disp   The GAEDisplay struct being updated
- * @return Returns 0 for success and 1 for error
- */
-int GAEDisplay_getInput(GAEDisplay_t* disp, user_input* input_buffer);
-
-/**
  * @brief Main update function for the GAEDisplay. Upon update, the new framebuffer gets displayed
  * @param disp   The GAEDisplay struct being updated
  * @return Returns 0 for success and 1 for error
@@ -117,4 +105,55 @@ int GAEDisplay_clear(GAEDisplay_t* disp, int color);
  */
 int GAEDisplay_destroy(GAEDisplay_t* disp);
 
+/**
+ * @brief Wrapper struct for exposing user input from X11/Xlib
+ */
+typedef struct {
+    GAEDisplay_t* display;
+
+    char held_keys[KEYSTATE_SIZE]; 
+    
+    int mouse_x;
+    int mouse_y;
+    char mouse_1_held;
+    char mouse_2_held;
+} GAEInput_t;
+
+/**
+ * @brief 
+ * @param input 
+ * @return Returns 0 for success and 1 for error
+ */
+int GAEInput_init(GAEInput_t* input, GAEDisplay_t* disp);
+
+/**
+ * @brief 
+ * @param input 
+ * @param keycode 
+ * @return Returns 0 for success and 1 for error
+ */
+int GAEInput_setKey(GAEInput_t* input, int keycode);
+
+/**
+ * @brief 
+ * @param input 
+ * @param keycode 
+ * @return Returns 0 for success and 1 for error
+ */
+int GAEInput_clearKey(GAEInput_t* input, int keycode);
+
+/**
+ * @brief Get user input for the display such as mouse and keyboard interaction
+ * @param disp      The GAEDisplay struct being updated
+ * @param input     
+ * @return Returns 0 for success and 1 for error
+ */
+int GAEInput_update(GAEDisplay_t* disp, GAEInput_t* input);
+
+/**
+ * @brief 
+ * @param input 
+ * @return Returns 1 if the key is held, 0 if not
+ */
+int GAEInput_getKeyState(const GAEInput_t* input, char key);
 
