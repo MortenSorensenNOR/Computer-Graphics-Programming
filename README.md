@@ -1,2 +1,2 @@
-# GPU-Architecture-Emulator
-Small project trying to emulate a basic GPU processing pipeline for computer graphics.
+# Computer Graphics Programming
+Learning graphics programming from scratch. Goals of fully functioning render pipeline in C.
