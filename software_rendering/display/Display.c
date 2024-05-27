@@ -1,8 +1,8 @@
 #include "Display.h"
 #include <X11/Xlib.h>
 
-/*========== GAEDisplay ==========*/
-int GAEDisplay_init(GAEDisplay_t* disp) {
+/*========== Display ==========*/
+int Display_init(Display_t* disp) {
     disp->display = XOpenDisplay(NULL);    
 
     disp->nxvisual = 0;
@@ -26,7 +26,7 @@ int GAEDisplay_init(GAEDisplay_t* disp) {
     disp->attrs.border_pixel = 0xFFFFFF;
 
     // Set width and height of the framebuffer
-    GAEDisplay_setFrameBufferSize(disp);
+    Display_setFrameBufferSize(disp);
 
     // Create the window
     disp->window = XCreateWindow(disp->display, disp->parent, 0, 0, disp->width, disp->height, 0, disp->depth, 
@@ -51,7 +51,7 @@ int GAEDisplay_init(GAEDisplay_t* disp) {
     return 0;
 }
 
-int GAEDisplay_currentMonitorDimensions(Display* display, int* width, int* height) {
+int Display_currentMonitorDimensions(Display* display, int* width, int* height) {
     XRRScreenResources *screenRes = XRRGetScreenResources(display, DefaultRootWindow(display));
     XRROutputInfo *outputInfo;
     XRRCrtcInfo *crtcInfo;
@@ -74,9 +74,9 @@ int GAEDisplay_currentMonitorDimensions(Display* display, int* width, int* heigh
     return 0;
 }
 
-int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
+int Display_setFrameBufferSize(Display_t* disp) {
     int width, height;
-    GAEDisplay_currentMonitorDimensions(disp->display, &width, &height);
+    Display_currentMonitorDimensions(disp->display, &width, &height);
     disp->width = width;
     disp->height = height;
 
@@ -89,7 +89,7 @@ int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
     return disp->framebuffer == NULL || disp->zbuffer == NULL;
 }
 
-int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color) {
+int Display_setPixel(Display_t* disp, int x, int y, int color) {
     if (x < 0 || x >= disp->width || y < 0 || y >= disp->height) {
         perror("Pixel index out of range\n");
         return 1;
@@ -103,7 +103,7 @@ int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color) {
     return 0;
 }
 
-int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z) {
+int Display_testAndSetZBuffer(Display_t* disp, int x, int y, double z) {
     if (x < 0 || x >= disp->width || y < 0 || y >= disp->height) {
         perror("Pixel index out of range\n");
         return 1;
@@ -118,13 +118,13 @@ int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z) {
     return 0;
 }
 
-int GAEDisplay_update(GAEDisplay_t* disp) {
+int Display_update(Display_t* disp) {
 
     // Write the framebuffer to the display
     return XPutImage(disp->display, disp->window, disp->NormalGC, disp->ximage, 0, 0, 0, 0, disp->width, disp->height);
 }
 
-int GAEDisplay_clear(GAEDisplay_t* disp, int color) {
+int Display_clear(Display_t* disp, int color) {
     for (int y = 0; y < disp->height; y++) {
         for (int x = 0; x < disp->width; x++) {
             int index = x + y * disp->width;
@@ -135,7 +135,7 @@ int GAEDisplay_clear(GAEDisplay_t* disp, int color) {
     return 0;
 }
 
-int GAEDisplay_destroy(GAEDisplay_t* disp) {
+int Display_destroy(Display_t* disp) {
     if (disp != NULL) {
         /* Destroy window */
         XDestroyWindow(disp->display, disp->window);
@@ -145,43 +145,43 @@ int GAEDisplay_destroy(GAEDisplay_t* disp) {
 
         free(disp->framebuffer);
 
-        /* Finnaly free the GAEDisplay_t struct */
+        /* Finnaly free the Display_t struct */
         free(disp);
     }
 
     return 0;
 }
 
-/*========== GAEInput ==========*/
-int GAEInput_init(GAEInput_t* input, GAEDisplay_t* disp) {
+/*========== Input ==========*/
+int Input_init(Input_t* input, Display_t* disp) {
     input->display = disp;
     memset(input->held_keys, 0, KEYSTATE_SIZE);
     return 0;
 }
 
-int GAEInput_setKey(GAEInput_t* input, int keycode) {
+int Input_setKey(Input_t* input, int keycode) {
     input->held_keys[keycode / 8] |= (1 << (keycode % 8));
     return 0;
 }
 
-int GAEInput_clearKey(GAEInput_t* input, int keycode) {
+int Input_clearKey(Input_t* input, int keycode) {
     input->held_keys[keycode / 8] &= ~(1 << (keycode % 8));
     return 0;
 }
 
-int GAEInput_update(GAEDisplay_t* disp, GAEInput_t* input) {
+int Input_update(Input_t* input) {
     // Check user keypress down
     XEvent event;
-    int keyevent = XCheckWindowEvent(disp->display, disp->window, KeyPressMask | KeyReleaseMask, &event);
+    int keyevent = XCheckWindowEvent(input->display->display, input->display->window, KeyPressMask | KeyReleaseMask, &event);
     if (keyevent) {
         if (event.xkey.type == KeyPress) {
-            GAEInput_setKey(input, event.xkey.keycode);
+            Input_setKey(input, event.xkey.keycode);
         } else if (event.xkey.type == KeyRelease) {
-            GAEInput_clearKey(input, event.xkey.keycode);
+            Input_clearKey(input, event.xkey.keycode);
         }
     }
 
-    int mouse_event = XCheckWindowEvent(disp->display, disp->window, PointerMotionMask, &event);
+    int mouse_event = XCheckWindowEvent(input->display->display, input->display->window, PointerMotionMask, &event);
     if (mouse_event) {
         if (event.type == MotionNotify) {
             input->mouse_x = event.xmotion.x;
@@ -192,7 +192,7 @@ int GAEInput_update(GAEDisplay_t* disp, GAEInput_t* input) {
     return 0;
 }
 
-int GAEInput_getKeyState(const GAEInput_t* input, char key) {
+int Input_getKeyState(const Input_t* input, char key) {
     unsigned long keysym = XStringToKeysym(&key);
     int keycode = XKeysymToKeycode(input->display->display, keysym);
     int byte_index = keycode / 8;

@@ -38,14 +38,14 @@ typedef struct {
     XGCValues gcv;
     unsigned long gcm;
     GC NormalGC;
-} GAEDisplay_t;
+} Display_t;
 
 /**
- * @brief Sets up the GAEDisplay struct for an X11 window
- * @param disp   The GAEDisplay instance to initilize
+ * @brief Sets up the Display struct for an X11 window
+ * @param disp   The Display instance to initilize
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_init(GAEDisplay_t* disp);
+int Display_init(Display_t* disp);
 
 /**
  * @brief Gets the window dimensions of the current selected monitor
@@ -54,62 +54,62 @@ int GAEDisplay_init(GAEDisplay_t* disp);
  * @param height    Pointer to the height int to be set
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_currentMonitorDimensions(Display* display, int* width, int* height);
+int Display_currentMonitorDimensions(Display* display, int* width, int* height);
 
 /**
- * @brief Sets up the framebuffer for the GAEDisplay struct, uses the current width and height of the display 
- * @param disp   The GAEDisplay struct for which the framebuffer is being set up for
+ * @brief Sets up the framebuffer for the Display struct, uses the current width and height of the display 
+ * @param disp   The Display struct for which the framebuffer is being set up for
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp);
+int Display_setFrameBufferSize(Display_t* disp);
 
 /**
  * @brief Sets the pixel in the framebuffer at position (x, y) to color.
- * @param disp      The GAEDisplay struct for which the pixel in the framebuffer is to be set
+ * @param disp      The Display struct for which the pixel in the framebuffer is to be set
  * @param x         Horizontal index
  * @param y         Vertical index 
  * @param color     8-bit color - RED/GREEN/BLUE
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_setPixel(GAEDisplay_t* disp, int x, int y, int color);
+int Display_setPixel(Display_t* disp, int x, int y, int color);
 
 /**
  * @brief Checks if the z-buffer value at the pixel position is lower than the given value. 
  *      If not, it is set to that value and returns true.
- * @param disp      The GAEDisplay struct for which the pixel in the framebuffer is to be set
+ * @param disp      The Display struct for which the pixel in the framebuffer is to be set
  * @param x         Horizontal index
  * @param y         Vertical index 
  * @param z         Z-value being tested
  * @return Returns 1 if z < z_buffer[x][y], else 0
  */
-int GAEDisplay_testAndSetZBuffer(GAEDisplay_t* disp, int x, int y, double z);
+int Display_testAndSetZBuffer(Display_t* disp, int x, int y, double z);
 
 /**
- * @brief Main update function for the GAEDisplay. Upon update, the new framebuffer gets displayed
- * @param disp   The GAEDisplay struct being updated
+ * @brief Main update function for the Display. Upon update, the new framebuffer gets displayed
+ * @param disp   The Display struct being updated
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_update(GAEDisplay_t* disp);
+int Display_update(Display_t* disp);
 
 /**
- * @brief Clear the GAEDisplay framebuffer.
- * @param disp   The GAEDisplay struct for which the framebuffer is being cleared
+ * @brief Clear the Display framebuffer.
+ * @param disp   The Display struct for which the framebuffer is being cleared
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_clear(GAEDisplay_t* disp, int color);
+int Display_clear(Display_t* disp, int color);
 
 /**
- * @brief Desctructor for the GAEDisplay struct. Calls free on the member varibales
- * @param disp   The GAEDisplay struct being destroyed
+ * @brief Desctructor for the Display struct. Calls free on the member varibales
+ * @param disp   The Display struct being destroyed
  * @return Returns 0 for success and 1 for error
  */
-int GAEDisplay_destroy(GAEDisplay_t* disp);
+int Display_destroy(Display_t* disp);
 
 /**
  * @brief Wrapper struct for exposing user input from X11/Xlib
  */
 typedef struct {
-    GAEDisplay_t* display;
+    Display_t* display;
 
     char held_keys[KEYSTATE_SIZE]; 
     
@@ -117,43 +117,44 @@ typedef struct {
     int mouse_y;
     char mouse_1_held;
     char mouse_2_held;
-} GAEInput_t;
+} Input_t;
 
 /**
  * @brief 
- * @param input 
+ * @param input     Input wrapper struct
+ * @param disp      The corresponding display wrapper struct
  * @return Returns 0 for success and 1 for error
  */
-int GAEInput_init(GAEInput_t* input, GAEDisplay_t* disp);
+int Input_init(Input_t* input, Display_t* disp);
 
 /**
  * @brief 
- * @param input 
- * @param keycode 
+ * @param input     Input wrapper
+ * @param keycode   The keycode to be set as active
  * @return Returns 0 for success and 1 for error
  */
-int GAEInput_setKey(GAEInput_t* input, int keycode);
+int Input_setKey(Input_t* input, int keycode);
 
 /**
  * @brief 
- * @param input 
- * @param keycode 
+ * @param input     Input wrapper
+ * @param keycode   The keycode to be set as inactive
  * @return Returns 0 for success and 1 for error
  */
-int GAEInput_clearKey(GAEInput_t* input, int keycode);
+int Input_clearKey(Input_t* input, int keycode);
 
 /**
  * @brief Get user input for the display such as mouse and keyboard interaction
- * @param disp      The GAEDisplay struct being updated
- * @param input     
+ * @param input     The input wrapper struct to be updated
  * @return Returns 0 for success and 1 for error
  */
-int GAEInput_update(GAEDisplay_t* disp, GAEInput_t* input);
+int Input_update(Input_t* input);
 
 /**
  * @brief 
- * @param input 
+ * @param input     The input wrapper struct to check keystate for
+ * @param key       The key to be checked, in char format. i.e. "w" or "c"
  * @return Returns 1 if the key is held, 0 if not
  */
-int GAEInput_getKeyState(const GAEInput_t* input, char key);
+int Input_getKeyState(const Input_t* input, char key);
 

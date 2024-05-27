@@ -86,6 +86,23 @@ void swap_vec3(vec3* v, vec3* w) {
     *w = tmp;
 }
 
+vec3 vec3_clamp(const vec3* v, float min, float max) {
+    vec3 res;
+    if (v->x < min) res.x = min;
+    else if (v->x > max) res.x = max;
+    else res.x = v->x;
+
+    if (v->y < min) res.y = min;
+    else if (v->y > max) res.y = max;
+    else res.y = v->y;
+
+    if (v->z < min) res.z = min;
+    else if (v->z > max) res.z = max;
+    else res.z = v->z;
+
+    return res;
+}
+
 /*=============== VEC4 ===============*/
 vec4 vec4_add(const vec4* v, const vec4* w) {
     return (vec4){v->x + w->x, v->y + w->y, v->z + w->z, v->w + w->w};
@@ -378,6 +395,12 @@ vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, con
     vec4 clip_pos = mat4_vec4_mul(projection, &view_pos);
     vec3 ndc = perspective_divide(&clip_pos);
     return viewport_transform(&ndc, s_width, s_height, z_near, z_far);
+}
+
+mat4 transformation_matrix(const mat4*  model, const mat4*  view, const mat4*  projection) {
+    mat4 mv_matrix = mat4_mat4_mul_ret(view, model);             // Combine model and view matrices
+    mat4 mvp_matrix = mat4_mat4_mul_ret(projection, &mv_matrix); // Combine with projection matrix
+    return mvp_matrix;
 }
 
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up) {

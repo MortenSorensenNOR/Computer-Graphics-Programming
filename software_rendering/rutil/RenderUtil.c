@@ -2,32 +2,10 @@
 #include <math.h>
 
 /*=============== COLOR ===============*/
-int color_to_int(const color_t c) {
+int color_to_int(const vec3* c) {
     // Clip colors
-    int r = c.r;
-    int g = c.g;
-    int b = c.b;
-    if (r > 255) r = 255;
-    if (g > 255) g = 255;
-    if (b > 255) b = 255;
-    if (r < 0) r = 0;
-    if (g < 0) g = 0;
-    if (b < 0) b = 0;
-    return r << 16 | g << 8 | b;
-}
-
-vec3 color_to_vec3(const color_t c) {
-    // Clip colors
-    int r = c.r;
-    int g = c.g;
-    int b = c.b;
-    if (r > 255) r = 255;
-    if (g > 255) g = 255;
-    if (b > 255) b = 255;
-    if (r < 0) r = 0;
-    if (g < 0) g = 0;
-    if (b < 0) b = 0;
-    return (vec3){r, g, b};
+    vec3 color_clamped = vec3_clamp(c, 0.0, 1.0);
+    return (int)(color_clamped.x * 255) << 16 | (int)(color_clamped.y * 255) << 8 | (int)(color_clamped.z * 255);
 }
 
 vec3 get_barycentric_coordinate2d(const vec2 vert[3], const vec2* p) {
