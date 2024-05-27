@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "display/GAEDisplay.h"
+#include "display/Display.h"
 #include "rutil/RenderUtil.h"
 
 int main(int argc, char** argv) {

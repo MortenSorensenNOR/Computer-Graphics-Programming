@@ -1,4 +1,4 @@
-#include "GAEDisplay.h"
+#include "Display.h"
 #include <X11/Xlib.h>
 
 /*========== GAEDisplay ==========*/
@@ -82,6 +82,7 @@ int GAEDisplay_setFrameBufferSize(GAEDisplay_t* disp) {
 
     // Free and allocate new memory to the framebuffer
     free(disp->framebuffer);
+    free(disp->zbuffer);
     disp->framebuffer = (int *)malloc((disp->width * disp->height) * sizeof(int));
     disp->zbuffer = (double *)malloc((disp->width * disp->height) * sizeof(double));
 

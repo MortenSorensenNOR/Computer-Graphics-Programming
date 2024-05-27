@@ -1,5 +1,5 @@
 #pragma once
-#include "../display/GAEDisplay.h"
+#include "../display/Display.h"
 #include "../gml/GML.h"
 
 typedef struct {

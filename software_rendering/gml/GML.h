@@ -95,4 +95,5 @@ mat4 mat4_perspective(float fov, float aspect, float znear, float zfar);
 vec3 perspective_divide(const vec4*  v);
 vec3 viewport_transform(const vec3*  ndc, int width, int height, double z_near, double z_far);
 vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int s_width, int s_height, double z_near, double z_far);
+mat4 transform_matrix(const mat4*  model, const mat4*  view, const mat4*  projection);
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up);
