@@ -96,19 +96,19 @@ int main(int argc, char** argv) {
     mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
 
     double dir = 1;
-    double dist = 40;
+    double dist = 7.5;
     double angle = 0;
     clock_t start, end;
     while (1) {
         start = clock();
         GAEDisplay_clear(&disp, 0x1C1D1E);
 
-        dist += dir * 0.2;
-        if (dist > 70 || dist < 15) dir = -dir;
+        /* dist += dir * 0.2; */
+        if (dist > 50 || dist < 2.5) dir = -dir;
         mat4 model = mat4_translate(0, 0, dist);
 
         angle = (angle + 0.01) - (int)(angle / (2 * M_PI)) * 2 * M_PI;
-        mat4 rotation = mat4_rotate(angle, angle, 0);
+        mat4 rotation = mat4_rotate(0, angle, 0);
         mat4 model_rotated = mat4_mat4_mul_ret(&model, &rotation);
 
         for (int i = 0; i < 6 * 2; i++) {
