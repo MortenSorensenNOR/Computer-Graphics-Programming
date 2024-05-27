@@ -376,8 +376,8 @@ mat4 mat4_perspective(float fov, float aspect, float znear, float zfar) {
     res.m[0] = 1.0f / (aspect * tan_half_fov);
     res.m[5] = 1.0f / tan_half_fov;
     res.m[10] = -(zfar + znear) / (zfar - znear);
-    res.m[11] = -1.0;
-    res.m[14] = -(2.0 * zfar * znear) / (zfar - znear);
+    res.m[11] = -(2.0 * zfar * znear) / (zfar - znear);
+    res.m[14] = -1.0;
     return res;
 }
 
