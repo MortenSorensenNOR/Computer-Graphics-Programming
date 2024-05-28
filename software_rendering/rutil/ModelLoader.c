@@ -1,4 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "ModelLoader.h"
+#include "stb_image.h"
 
 vec3 assimp_vec3_to_vec3(const struct aiVector3D* p) {
     return (vec3){p->x, p->y, p->z};
@@ -73,7 +75,35 @@ int parse_obj(const char* fpath, scene_t* res_scene) {
     return 0;
 }
 
-int load_texture(const char* path, vec3* buffer, int* buffer_size) {
+int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* texture_height) {
+    int width, height, channels;
+    unsigned char* img = stbi_load(fpath, &width, &height, &channels, 0);
+    if (img == NULL) {
+        printf("Error in loading the image\n");
+        return 1;
+    }
+
+    if (channels < 3) {
+        printf("Error: non-rgb images have not yet been implemented\n");
+        stbi_image_free(img);
+        return 1;
+    }
+
+    if (width <= 0 || height <= 0 || width * height <= 0) {
+        printf("Error: image must have positive dimensions\n");
+        stbi_image_free(img);
+        return 1;
+    }
+
+    *texture_width = width;
+    *texture_height = height;
+    *buffer = (vec3*)malloc(width * height * sizeof(vec3));
+    for (int i = 0; i < width * height; i++) {
+        (*buffer)[i] = (vec3){img[i * channels] / 255.0, img[i * channels + 1] / 255.0, img[i * channels + 2] / 255.0};
+    }
+    
+    stbi_image_free(img);
+
     return 0;
 }
 

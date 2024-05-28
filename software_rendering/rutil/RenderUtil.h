@@ -45,11 +45,13 @@ typedef struct {
  */
 typedef struct {
     int has_diffuse_buff;
-    int diffuse_buff_size;
+    int diffuse_width;
+    int diffuse_height;
     vec3* diffuse;
 
     int has_specular_buff;
-    int specular_buff_size;
+    int specular_width;
+    int specular_height;
     vec3* specular;
 } texture_t;
 

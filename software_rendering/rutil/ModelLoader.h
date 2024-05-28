@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/vector3.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "RenderUtil.h"
 
@@ -23,13 +24,13 @@ vec3 assimp_vec3_to_vec3(const struct aiVector3D* p);
 int parse_obj(const char* fpath, scene_t* scene);
 
 /**
- * @brief Loads a texture from a path into a vec3 color buffer, and populates the buffer_size variable. Uses std_image.
- * @param path          The path of the texture to be loaded
+ * @brief Loads a texture from a fpath into a vec3 color buffer, and populates the buffer_size variable. Uses std_image.
+ * @param fpath         The file path of the texture to be loaded
  * @param buffer        The destination buffer of the texture
  * @param buffer_size   The size variable of the buffer
  * @return Returns 0 for success and 1 for failure
  */
-int load_texture(const char* path, vec3* buffer, int* buffer_size);
+int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* texture_height);
 
 /**
  * @brief Frees the scene struct
