@@ -7,6 +7,8 @@
 #include "rutil/RenderUtil.h"
 #include "rutil/ModelLoader.h"
 
+#include "render/VertexShader.h"
+
 int main(int argc, char** argv) {
     srand(time(0));
 
@@ -24,6 +26,9 @@ int main(int argc, char** argv) {
 
     while (1) {
         Input_update(&input);
+        if (Input_getKeyState(&input, 'w')) 
+            break;
+
         Display_clear(&disp, 0x1C1D1E);
     
         for (int x = 0; x < test.diffuse_width; ++x) {

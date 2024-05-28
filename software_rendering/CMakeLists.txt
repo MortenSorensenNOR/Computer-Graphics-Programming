@@ -15,10 +15,11 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0")
 add_subdirectory(display)
 add_subdirectory(gml)
 add_subdirectory(rutil)
+add_subdirectory(render)
 
 add_executable(
-    render
+    app
     main.c
 )
 
-target_link_libraries(render PRIVATE display gml rutil)
+target_link_libraries(app PRIVATE display gml rutil render)

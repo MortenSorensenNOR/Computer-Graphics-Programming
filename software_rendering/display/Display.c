@@ -81,8 +81,10 @@ int Display_setFrameBufferSize(Display_t* disp) {
     disp->height = height;
 
     // Free and allocate new memory to the framebuffer
-    free(disp->framebuffer);
-    free(disp->zbuffer);
+    if (disp->framebuffer)
+        free(disp->framebuffer);
+    if (disp->zbuffer)
+        free(disp->zbuffer);
     disp->framebuffer = (int *)malloc((disp->width * disp->height) * sizeof(int));
     disp->zbuffer = (double *)malloc((disp->width * disp->height) * sizeof(double));
 

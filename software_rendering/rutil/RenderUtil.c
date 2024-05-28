@@ -1,5 +1,4 @@
 #include "RenderUtil.h"
-#include <math.h>
 
 /*=============== COLOR ===============*/
 int color_to_int(const vec3* c) {
