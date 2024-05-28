@@ -7,12 +7,23 @@
 #include "Rasterizer.h"
 #include "FragmentShader.h"
 
-extern int render_frame_buffer_width;
-extern int render_frame_buffer_height;
-extern int* render_frame_buffer;
+typedef struct {
+    int buffer_width;
+    int buffer_height;
 
-int renderer_initialize();
+    int* frame_buffer;
+    float* zbuffer;
 
-int renderer_render(int s_width, int s_height, mat4* viewmatrix, scene_t* scenes);
+    vertex_shader_output_t* vs_out;
+    vertex_post_processer_output_t* vpp_out;
+    rasterizer_output_t* rast_out;
+    fragement_shader_output_t* fs_out;
+} render_t;
 
-int renderer_destroy();
+int renderer_init(int s_width, int s_height, render_t* renderer);
+
+int renderer_reset_buffers(render_t* renderer);
+
+int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights);
+
+int renderer_destroy(render_t* renderer);

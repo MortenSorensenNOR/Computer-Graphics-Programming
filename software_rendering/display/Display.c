@@ -1,5 +1,6 @@
 #include "Display.h"
 #include <X11/Xlib.h>
+#include <omp.h>
 
 /*========== Display ==========*/
 int Display_init(Display_t* disp) {
@@ -121,19 +122,20 @@ int Display_testAndSetZBuffer(Display_t* disp, int x, int y, double z) {
 }
 
 int Display_update(Display_t* disp) {
-
     // Write the framebuffer to the display
     return XPutImage(disp->display, disp->window, disp->NormalGC, disp->ximage, 0, 0, 0, 0, disp->width, disp->height);
 }
 
 int Display_clear(Display_t* disp, int color) {
-    for (int y = 0; y < disp->height; y++) {
-        for (int x = 0; x < disp->width; x++) {
-            int index = x + y * disp->width;
-            disp->framebuffer[index] = color;
-            disp->zbuffer[index] = 1.0;
-        }
+    if (!disp->framebuffer || !disp->zbuffer)
+        return 1;
+
+    #pragma omp parallel for
+    for (int i = 0; i < disp->width * disp->height; i++) {
+        disp->framebuffer[i] = color;
+        disp->zbuffer[i] = 1.0;
     }
+
     return 0;
 }
 

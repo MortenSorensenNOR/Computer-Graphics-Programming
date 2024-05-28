@@ -21,7 +21,7 @@ vec3 assimp_vec3_to_vec3(const struct aiVector3D* p);
  * @param scene     Pointer to the scene to be populated
  * @return Returns 0 for success and 1 for failure
  */
-int parse_obj(const char* fpath, scene_t* scene);
+int parse_obj(const char* fpath, render_object_t* scene);
 
 /**
  * @brief Loads a texture from a fpath into a vec3 color buffer, and populates the buffer_size variable. Uses std_image.
@@ -33,7 +33,7 @@ int parse_obj(const char* fpath, scene_t* scene);
 int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* texture_height);
 
 /**
- * @brief Frees the scene struct
- * @param scene     Pointer to the struct to be freed
+ * @brief Frees an instance of a render object
+ * @param object        Pointer to the struct to be freed
  */
-int free_scene(scene_t* scene);
+int free_render_object(render_object_t* object);

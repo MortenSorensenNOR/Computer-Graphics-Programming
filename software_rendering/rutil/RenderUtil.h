@@ -63,8 +63,11 @@ typedef struct {
  */
 typedef struct {
     vec4 pos;
-    mesh_t* mesh;
-    texture_t texture;
+
+    int num_meshes;
+    mesh_t* meshes;
+
+    texture_t textures;
 } render_object_t;
 
 /**
@@ -82,22 +85,21 @@ typedef struct {
     vec3 specular;
 } light_t;
 
-typedef struct {
-    mat4 rotation_translation_matrix;
-    
-    int num_objects;
-    render_object_t* objects;
-
-    int num_lights;
-    light_t* lights;
-} scene_t;
-
 /**
  * @brief Convert vec3 color to an integer representation for xlib framebuffer
  * @param c     Color to be converted
  * @returns Integer representaion in RGB 24-bit representation of the vec3 color
  */
-int color_to_int(const vec3* c);
+int color_v(const vec3* c);
+
+/**
+ * @brief Convert a normalized RGB color to an integer representation for xlib framebuffer
+ * @param r     Red color channel
+ * @param g     Green color channel
+ * @param b     Blye color channel
+ * @returns Integer representaion in RGB 24-bit representation of the vec3 color
+ */
+int color_f(float r, float g, float b);
 
 /**
  * @brief Computes the barycentric coordinate given the three corners of a triangle and a point inside - vec2
