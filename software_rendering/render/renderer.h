@@ -13,6 +13,6 @@ extern int* render_frame_buffer;
 
 int renderer_initialize();
 
-int renderer_render(int s_width, int s_height, mat4* transform_mat);
+int renderer_render(int s_width, int s_height, mat4* viewmatrix, scene_t* scenes);
 
 int renderer_destroy();

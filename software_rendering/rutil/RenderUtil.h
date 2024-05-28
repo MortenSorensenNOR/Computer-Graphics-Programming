@@ -83,6 +83,8 @@ typedef struct {
 } light_t;
 
 typedef struct {
+    mat4 rotation_translation_matrix;
+    
     int num_objects;
     render_object_t* objects;
 

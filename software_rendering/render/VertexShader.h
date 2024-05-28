@@ -3,7 +3,7 @@
 #include "../rutil/RenderUtil.h"
 
 typedef struct {
-    
+      
 } vertex_shader_input_t;
 
 typedef struct {
