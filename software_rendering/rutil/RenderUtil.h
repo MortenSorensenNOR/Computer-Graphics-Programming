@@ -80,6 +80,14 @@ typedef struct {
     vec3 specular;
 } light_t;
 
+typedef struct {
+    int num_objects;
+    render_object_t* objects;
+
+    int num_lights;
+    light_t* lights;
+} scene_t;
+
 /**
  * @brief Convert vec3 color to an integer representation for xlib framebuffer
  * @param c     Color to be converted

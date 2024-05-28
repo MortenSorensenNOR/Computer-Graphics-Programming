@@ -6,6 +6,12 @@ project(
     LANGUAGES C
 )
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -O0")
+
 add_subdirectory(display)
 add_subdirectory(gml)
 add_subdirectory(rutil)

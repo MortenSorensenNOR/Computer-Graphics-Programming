@@ -5,6 +5,7 @@
 
 #include "display/Display.h"
 #include "rutil/RenderUtil.h"
+#include "rutil/ModelLoader.h"
 
 int main(int argc, char** argv) {
     srand(time(0));
@@ -15,19 +16,23 @@ int main(int argc, char** argv) {
     Input_init(&input, &disp);
     Display_clear(&disp, 0x1C1D1E);
 
-    while (1) {
-        Input_update(&input);
-        /* Display_clear(&disp, 0x1C1D1E); */
+    scene_t scene;
+    parse_obj("../resources/airboat.obj", &scene);
 
-        Display_setPixel(&disp, input.mouse_x, input.mouse_y, 0xFF0000);
+    /* while (1) { */
+    /*     Input_update(&input); */
+    /*     Display_clear(&disp, 0x1C1D1E); */
+    /*  */
+    /*     Display_setPixel(&disp, input.mouse_x, input.mouse_y, 0xFF0000); */
+    /*  */
+    /*     Display_update(&disp); */
+    /*  */
+    /*     if (Input_getKeyState(&input, 'w')) { */
+    /*         printf("W is pressed!\n"); */
+    /*     }  */
+    /* } */
 
-        Display_update(&disp);
-
-        if (Input_getKeyState(&input, 'w')) {
-            printf("W is pressed!\n");
-        } 
-    }
-
+    free_scene(&scene);
     Display_destroy(&disp);
 
     return 0;

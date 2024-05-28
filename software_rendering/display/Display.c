@@ -143,10 +143,10 @@ int Display_destroy(Display_t* disp) {
         /* Close connection to server */
         XCloseDisplay(disp->display);
 
-        free(disp->framebuffer);
-
-        /* Finnaly free the Display_t struct */
-        free(disp);
+        if (disp->framebuffer)
+            free(disp->framebuffer);
+        if (disp->zbuffer)
+            free(disp->zbuffer);
     }
 
     return 0;
