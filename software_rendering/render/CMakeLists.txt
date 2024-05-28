@@ -3,6 +3,7 @@ add_library(render STATIC
     VertexPostProcessor.c
     Rasterizer.c
     FragmentShader.c
+    renderer.c
 )
 
 target_include_directories(render PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

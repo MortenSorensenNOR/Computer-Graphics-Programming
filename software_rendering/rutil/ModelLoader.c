@@ -15,8 +15,10 @@ int parse_obj(const char* fpath, scene_t* res_scene) {
 
     res_scene->objects = (render_object_t*)malloc(scene->mNumMeshes * sizeof(render_object_t));
     res_scene->num_objects = scene->mNumMeshes;
-    res_scene->lights = (light_t*)malloc(scene->mNumLights * sizeof(light_t));
-    res_scene->num_lights = scene->mNumLights;
+
+    // TODO: import lights
+    /* res_scene->lights = (light_t*)malloc(scene->mNumLights * sizeof(light_t)); */
+    /* res_scene->num_lights = scene->mNumLights; */
 
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         struct aiMesh* mesh = scene->mMeshes[i];
@@ -108,22 +110,25 @@ int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* text
 }
 
 int free_scene(scene_t* scene) {
-    for (int i = 0; i < scene->num_objects; ++i) {
-        if (scene->objects[i].mesh) {
-            if (scene->objects[i].mesh->vertex)
-                free(scene->objects[i].mesh->vertex);
-            if (scene->objects[i].mesh->normal)
-                free(scene->objects[i].mesh->normal);
-            if (scene->objects[i].mesh->uv)
-                free(scene->objects[i].mesh->uv);
-            if (scene->objects[i].mesh->index)
-                free(scene->objects[i].mesh->index);
+    if (scene->objects) {
+        for (int i = 0; i < scene->num_objects; ++i) {
+            if (scene->objects[i].mesh) {
+                if (scene->objects[i].mesh->vertex)
+                    free(scene->objects[i].mesh->vertex);
+                if (scene->objects[i].mesh->normal)
+                    free(scene->objects[i].mesh->normal);
+                if (scene->objects[i].mesh->uv)
+                    free(scene->objects[i].mesh->uv);
+                if (scene->objects[i].mesh->index)
+                    free(scene->objects[i].mesh->index);
 
-            free(scene->objects[i].mesh);
+                free(scene->objects[i].mesh);
+            }
         }
+        free(scene->objects);
     }
-    free(scene->objects);
-    free(scene->lights);
+    if (scene->lights)
+        free(scene->lights);
 
     return 0;
 }
