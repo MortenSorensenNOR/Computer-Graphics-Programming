@@ -74,6 +74,12 @@ mat4 mat4_mat4_add_ret(const mat4*  a, const mat4*  b);
 mat4 mat4_mat4_sub_ret(const mat4*  a, const mat4*  b);
 mat4 mat4_mat4_mul_ret(const mat4*  a, const mat4*  b);
 vec4 mat4_vec4_mul(const mat4*  a, const vec4*  v);
+void mat4_transpose(const mat4* a, mat4* b);
+mat4 mat4_transpose_ret(const mat4* a);
+void mat4_inverse(const mat4* a, mat4* b);
+mat4 mat4_inverse_ret(const mat4* a);
+void mat4_to_mat3(const mat4* a, mat3* b);
+mat3 mat4_to_mat3_ret(const mat4* a);
 
 /*=============== GENERAL MATH ===============*/
 double lerp(double v, double w, double t);

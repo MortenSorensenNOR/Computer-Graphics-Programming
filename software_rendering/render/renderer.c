@@ -39,12 +39,8 @@ int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_obj
     printf("Running vertex shader on buffer with size %d\n", vs_in.buf_size);
     vertex_shader(&vs_in, renderer->vs_out);
 
-    /* for (int i = 0; i < object->meshes[0].ibuff_size; i+=3) { */
-    /*     printf("%d/%d/%d\n", object->meshes[0].index[i], object->meshes[0].index[i+1], object->meshes[0].index[i+2]); */
-    /* } */
-
     for (int i = 0; i < vs_in.buf_size; ++i) {
-        printf("%f %f %f\n", renderer->vs_out->pos_buf[i].x / renderer->vs_out->pos_buf[i].w, renderer->vs_out->pos_buf[i].y / renderer->vs_out->pos_buf[i].w, renderer->vs_out->pos_buf[i].z / renderer->vs_out->pos_buf[i].w);
+        printf("%f %f %f\n", renderer->vs_out->frag_buf[i].x, renderer->vs_out->frag_buf[i].y, renderer->vs_out->frag_buf[i].z);
     }
 
     // Vertex post processor
