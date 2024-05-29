@@ -42,8 +42,8 @@ int main(int argc, char** argv) {
         printf("Mesh %d: \t Num vertexes: %d\n", i, object.meshes[i].vbuff_size);
         printf("Indicies %d: \n", object.meshes[i].ibuff_size);
 
-        for (int i = 0; i < object.meshes[i].ibuff_size; i++) {
-            printf("%d\n", object.meshes[i].index[i]);
+        for (int j = 0; j < object.meshes[i].ibuff_size; j++) {
+            printf("%d\n", object.meshes[i].index[j]);
         }
 
         /* for (int i = 0; i < object.meshes[i].ibuff_size; i+=3) { */
