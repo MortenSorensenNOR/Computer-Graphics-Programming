@@ -12,6 +12,7 @@ typedef struct {
 } vertex_shader_input_t;
 
 typedef struct {
+    int buf_size;
     vec3* frag_buf;
     vec3* normal_buf;
     vec4* pos_buf;

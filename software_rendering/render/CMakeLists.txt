@@ -1,6 +1,7 @@
 add_library(render STATIC
     VertexShader.c
     VertexPostProcessor.c
+    PrimitivesAssembler.c
     Rasterizer.c
     FragmentShader.c
     renderer.c
