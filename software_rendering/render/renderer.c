@@ -80,7 +80,7 @@ int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_obj
     pa_out.tri_buf_size = pa_in.index_buf_size / 3;
     pa_out.tri_buf = (triangle_t*)malloc(pa_out.tri_buf_size * sizeof(triangle_t));
 
-    /* primitives_assembler(&pa_in, &pa_out); */
+    primitives_assembler(&pa_in, &pa_out);
     
     // Rasterizer
     rasterizer_input_t ra_in;

@@ -74,15 +74,15 @@ int main(int argc, char** argv) {
     
         renderer_render(&renderer, &view_proj, &model, &object, &light);
     
-        Display_clear(&disp, 0x1C1D1E);
-        for (int x = 0; x < test.diffuse_width; ++x) {
-            for (int y = 0; y < test.diffuse_height; ++y) {
-                int color = color_v(&test.diffuse[x + y * test.diffuse_width]);
-                Display_setPixel(&disp, x, y, color);
-            }
-        }
-    
-        Display_update(&disp);
+        /* Display_clear(&disp, 0x1C1D1E); */
+        /* for (int x = 0; x < test.diffuse_width; ++x) { */
+        /*     for (int y = 0; y < test.diffuse_height; ++y) { */
+        /*         int color = color_v(&test.diffuse[x + y * test.diffuse_width]); */
+        /*         Display_setPixel(&disp, x, y, color); */
+        /*     } */
+        /* } */
+        /*      */
+        /* Display_update(&disp); */
         end = clock();
         printf("Time per frame: %f\n", (double)(end - start)/CLOCKS_PER_SEC);
     }
