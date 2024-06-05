@@ -6,9 +6,10 @@
  * @brief Basic triangle type
  */
 typedef struct {
-    vec4 vert[3];
+    vec3 vert[3];
+    vec3 norm[3];
+    vec3 frag[3];
     vec2 uv[3];
-    vec3 color[3];
 } triangle_t;
 
 /**
@@ -23,7 +24,7 @@ typedef struct {
  * @param uvbuff_size   Size of uv buffer
  */
 typedef struct {
-    int* index;
+    unsigned int* index;
     vec4* vertex;
     vec3* normal;
     vec2* uv;

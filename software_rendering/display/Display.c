@@ -130,11 +130,8 @@ int Display_clear(Display_t* disp, int color) {
     if (!disp->framebuffer || !disp->zbuffer)
         return 1;
 
-    #pragma omp parallel for
-    for (int i = 0; i < disp->width * disp->height; i++) {
-        disp->framebuffer[i] = color;
-        disp->zbuffer[i] = 1.0;
-    }
+    memset(disp->framebuffer, color, disp->width * disp->height * sizeof(int));
+    memset(disp->zbuffer, 1.0, disp->width * disp->height * sizeof(float));
 
     return 0;
 }

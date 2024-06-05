@@ -49,7 +49,7 @@ int parse_obj(const char* fpath, render_object_t* object) {
             num_indicies += mesh->mFaces[i].mNumIndices; 
         }
 
-        object->meshes[i].index = (int*)malloc(num_indicies * sizeof(int));
+        object->meshes[i].index = (unsigned int*)malloc(num_indicies * sizeof(int));
         object->meshes[i].ibuff_size = num_indicies;
 
         int curr_index = 0;

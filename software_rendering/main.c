@@ -13,15 +13,6 @@ float fov = M_PI / 4;
 float znear = 0.1f;
 float zfar = 100.0f;
 
-void printMatrix(mat4* mat) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            printf("%9.6f ", mat->m[i * 4 + j]);
-        }
-        printf("\n");
-    }
-}
-
 int main(int argc, char** argv) {
     srand(time(0));
 
@@ -56,7 +47,7 @@ int main(int argc, char** argv) {
     }
     
     render_t renderer;
-    renderer_init(disp.width, disp.height, &renderer);
+    renderer_init(&renderer, disp.width, disp.height, zfar, znear);
     
     vec3 up = { 0.0f, 1.0f, 0.0f };
     vec3 eye = { 0.0f, 0.0f, 10.0f };
@@ -93,6 +84,7 @@ int main(int argc, char** argv) {
     
         Display_update(&disp);
         end = clock();
+        printf("Time per frame: %f\n", (double)(end - start)/CLOCKS_PER_SEC);
     }
     
     // Free assets
