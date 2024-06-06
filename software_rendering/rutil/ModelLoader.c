@@ -7,7 +7,7 @@ vec3 assimp_vec3_to_vec3(const struct aiVector3D* p) {
 }
 
 int parse_obj(const char* fpath, render_object_t* object) {
-    const struct aiScene* scene = aiImportFile(fpath, aiProcess_Triangulate | aiProcess_FlipUVs );
+    const struct aiScene* scene = aiImportFile(fpath, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals | aiProcess_GenUVCoords );
     if (!scene) {
         printf("Error importing .obj file: %s\n", aiGetErrorString());
         return 1;
@@ -16,8 +16,12 @@ int parse_obj(const char* fpath, render_object_t* object) {
     object->meshes = (mesh_t*)malloc(scene->mNumMeshes * sizeof(mesh_t));
     object->num_meshes = scene->mNumMeshes;
 
+    int total_vert_count = 0;
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         struct aiMesh* mesh = scene->mMeshes[i];
+
+        total_vert_count += mesh->mNumVertices;
+        printf("Allocating for %d verticies...\t", mesh->mNumVertices);
 
         // Allocate space for each of the mesh buffers
         object->meshes[i].vertex = (vec4*)malloc(mesh->mNumVertices * sizeof(vec4));
@@ -28,7 +32,9 @@ int parse_obj(const char* fpath, render_object_t* object) {
         object->meshes[i].nbuff_size = mesh->mNumVertices;
         object->meshes[i].uvbuff_size = mesh->mNumVertices;
 
-        for (unsigned int j = 0; j < mesh->mNumVertices; ++j) {
+        printf("Allocated...\t");
+
+        for (int j = 0; j < mesh->mNumVertices; ++j) {
             struct aiVector3D position = mesh->mVertices[j];
             struct aiVector3D normal = mesh->mNormals[j];
     
@@ -36,21 +42,25 @@ int parse_obj(const char* fpath, render_object_t* object) {
             vec4 position_vec4 = vec3_to_vec4(&position_vec3);
             vec3 normal_vec3 = assimp_vec3_to_vec3(&normal);
 
-            struct aiVector3D uv = mesh->mTextureCoords[0][j];
-            vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
-            vec2 uv_vec2 = vec3_to_vec2(&uv_vec3);
-    
             object->meshes[i].vertex[j] = position_vec4;
             object->meshes[i].normal[j] = normal_vec3;
-            object->meshes[i].uv[j] = uv_vec2;
+
+            if (mesh->mTextureCoords[0]) {
+                struct aiVector3D uv = mesh->mTextureCoords[0][j];
+                vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
+                vec2 uv_vec2 = vec3_to_vec2(&uv_vec3);
+                object->meshes[i].uv[j] = uv_vec2;
+            }
         }
+
+        printf("Parsed...\t");
 
         int num_indicies = 0;
         for (unsigned int j = 0; j < mesh->mNumFaces; ++j) {
             num_indicies += mesh->mFaces[i].mNumIndices; 
         }
 
-        object->meshes[i].index = (unsigned int*)malloc(num_indicies * sizeof(int));
+        object->meshes[i].index = (unsigned int*)malloc(num_indicies * sizeof(unsigned int));
         object->meshes[i].ibuff_size = num_indicies;
 
         int curr_index = 0;
@@ -62,6 +72,9 @@ int parse_obj(const char* fpath, render_object_t* object) {
             }
             curr_index += face.mNumIndices;
         }
+
+        printf("Indicies extracted...\n");
+        printf("Total allocated memory: %d\n", total_vert_count * (4 * sizeof(float) + 3 * sizeof(float) + 2 * sizeof(float) + sizeof(int)));
     } 
 
     // TODO: Implement texture loading

@@ -648,6 +648,15 @@ vec4 vec3_to_vec4(const vec3* v) {
 }
 
 /*=============== GRAPHICS MATH ===============*/
+mat4 mat4_scale(float sx, float sy, float sz) {
+    mat4 res = mat4_identity();
+    res.m[0] = sx;   
+    res.m[5] = sy;   
+    res.m[10] = sz;  
+    res.m[15] = 1.0f; 
+    return res;
+}
+
 mat4 mat4_translate(double tx, double ty, double tz) {
     mat4 res = mat4_identity();
     res.m[3] = tx;

@@ -13,10 +13,10 @@ static inline void pa_calculate_bounding_box(vec3* vert, vec2* bb_top_left, vec2
     float y_max = max(vert[0].y, vert[1].y);
     y_max = max(y_max, vert[2].y);
 
-    bb_top_left->x = x_min;
-    bb_top_left->y = y_min;
-    bb_bottom_right->x = x_max;
-    bb_bottom_right->y = y_max;
+    bb_top_left->x = max(x_min, 0);
+    bb_top_left->y = max(y_min, 0);
+    bb_bottom_right->x = max(x_max, 0);
+    bb_bottom_right->y = max(y_max, 0);
 }
 
 int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_output_t* out) {

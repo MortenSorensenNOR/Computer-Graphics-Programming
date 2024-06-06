@@ -67,9 +67,9 @@ int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_obj
     pa_in.vert_buf = vpp_out.pos_buf;
     pa_in.norm_buf = vs_out.normal_buf;
     pa_in.frag_buf = vs_out.frag_buf;
-    pa_in.uv_buf = object[0].meshes->uv;
-    pa_in.index_buf_size = object[0].meshes->ibuff_size;
-    pa_in.index_buf = object[0].meshes->index;
+    pa_in.uv_buf = object->meshes[0].uv;
+    pa_in.index_buf_size = object->meshes[0].ibuff_size;
+    pa_in.index_buf = object->meshes[0].index;
 
     // TODO: Find better way to alloc memory for triangles
     pa_out.tri_buf_size = pa_in.index_buf_size / 3;

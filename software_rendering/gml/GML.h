@@ -108,6 +108,7 @@ vec3 vec2_to_vec3(const vec2* v);
 vec4 vec3_to_vec4(const vec3* v);
 
 /*=============== GRAPHICS MATH ===============*/
+mat4 mat4_scale(float sx, float sy, float sz);
 mat4 mat4_translate(double tx, double ty, double tz);
 mat4 mat4_rotate_x(float angle);
 mat4 mat4_rotate_y(float angle);

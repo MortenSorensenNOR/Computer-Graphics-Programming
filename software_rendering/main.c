@@ -44,7 +44,7 @@ int main(int argc, char** argv) {
 
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
-    mat4 translation_matrix = mat4_translate(0, -1, 10);
+    mat4 translation_matrix = mat4_translate(0, 0, 1);
     
     // Main render/input loop
     float angle = 0;
@@ -63,9 +63,11 @@ int main(int argc, char** argv) {
         mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
         mat4 view_proj = mat4_mat4_mul_ret(&projection, &view);
     
-        mat4 translation_matrix = mat4_translate(0, -1, 10);
+        mat4 scale_matrix = mat4_scale(1, 1, 1);
+        mat4 translation_matrix = mat4_translate(0, 0, 10);
         mat4 rotation_matrix = mat4_rotate(0, angle, 0);
-        mat4 model = mat4_mat4_mul_ret(&translation_matrix, &rotation_matrix);
+        mat4 model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
+        model = mat4_mat4_mul_ret(&translation_matrix, &model);
     
         renderer_render(&renderer, &view_proj, &model, &object, &light);
     
@@ -73,7 +75,7 @@ int main(int argc, char** argv) {
         Display_update(&disp);
 
         end = clock();
-        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
+        // printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
     
     // Free assets

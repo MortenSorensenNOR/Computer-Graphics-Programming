@@ -6,6 +6,8 @@ typedef struct {
     int s_width;
     int s_height;
 
+    vec3 viewDir;
+    light_t* light;
     texture_t* textures;
 
     vec2* uv;
