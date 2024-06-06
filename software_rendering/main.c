@@ -1,4 +1,3 @@
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -25,38 +24,34 @@ int main(int argc, char** argv) {
     
     // Load assets
     texture_t test;
-    load_texture("../resources/chad.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
-    load_texture("../resources/birk.jpg", &test.specular, &test.specular_width, &test.specular_height);
+    load_texture("../resources/imgs/obamium.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
     
     light_t light;
     render_object_t object;
-    int object_load_success = parse_obj("../resources/cube.obj", &object);
-    
+    int object_load_success = parse_obj("../resources/misc/pyramid.obj", &object);
     if (object_load_success) {
         return 1;
     }
-    
-    printf("Num meshes: %d\n", object.num_meshes);
-    for (int i = 0; i < object.num_meshes; i++) {
-        printf("Mesh %d: \t Num vertexes: %d\n", i, object.meshes[i].vbuff_size);
-        printf("Indicies %d: \n", object.meshes[i].ibuff_size);
-    
-        for (int j = 0; j < object.meshes[i].ibuff_size; j++) {
-            printf("%d\n", object.meshes[i].index[j]);
-        }
-    }
+    object.textures = &test;
     
     render_t renderer;
     renderer_init(&renderer, disp.width, disp.height, zfar, znear);
     
+    // Matricies and stuff
     vec3 up = { 0.0f, 1.0f, 0.0f };
     vec3 eye = { 0.0f, 0.0f, 10.0f };
     vec3 center = { 0.0f, 0.0f, 0.0f };
+
+    mat4 view, projection, view_proj;
+    mat4 rotation_matrix, model;
+    mat4 translation_matrix = mat4_translate(0, -1, 10);
     
     // Main render/input loop
+    float angle = 0;
     clock_t start, end;
     while (1) {
         start = clock();
+        angle += M_PI * 0.005;
     
         Input_update(&input);
         if (Input_getKeyState(&input, 'w')) 
@@ -68,23 +63,17 @@ int main(int argc, char** argv) {
         mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
         mat4 view_proj = mat4_mat4_mul_ret(&projection, &view);
     
-        mat4 translation_matrix = mat4_translate(0, 0, 10);
-        mat4 rotation_matrix = mat4_rotate(0, M_PI / 4, 0);
+        mat4 translation_matrix = mat4_translate(0, -1, 10);
+        mat4 rotation_matrix = mat4_rotate(0, angle, 0);
         mat4 model = mat4_mat4_mul_ret(&translation_matrix, &rotation_matrix);
     
         renderer_render(&renderer, &view_proj, &model, &object, &light);
     
-        /* Display_clear(&disp, 0x1C1D1E); */
-        /* for (int x = 0; x < test.diffuse_width; ++x) { */
-        /*     for (int y = 0; y < test.diffuse_height; ++y) { */
-        /*         int color = color_v(&test.diffuse[x + y * test.diffuse_width]); */
-        /*         Display_setPixel(&disp, x, y, color); */
-        /*     } */
-        /* } */
-        /*      */
-        /* Display_update(&disp); */
+        memcpy(disp.framebuffer, renderer.frame_buffer, renderer.s_width * renderer.s_height * sizeof(int));
+        Display_update(&disp);
+
         end = clock();
-        printf("Time per frame: %f\n", (double)(end - start)/CLOCKS_PER_SEC);
+        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
     
     // Free assets

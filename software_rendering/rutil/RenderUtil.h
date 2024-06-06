@@ -7,9 +7,13 @@
  */
 typedef struct {
     vec3 vert[3];
-    vec3 norm[3];
     vec3 frag[3];
     vec2 uv[3];
+    vec3 color[3];
+    vec3 norm;
+    vec2 bb_top_left;
+    vec2 bb_bottom_right;
+    char valid;
 } triangle_t;
 
 /**
@@ -68,7 +72,7 @@ typedef struct {
     int num_meshes;
     mesh_t* meshes;
 
-    texture_t textures;
+    texture_t* textures;
 } render_object_t;
 
 /**
@@ -117,3 +121,5 @@ vec3 get_barycentric_coordinate2d(const vec2 vert[3], const vec2* p);
  * @return The barycentric coordinate of the point - vec3
  */
 vec3 get_barycentric_coordinate3d(const vec3 vert[3], const vec3* p);
+
+void bresenham(int* framebuffer, int s_width, int s_height, int x0, int y0, int x1, int y1, int color);

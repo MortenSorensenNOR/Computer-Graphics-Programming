@@ -1,8 +1,23 @@
 /* File: Graphics Math Library */
-
 #pragma once
 #include <stdio.h>
 #include "math.h"
+
+// This is not pretty, but it works
+#define max(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b;       \
+})
+
+#define min(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b;       \
+})
+
 
 typedef struct {
     double x, y;

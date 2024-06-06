@@ -16,4 +16,7 @@ typedef struct {
     triangle_t* tri_buf;
 } primitives_assembler_output_t;
 
+// Assumes vert has 3 verticies
+static inline void pa_calculate_bounding_box(vec3* vert, vec2* bb_top_left, vec2* bb_bottom_right);
+
 int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_output_t* out);

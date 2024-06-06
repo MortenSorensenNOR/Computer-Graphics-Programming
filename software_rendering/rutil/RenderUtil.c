@@ -49,3 +49,20 @@ vec3 get_barycentric_coordinate3d(const vec3 vert[3], const vec3* p) {
     double u = 1.0f - v - w;
     return (vec3){u, v, w};
 }
+
+void bresenham(int* framebuffer, int s_width, int s_height, int x0, int y0, int x1, int y1, int color) {
+    if (x0 < 0 || x0 > s_width || y0 < 0 || y0 > s_height || x1 < 0 || x1 > s_width || y1 < 0 || y1 > s_height)
+        return;
+    
+    int dx = abs(x1 - x0), sx = x0 < x1 ? 1 : -1; 
+    int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1; 
+    int err = dx + dy, e2;
+
+    for (;;) {
+        framebuffer[x0 + y0 * s_width] = color;
+        if (x0 == x1 && y0 == y1) break;
+        e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+}

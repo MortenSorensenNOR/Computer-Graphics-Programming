@@ -7,7 +7,7 @@ vec3 assimp_vec3_to_vec3(const struct aiVector3D* p) {
 }
 
 int parse_obj(const char* fpath, render_object_t* object) {
-    const struct aiScene* scene = aiImportFile(fpath, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const struct aiScene* scene = aiImportFile(fpath, aiProcess_Triangulate | aiProcess_FlipUVs );
     if (!scene) {
         printf("Error importing .obj file: %s\n", aiGetErrorString());
         return 1;
@@ -30,12 +30,13 @@ int parse_obj(const char* fpath, render_object_t* object) {
 
         for (unsigned int j = 0; j < mesh->mNumVertices; ++j) {
             struct aiVector3D position = mesh->mVertices[j];
-            struct aiVector3D normal = mesh->mVertices[j];
-            struct aiVector3D uv = mesh->mVertices[j];
+            struct aiVector3D normal = mesh->mNormals[j];
     
             vec3 position_vec3 = assimp_vec3_to_vec3(&position);
             vec4 position_vec4 = vec3_to_vec4(&position_vec3);
             vec3 normal_vec3 = assimp_vec3_to_vec3(&normal);
+
+            struct aiVector3D uv = mesh->mTextureCoords[0][j];
             vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
             vec2 uv_vec2 = vec3_to_vec2(&uv_vec3);
     
@@ -57,7 +58,6 @@ int parse_obj(const char* fpath, render_object_t* object) {
             struct aiFace face = mesh->mFaces[j];
 
             for (unsigned int k = 0; k < face.mNumIndices; ++k) {
-                printf("%d\n", curr_index + k);;
                 object->meshes[i].index[curr_index+k] = face.mIndices[k];
             }
             curr_index += face.mNumIndices;

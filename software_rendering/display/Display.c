@@ -93,16 +93,12 @@ int Display_setFrameBufferSize(Display_t* disp) {
 }
 
 int Display_setPixel(Display_t* disp, int x, int y, int color) {
-    if (x < 0 || x >= disp->width || y < 0 || y >= disp->height) {
-        perror("Pixel index out of range\n");
+    if (x < 0 || x >= disp->width || y < 0 || y >= disp->height || disp->framebuffer == NULL) {
+        perror("Pixel index out of range for framebuffer\n");
         return 1;
     }
 
-    int index = x + y * disp->width;
-    if (disp->framebuffer != NULL) {
-        disp->framebuffer[index] = color;
-    }
-
+    disp->framebuffer[x + y * disp->width] = color;
     return 0;
 }
 
