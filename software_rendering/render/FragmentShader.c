@@ -8,7 +8,7 @@ int fragment_shader(fragment_shader_input_t* in, fragment_shader_output_t* out) 
                 continue;
             }
 
-            int texture_index = (int)(in->uv[i].x * in->textures->diffuse_width) + (int)(in->uv[i].y * in->textures->diffuse_height) * in->textures->diffuse_width;
+            unsigned long long texture_index = (int)(in->uv[i].x * in->textures->diffuse_width) + (int)(in->uv[i].y * in->textures->diffuse_height) * in->textures->diffuse_width;
             texture_index = min(texture_index, in->textures->diffuse_width * in->textures->diffuse_height);
             vec3 diffuse_base = in->textures->diffuse[texture_index];
 
@@ -21,7 +21,7 @@ int fragment_shader(fragment_shader_input_t* in, fragment_shader_output_t* out) 
             vec3 reflectDir;
             float spec;
             vec3 specular;
-            
+
             out->framebuffer[i] = color_v(&diffuse_base);
         }
     }

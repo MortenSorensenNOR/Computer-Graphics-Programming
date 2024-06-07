@@ -24,11 +24,11 @@ int main(int argc, char** argv) {
     
     // Load assets
     texture_t test;
-    load_texture("../resources/textures/brick/diffuse.png", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
+    load_texture("../resources/backpack/diffuse_new.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
     
     light_t light;
     render_object_t object;
-    int object_load_success = parse_obj("../res/misc/cube.obj", &object);
+    int object_load_success = parse_obj("../resources/backpack/backpack.obj", &object);
     if (object_load_success) {
         return 1;
     }
@@ -46,7 +46,8 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    mat4 scale_matrix = mat4_scale(3.0f, 3.0f, 3.0f);
+    float scale = 0.01f;
+    mat4 scale_matrix = mat4_scale(scale, scale, scale);
     mat4 translation_matrix = mat4_translate(0, 0, 15);
 
     // Main render/input loop
@@ -79,6 +80,7 @@ int main(int argc, char** argv) {
         model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
         model = mat4_mat4_mul_ret(&translation_matrix, &model);
     
+        renderer_reset_buffers(&renderer);    
         renderer_render(&renderer, &view_proj, &model, &object, &light);
     
         memcpy(disp.framebuffer, renderer.frame_buffer, renderer.s_width * renderer.s_height * sizeof(int));

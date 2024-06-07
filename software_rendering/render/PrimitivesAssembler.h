@@ -8,7 +8,7 @@ typedef struct {
     vec3* norm_buf;
     vec3* frag_buf;
     vec2* uv_buf;
-    unsigned int* index_buf;
+    unsigned long long* index_buf;
 } primitives_assembler_input_t;
 
 typedef struct {

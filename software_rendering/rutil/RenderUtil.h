@@ -28,7 +28,7 @@ typedef struct {
  * @param uvbuff_size   Size of uv buffer
  */
 typedef struct {
-    unsigned int* index;
+    unsigned long long* index;
     vec4* vertex;
     vec3* normal;
     vec2* uv;
