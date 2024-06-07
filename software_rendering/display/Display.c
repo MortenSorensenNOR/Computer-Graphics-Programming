@@ -78,6 +78,12 @@ int Display_currentMonitorDimensions(Display* display, int* width, int* height) 
 int Display_setFrameBufferSize(Display_t* disp) {
     int width, height;
     Display_currentMonitorDimensions(disp->display, &width, &height);
+
+    // Set resolution to 720p
+    // Uncomment for full display resolution
+    width = 1280;
+    height = 720;
+
     disp->width = width;
     disp->height = height;
 

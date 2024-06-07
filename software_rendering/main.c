@@ -24,11 +24,11 @@ int main(int argc, char** argv) {
     
     // Load assets
     texture_t test;
-    load_texture("../resources/imgs/obamium.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
+    load_texture("../resources/textures/brick/diffuse.png", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
     
     light_t light;
     render_object_t object;
-    int object_load_success = parse_obj("../resources/misc/pyramid.obj", &object);
+    int object_load_success = parse_obj("../res/misc/cube.obj", &object);
     if (object_load_success) {
         return 1;
     }
@@ -41,32 +41,42 @@ int main(int argc, char** argv) {
     vec3 up = { 0.0f, 1.0f, 0.0f };
     vec3 eye = { 0.0f, 0.0f, 10.0f };
     vec3 center = { 0.0f, 0.0f, 0.0f };
+    float aspect = (double)disp.width / (double)disp.height;
 
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
-    mat4 translation_matrix = mat4_translate(0, 0, 1);
     
+    mat4 scale_matrix = mat4_scale(3.0f, 3.0f, 3.0f);
+    mat4 translation_matrix = mat4_translate(0, 0, 15);
+
     // Main render/input loop
     float angle = 0;
+    float view_anlge = 0;
     clock_t start, end;
     while (1) {
         start = clock();
         angle += M_PI * 0.005;
     
         Input_update(&input);
-        if (Input_getKeyState(&input, 'w')) 
+        if (Input_getKeyState(&input, 'x')) 
             break;
+        if (Input_getKeyState(&input, 'w'))
+            center.z += 0.05;
+        if (Input_getKeyState(&input, 's'))
+            center.z -= 0.05;
+        if (Input_getKeyState(&input, 'u'))
+            view_anlge += M_PI * 0.005;
+        if (Input_getKeyState(&input, 'n'))
+            view_anlge -= M_PI * 0.005;
+
+        // Camera
+        view = mat4_lookAt(eye, center, up);
+        projection = mat4_perspective(fov, aspect, znear, zfar);
+        view_proj = mat4_mat4_mul_ret(&projection, &view);
     
-        float aspect = (double)disp.width / (double)disp.height;
-    
-        mat4 view = mat4_lookAt(eye, center, up);
-        mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
-        mat4 view_proj = mat4_mat4_mul_ret(&projection, &view);
-    
-        mat4 scale_matrix = mat4_scale(1, 1, 1);
-        mat4 translation_matrix = mat4_translate(0, 0, 10);
-        mat4 rotation_matrix = mat4_rotate(0, angle, 0);
-        mat4 model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
+        // Model
+        rotation_matrix = mat4_rotate(0, angle, 0);
+        model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
         model = mat4_mat4_mul_ret(&translation_matrix, &model);
     
         renderer_render(&renderer, &view_proj, &model, &object, &light);
@@ -75,7 +85,7 @@ int main(int argc, char** argv) {
         Display_update(&disp);
 
         end = clock();
-        // printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
+        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
     
     // Free assets

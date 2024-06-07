@@ -9,6 +9,7 @@ int fragment_shader(fragment_shader_input_t* in, fragment_shader_output_t* out) 
             }
 
             int texture_index = (int)(in->uv[i].x * in->textures->diffuse_width) + (int)(in->uv[i].y * in->textures->diffuse_height) * in->textures->diffuse_width;
+            texture_index = min(texture_index, in->textures->diffuse_width * in->textures->diffuse_height);
             vec3 diffuse_base = in->textures->diffuse[texture_index];
 
             vec3 norm = vec3_normalize(&in->norm[i]);
