@@ -20,10 +20,29 @@ static inline void pa_calculate_bounding_box(vec3* vert, vec2* bb_top_left, vec2
 }
 
 int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_output_t* out) {
-    float k;
     for (int i = 0; i < out->tri_buf_size; ++i) {
         int ibuf_off = 3*i;
         triangle_t* t = &out->tri_buf[i];
+
+        // Culling
+        vec3 n = in->norm_buf[in->index_buf[ibuf_off]]; 
+        vec3 a = in->frag_buf[in->index_buf[ibuf_off]];
+        vec3 b = in->frag_buf[in->index_buf[ibuf_off]];
+        vec3 c = in->frag_buf[in->index_buf[ibuf_off]];
+
+        vec3 v0 = {(a.x + b.x + c.x) / 3.0f, (a.y + b.y + c.y) / 3.0f, (a.z + b.z + c.z) / 3.0f};
+        vec3 cam_to_pos_vec = vec3_sub(&in->cam_pos, &v0);
+        float dp = vec3_dot(&cam_to_pos_vec, &n);
+
+        if (dp <= 0) {
+            t->valid = 0;
+            continue;
+        }
+        t->valid = 1;
+
+        // Set attribute data
+        t->norm = n;
+
         t->vert[0] = in->vert_buf[in->index_buf[ibuf_off]];
         t->vert[1] = in->vert_buf[in->index_buf[ibuf_off+1]];
         t->vert[2] = in->vert_buf[in->index_buf[ibuf_off+2]];
@@ -36,15 +55,12 @@ int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_
         t->uv[1] = in->uv_buf[in->index_buf[ibuf_off+1]];
         t->uv[2] = in->uv_buf[in->index_buf[ibuf_off+2]];
 
-        // printf("%f %f, %f %f, %f %f\n", t->uv[0].x, t->uv[0].y, t->uv[1].x, t->uv[1].y, t->uv[2].x, t->uv[2].y);
-
         t->color[0] = (vec3){1.0f, 0.0f, 0.0f};
         t->color[1] = (vec3){0.0f, 1.0f, 0.0f};
         t->color[2] = (vec3){0.0f, 0.0f, 1.0f};
 
-        t->norm = in->norm_buf[in->index_buf[ibuf_off]];
         pa_calculate_bounding_box(t->vert, &t->bb_top_left, &t->bb_bottom_right);
-        t->valid = 1;
     }
+
     return 0;
 }

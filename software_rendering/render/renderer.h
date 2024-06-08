@@ -28,6 +28,6 @@ int renderer_init(render_t* renderer, int s_width, int s_height, float zfar, flo
 
 int renderer_reset_buffers(render_t* renderer);
 
-int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights);
+int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights);
 
 int renderer_destroy(render_t* renderer);

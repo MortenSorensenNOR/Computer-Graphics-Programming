@@ -1,3 +1,4 @@
+#include <time.h>
 #include "renderer.h"
 
 int renderer_init(render_t* renderer, int s_width, int s_height, float zfar, float znear) {
@@ -22,7 +23,7 @@ int renderer_reset_buffers(render_t* renderer) {
     return 0;
 }
 
-int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
+int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
     rasterizer_output_t ra_out;
 
     ra_out.buf_size = renderer->s_width * renderer->s_height;
@@ -71,6 +72,7 @@ int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_obj
         primitives_assembler_input_t pa_in;
         primitives_assembler_output_t pa_out;
 
+        pa_in.cam_pos = cam_pos;
         pa_in.vert_buf_size = vpp_out.buf_size;
         pa_in.vert_buf = vpp_out.pos_buf;
         pa_in.norm_buf = vs_out.normal_buf;
@@ -98,7 +100,7 @@ int renderer_render(render_t* renderer, mat4* view_proj, mat4* model, render_obj
 
         rasterizer(&ra_in, &ra_out);
         free(pa_out.tri_buf);
-     }
+    }
 
     // Fragment shader
     fragment_shader_input_t fs_in;

@@ -38,40 +38,49 @@ int main(int argc, char** argv) {
     renderer_init(&renderer, disp.width, disp.height, zfar, znear);
     
     // Matricies and stuff
-    vec3 up = { 0.0f, 1.0f, 0.0f };
-    vec3 eye = { 0.0f, 0.0f, 10.0f };
-    vec3 center = { 0.0f, 0.0f, 0.0f };
+    vec3 camera_pos   = {0.0f, 0.0f, -3.0f};
+    vec3 camera_front = {0.0f, 0.0f, 1.0f};
+    vec3 camera_up    = {0.0f, 1.0f, 0.0f};
     float aspect = (double)disp.width / (double)disp.height;
 
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
     float scale = 0.01f;
+    mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
-    mat4 translation_matrix = mat4_translate(0, 0, 15);
 
     // Main render/input loop
-    float angle = 0;
-    float view_anlge = 0;
+    float angle = M_PI;
+
+    float camera_angle_pitch = 0.0f;
+    float camera_angle_roll = 0.0f;
+
+    int iter = 0;
     clock_t start, end;
     while (1) {
         start = clock();
-        angle += M_PI * 0.005;
     
         Input_update(&input);
         if (Input_getKeyState(&input, 'x')) 
             break;
-        if (Input_getKeyState(&input, 'w'))
-            center.z += 0.05;
-        if (Input_getKeyState(&input, 's'))
-            center.z -= 0.05;
-        if (Input_getKeyState(&input, 'u'))
-            view_anlge += M_PI * 0.005;
-        if (Input_getKeyState(&input, 'n'))
-            view_anlge -= M_PI * 0.005;
+
+        if (Input_getKeyState(&input, 'h'))
+            camera_angle_roll -= M_PI * 0.1;
+        if (Input_getKeyState(&input, 'l'))
+            camera_angle_roll += M_PI * 0.1;
+        if (Input_getKeyState(&input, 'j'))
+            camera_angle_pitch -= M_PI * 0.1;
+        if (Input_getKeyState(&input, 'k'))
+            camera_angle_pitch += M_PI * 0.1;
+
+        angle += 0.01 * M_PI;
 
         // Camera
-        view = mat4_lookAt(eye, center, up);
+        camera_front.x = sin(camera_angle_roll);
+        camera_front.y = sin(camera_angle_pitch);
+
+        view = mat4_lookAt(camera_front, camera_pos, camera_up);
         projection = mat4_perspective(fov, aspect, znear, zfar);
         view_proj = mat4_mat4_mul_ret(&projection, &view);
     
@@ -81,7 +90,7 @@ int main(int argc, char** argv) {
         model = mat4_mat4_mul_ret(&translation_matrix, &model);
     
         renderer_reset_buffers(&renderer);    
-        renderer_render(&renderer, &view_proj, &model, &object, &light);
+        renderer_render(&renderer, camera_pos, &view_proj, &model, &object, &light);
     
         memcpy(disp.framebuffer, renderer.frame_buffer, renderer.s_width * renderer.s_height * sizeof(int));
         Display_update(&disp);

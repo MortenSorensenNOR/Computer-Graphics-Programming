@@ -1,6 +1,8 @@
 #include "../rutil/RenderUtil.h"
 
 typedef struct {
+    vec3 cam_pos;
+
     int vert_buf_size;
     int index_buf_size;
 
