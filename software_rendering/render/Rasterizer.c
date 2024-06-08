@@ -27,8 +27,8 @@ int rasterizer(rasterizer_input_t* in, rasterizer_output_t* out) {
         if (!t->valid)
             continue;
 
-        for (int y = t->bb_top_left.y; y < t->bb_bottom_right.y; y++) {
-            for (int x = t->bb_top_left.x; x < t->bb_bottom_right.x; x++) {
+        for (int y = max(t->bb_top_left.y, 0); y < min(t->bb_bottom_right.y, in->s_height); y++) {
+            for (int x = max(t->bb_top_left.x, 0); x < min(t->bb_bottom_right.x, in->s_width); x++) {
                 p = (vec2){x, y};
                 v0 = (vec2){t->vert[0].x, t->vert[0].y};
                 v1 = (vec2){t->vert[1].x, t->vert[1].y};

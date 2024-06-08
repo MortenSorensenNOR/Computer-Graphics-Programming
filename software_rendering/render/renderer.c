@@ -110,6 +110,8 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     fs_in.s_height = renderer->s_height;
     fs_in.zbuffer = renderer->zbuffer;
     fs_in.textures = object->textures;
+    fs_in.cam_pos = cam_pos;
+    fs_in.light = lights;
 
     fs_in.norm = ra_out.norm;
     fs_in.uv = ra_out.uv;

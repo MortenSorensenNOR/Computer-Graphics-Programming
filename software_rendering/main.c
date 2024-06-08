@@ -23,16 +23,25 @@ int main(int argc, char** argv) {
     Display_clear(&disp, 0x1C1D1E);
     
     // Load assets
-    texture_t test;
-    load_texture("../resources/backpack/diffuse_new.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
+    texture_t texture;
+    load_texture("../resources/backpack/diffuse_new.jpg", &texture.diffuse, &texture.diffuse_width, &texture.diffuse_height);
+    load_texture("../resources/backpack/metallic_roughness.png", &texture.specular, &texture.specular_width, &texture.specular_height);
     
     light_t light;
+    light.pos = (vec3){1.2f, 1.0f, 2.0f};
+    light.ambient = (vec3){0.1f, 0.1f, 0.1f};
+    light.diffuse = (vec3){1.25f, 1.25f, 1.25f};
+    light.specular = (vec3){1.0f, 1.0f, 1.0f};
+    light.constant = 1.0f;
+    light.linear = 0.09f;
+    light.quadratic = 0.032f;
+
     render_object_t object;
     int object_load_success = parse_obj("../resources/backpack/backpack.obj", &object);
     if (object_load_success) {
         return 1;
     }
-    object.textures = &test;
+    object.textures = &texture;
     
     render_t renderer;
     renderer_init(&renderer, disp.width, disp.height, zfar, znear);
@@ -46,7 +55,7 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.01f;
+    float scale = 0.0075f;
     mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
@@ -100,7 +109,7 @@ int main(int argc, char** argv) {
     }
     
     // Free assets
-    free(test.diffuse);
+    free(texture.diffuse);
     free_render_object(&object);
     renderer_destroy(&renderer);
     
