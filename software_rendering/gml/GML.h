@@ -1,8 +1,23 @@
 /* File: Graphics Math Library */
-
 #pragma once
 #include <stdio.h>
 #include "math.h"
+
+// This is not pretty, but it works
+#define max(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a > _b ? _a : _b;       \
+})
+
+#define min(a,b)             \
+({                           \
+    __typeof__ (a) _a = (a); \
+    __typeof__ (b) _b = (b); \
+    _a < _b ? _a : _b;       \
+})
+
 
 typedef struct {
     double x, y;
@@ -30,6 +45,7 @@ double vec3_dot(const vec3* v, const vec3* w);
 double vec3_length_square(const vec3* v);
 double vec3_length(const vec3* v);
 vec3 vec3_normalize(const vec3* v);
+vec3 vec3_clamp(const vec3* v, float min, float max);
 
 typedef struct {
     double x, y, z, w;
@@ -73,6 +89,12 @@ mat4 mat4_mat4_add_ret(const mat4*  a, const mat4*  b);
 mat4 mat4_mat4_sub_ret(const mat4*  a, const mat4*  b);
 mat4 mat4_mat4_mul_ret(const mat4*  a, const mat4*  b);
 vec4 mat4_vec4_mul(const mat4*  a, const vec4*  v);
+void mat4_transpose(const mat4* a, mat4* b);
+mat4 mat4_transpose_ret(const mat4* a);
+void mat4_inverse(const mat4* a, mat4* b);
+mat4 mat4_inverse_ret(const mat4* a);
+void mat4_to_mat3(const mat4* a, mat3* b);
+mat3 mat4_to_mat3_ret(const mat4* a);
 
 /*=============== GENERAL MATH ===============*/
 double lerp(double v, double w, double t);
@@ -86,6 +108,7 @@ vec3 vec2_to_vec3(const vec2* v);
 vec4 vec3_to_vec4(const vec3* v);
 
 /*=============== GRAPHICS MATH ===============*/
+mat4 mat4_scale(float sx, float sy, float sz);
 mat4 mat4_translate(double tx, double ty, double tz);
 mat4 mat4_rotate_x(float angle);
 mat4 mat4_rotate_y(float angle);
@@ -95,4 +118,5 @@ mat4 mat4_perspective(float fov, float aspect, float znear, float zfar);
 vec3 perspective_divide(const vec4*  v);
 vec3 viewport_transform(const vec3*  ndc, int width, int height, double z_near, double z_far);
 vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int s_width, int s_height, double z_near, double z_far);
+mat4 transformation_matrix(const mat4*  model, const mat4*  view, const mat4*  projection);
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up);

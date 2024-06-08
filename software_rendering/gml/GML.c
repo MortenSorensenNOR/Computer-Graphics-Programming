@@ -86,6 +86,23 @@ void swap_vec3(vec3* v, vec3* w) {
     *w = tmp;
 }
 
+vec3 vec3_clamp(const vec3* v, float min, float max) {
+    vec3 res;
+    if (v->x < min) res.x = min;
+    else if (v->x > max) res.x = max;
+    else res.x = v->x;
+
+    if (v->y < min) res.y = min;
+    else if (v->y > max) res.y = max;
+    else res.y = v->y;
+
+    if (v->z < min) res.z = min;
+    else if (v->z > max) res.z = max;
+    else res.z = v->z;
+
+    return res;
+}
+
 /*=============== VEC4 ===============*/
 vec4 vec4_add(const vec4* v, const vec4* w) {
     return (vec4){v->x + w->x, v->y + w->y, v->z + w->z, v->w + w->w};
@@ -264,6 +281,339 @@ vec4 mat4_vec4_mul(const mat4*  a, const vec4*  v) {
     return result;
 }
 
+void mat4_transpose(const mat4* a, mat4* b) {
+    b->m[0] = a->m[0];
+    b->m[1] = a->m[4];
+    b->m[2] = a->m[8];
+    b->m[3] = a->m[12];
+
+    b->m[4] = a->m[1];
+    b->m[5] = a->m[5];
+    b->m[6] = a->m[9];
+    b->m[7] = a->m[13];
+
+    b->m[8] = a->m[2];
+    b->m[9] = a->m[6];
+    b->m[10] = a->m[10];
+    b->m[11] = a->m[14];
+
+    b->m[12] = a->m[3];
+    b->m[13] = a->m[7];
+    b->m[14] = a->m[11];
+    b->m[15] = a->m[15];
+}
+
+mat4 mat4_transpose_ret(const mat4* a) {
+    mat4 b;
+    b.m[0] = a->m[0];
+    b.m[1] = a->m[4];
+    b.m[2] = a->m[8];
+    b.m[3] = a->m[12];
+
+    b.m[4] = a->m[1];
+    b.m[5] = a->m[5];
+    b.m[6] = a->m[9];
+    b.m[7] = a->m[13];
+
+    b.m[8] = a->m[2];
+    b.m[9] = a->m[6];
+    b.m[10] = a->m[10];
+    b.m[11] = a->m[14];
+
+    b.m[12] = a->m[3];
+    b.m[13] = a->m[7];
+    b.m[14] = a->m[11];
+    b.m[15] = a->m[15];
+    return b;
+}
+
+void mat4_inverse(const mat4* a, mat4* b) {
+    double inv[16], det;
+    int i;
+
+    inv[0] = a->m[5]  * a->m[10] * a->m[15] - 
+             a->m[5]  * a->m[11] * a->m[14] - 
+             a->m[9]  * a->m[6]  * a->m[15] + 
+             a->m[9]  * a->m[7]  * a->m[14] +
+             a->m[13] * a->m[6]  * a->m[11] - 
+             a->m[13] * a->m[7]  * a->m[10];
+
+    inv[4] = -a->m[4]  * a->m[10] * a->m[15] + 
+              a->m[4]  * a->m[11] * a->m[14] + 
+              a->m[8]  * a->m[6]  * a->m[15] - 
+              a->m[8]  * a->m[7]  * a->m[14] - 
+              a->m[12] * a->m[6]  * a->m[11] + 
+              a->m[12] * a->m[7]  * a->m[10];
+
+    inv[8] = a->m[4]  * a->m[9] * a->m[15] - 
+             a->m[4]  * a->m[11] * a->m[13] - 
+             a->m[8]  * a->m[5] * a->m[15] + 
+             a->m[8]  * a->m[7] * a->m[13] + 
+             a->m[12] * a->m[5] * a->m[11] - 
+             a->m[12] * a->m[7] * a->m[9];
+
+    inv[12] = -a->m[4]  * a->m[9] * a->m[14] + 
+               a->m[4]  * a->m[10] * a->m[13] +
+               a->m[8]  * a->m[5] * a->m[14] - 
+               a->m[8]  * a->m[6] * a->m[13] - 
+               a->m[12] * a->m[5] * a->m[10] + 
+               a->m[12] * a->m[6] * a->m[9];
+
+    inv[1] = -a->m[1]  * a->m[10] * a->m[15] + 
+              a->m[1]  * a->m[11] * a->m[14] + 
+              a->m[9]  * a->m[2] * a->m[15] - 
+              a->m[9]  * a->m[3] * a->m[14] - 
+              a->m[13] * a->m[2] * a->m[11] + 
+              a->m[13] * a->m[3] * a->m[10];
+
+    inv[5] = a->m[0]  * a->m[10] * a->m[15] - 
+             a->m[0]  * a->m[11] * a->m[14] - 
+             a->m[8]  * a->m[2] * a->m[15] + 
+             a->m[8]  * a->m[3] * a->m[14] + 
+             a->m[12] * a->m[2] * a->m[11] - 
+             a->m[12] * a->m[3] * a->m[10];
+
+    inv[9] = -a->m[0]  * a->m[9] * a->m[15] + 
+              a->m[0]  * a->m[11] * a->m[13] + 
+              a->m[8]  * a->m[1] * a->m[15] - 
+              a->m[8]  * a->m[3] * a->m[13] - 
+              a->m[12] * a->m[1] * a->m[11] + 
+              a->m[12] * a->m[3] * a->m[9];
+
+    inv[13] = a->m[0]  * a->m[9] * a->m[14] - 
+              a->m[0]  * a->m[10] * a->m[13] - 
+              a->m[8]  * a->m[1] * a->m[14] + 
+              a->m[8]  * a->m[2] * a->m[13] + 
+              a->m[12] * a->m[1] * a->m[10] - 
+              a->m[12] * a->m[2] * a->m[9];
+
+    inv[2] = a->m[1]  * a->m[6] * a->m[15] - 
+             a->m[1]  * a->m[7] * a->m[14] - 
+             a->m[5]  * a->m[2] * a->m[15] + 
+             a->m[5]  * a->m[3] * a->m[14] + 
+             a->m[13] * a->m[2] * a->m[7] - 
+             a->m[13] * a->m[3] * a->m[6];
+
+    inv[6] = -a->m[0]  * a->m[6] * a->m[15] + 
+              a->m[0]  * a->m[7] * a->m[14] + 
+              a->m[4]  * a->m[2] * a->m[15] - 
+              a->m[4]  * a->m[3] * a->m[14] - 
+              a->m[12] * a->m[2] * a->m[7] + 
+              a->m[12] * a->m[3] * a->m[6];
+
+    inv[10] = a->m[0]  * a->m[5] * a->m[15] - 
+              a->m[0]  * a->m[7] * a->m[13] - 
+              a->m[4]  * a->m[1] * a->m[15] + 
+              a->m[4]  * a->m[3] * a->m[13] + 
+              a->m[12] * a->m[1] * a->m[7] - 
+              a->m[12] * a->m[3] * a->m[5];
+
+    inv[14] = -a->m[0]  * a->m[5] * a->m[14] + 
+               a->m[0]  * a->m[6] * a->m[13] + 
+               a->m[4]  * a->m[1] * a->m[14] - 
+               a->m[4]  * a->m[2] * a->m[13] - 
+               a->m[12] * a->m[1] * a->m[6] + 
+               a->m[12] * a->m[2] * a->m[5];
+
+    inv[3] = -a->m[1] * a->m[6] * a->m[11] + 
+              a->m[1] * a->m[7] * a->m[10] + 
+              a->m[5] * a->m[2] * a->m[11] - 
+              a->m[5] * a->m[3] * a->m[10] - 
+              a->m[9] * a->m[2] * a->m[7] + 
+              a->m[9] * a->m[3] * a->m[6];
+
+    inv[7] = a->m[0] * a->m[6] * a->m[11] - 
+             a->m[0] * a->m[7] * a->m[10] - 
+             a->m[4] * a->m[2] * a->m[11] + 
+             a->m[4] * a->m[3] * a->m[10] + 
+             a->m[8] * a->m[2] * a->m[7] - 
+             a->m[8] * a->m[3] * a->m[6];
+
+    inv[11] = -a->m[0] * a->m[5] * a->m[11] + 
+               a->m[0] * a->m[7] * a->m[9] + 
+               a->m[4] * a->m[1] * a->m[11] - 
+               a->m[4] * a->m[3] * a->m[9] - 
+               a->m[8] * a->m[1] * a->m[7] + 
+               a->m[8] * a->m[3] * a->m[5];
+
+    inv[15] = a->m[0] * a->m[5] * a->m[10] - 
+              a->m[0] * a->m[6] * a->m[9] - 
+              a->m[4] * a->m[1] * a->m[10] + 
+              a->m[4] * a->m[2] * a->m[9] + 
+              a->m[8] * a->m[1] * a->m[6] - 
+              a->m[8] * a->m[2] * a->m[5];
+
+    det = a->m[0] * inv[0] + a->m[1] * inv[4] + a->m[2] * inv[8] + a->m[3] * inv[12];
+
+    if (det == 0)
+        return;
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        b->m[i] = inv[i] * det;
+}
+
+mat4 mat4_inverse_ret(const mat4* a) {
+    mat4 b;
+    double inv[16], det;
+    int i;
+
+    inv[0] = a->m[5]  * a->m[10] * a->m[15] - 
+             a->m[5]  * a->m[11] * a->m[14] - 
+             a->m[9]  * a->m[6]  * a->m[15] + 
+             a->m[9]  * a->m[7]  * a->m[14] +
+             a->m[13] * a->m[6]  * a->m[11] - 
+             a->m[13] * a->m[7]  * a->m[10];
+
+    inv[4] = -a->m[4]  * a->m[10] * a->m[15] + 
+              a->m[4]  * a->m[11] * a->m[14] + 
+              a->m[8]  * a->m[6]  * a->m[15] - 
+              a->m[8]  * a->m[7]  * a->m[14] - 
+              a->m[12] * a->m[6]  * a->m[11] + 
+              a->m[12] * a->m[7]  * a->m[10];
+
+    inv[8] = a->m[4]  * a->m[9] * a->m[15] - 
+             a->m[4]  * a->m[11] * a->m[13] - 
+             a->m[8]  * a->m[5] * a->m[15] + 
+             a->m[8]  * a->m[7] * a->m[13] + 
+             a->m[12] * a->m[5] * a->m[11] - 
+             a->m[12] * a->m[7] * a->m[9];
+
+    inv[12] = -a->m[4]  * a->m[9] * a->m[14] + 
+               a->m[4]  * a->m[10] * a->m[13] +
+               a->m[8]  * a->m[5] * a->m[14] - 
+               a->m[8]  * a->m[6] * a->m[13] - 
+               a->m[12] * a->m[5] * a->m[10] + 
+               a->m[12] * a->m[6] * a->m[9];
+
+    inv[1] = -a->m[1]  * a->m[10] * a->m[15] + 
+              a->m[1]  * a->m[11] * a->m[14] + 
+              a->m[9]  * a->m[2] * a->m[15] - 
+              a->m[9]  * a->m[3] * a->m[14] - 
+              a->m[13] * a->m[2] * a->m[11] + 
+              a->m[13] * a->m[3] * a->m[10];
+
+    inv[5] = a->m[0]  * a->m[10] * a->m[15] - 
+             a->m[0]  * a->m[11] * a->m[14] - 
+             a->m[8]  * a->m[2] * a->m[15] + 
+             a->m[8]  * a->m[3] * a->m[14] + 
+             a->m[12] * a->m[2] * a->m[11] - 
+             a->m[12] * a->m[3] * a->m[10];
+
+    inv[9] = -a->m[0]  * a->m[9] * a->m[15] + 
+              a->m[0]  * a->m[11] * a->m[13] + 
+              a->m[8]  * a->m[1] * a->m[15] - 
+              a->m[8]  * a->m[3] * a->m[13] - 
+              a->m[12] * a->m[1] * a->m[11] + 
+              a->m[12] * a->m[3] * a->m[9];
+
+    inv[13] = a->m[0]  * a->m[9] * a->m[14] - 
+              a->m[0]  * a->m[10] * a->m[13] - 
+              a->m[8]  * a->m[1] * a->m[14] + 
+              a->m[8]  * a->m[2] * a->m[13] + 
+              a->m[12] * a->m[1] * a->m[10] - 
+              a->m[12] * a->m[2] * a->m[9];
+
+    inv[2] = a->m[1]  * a->m[6] * a->m[15] - 
+             a->m[1]  * a->m[7] * a->m[14] - 
+             a->m[5]  * a->m[2] * a->m[15] + 
+             a->m[5]  * a->m[3] * a->m[14] + 
+             a->m[13] * a->m[2] * a->m[7] - 
+             a->m[13] * a->m[3] * a->m[6];
+
+    inv[6] = -a->m[0]  * a->m[6] * a->m[15] + 
+              a->m[0]  * a->m[7] * a->m[14] + 
+              a->m[4]  * a->m[2] * a->m[15] - 
+              a->m[4]  * a->m[3] * a->m[14] - 
+              a->m[12] * a->m[2] * a->m[7] + 
+              a->m[12] * a->m[3] * a->m[6];
+
+    inv[10] = a->m[0]  * a->m[5] * a->m[15] - 
+              a->m[0]  * a->m[7] * a->m[13] - 
+              a->m[4]  * a->m[1] * a->m[15] + 
+              a->m[4]  * a->m[3] * a->m[13] + 
+              a->m[12] * a->m[1] * a->m[7] - 
+              a->m[12] * a->m[3] * a->m[5];
+
+    inv[14] = -a->m[0]  * a->m[5] * a->m[14] + 
+               a->m[0]  * a->m[6] * a->m[13] + 
+               a->m[4]  * a->m[1] * a->m[14] - 
+               a->m[4]  * a->m[2] * a->m[13] - 
+               a->m[12] * a->m[1] * a->m[6] + 
+               a->m[12] * a->m[2] * a->m[5];
+
+    inv[3] = -a->m[1] * a->m[6] * a->m[11] + 
+              a->m[1] * a->m[7] * a->m[10] + 
+              a->m[5] * a->m[2] * a->m[11] - 
+              a->m[5] * a->m[3] * a->m[10] - 
+              a->m[9] * a->m[2] * a->m[7] + 
+              a->m[9] * a->m[3] * a->m[6];
+
+    inv[7] = a->m[0] * a->m[6] * a->m[11] - 
+             a->m[0] * a->m[7] * a->m[10] - 
+             a->m[4] * a->m[2] * a->m[11] + 
+             a->m[4] * a->m[3] * a->m[10] + 
+             a->m[8] * a->m[2] * a->m[7] - 
+             a->m[8] * a->m[3] * a->m[6];
+
+    inv[11] = -a->m[0] * a->m[5] * a->m[11] + 
+               a->m[0] * a->m[7] * a->m[9] + 
+               a->m[4] * a->m[1] * a->m[11] - 
+               a->m[4] * a->m[3] * a->m[9] - 
+               a->m[8] * a->m[1] * a->m[7] + 
+               a->m[8] * a->m[3] * a->m[5];
+
+    inv[15] = a->m[0] * a->m[5] * a->m[10] - 
+              a->m[0] * a->m[6] * a->m[9] - 
+              a->m[4] * a->m[1] * a->m[10] + 
+              a->m[4] * a->m[2] * a->m[9] + 
+              a->m[8] * a->m[1] * a->m[6] - 
+              a->m[8] * a->m[2] * a->m[5];
+
+    det = a->m[0] * inv[0] + a->m[1] * inv[4] + a->m[2] * inv[8] + a->m[3] * inv[12];
+
+    if (det == 0)
+        return mat4_identity();
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        b.m[i] = inv[i] * det;
+
+    return b;
+}
+
+void mat4_to_mat3(const mat4* a, mat3* b) {
+    b->m[0] = a->m[0];
+    b->m[1] = a->m[1];
+    b->m[2] = a->m[2];
+
+    b->m[3] = a->m[4];
+    b->m[4] = a->m[5];
+    b->m[5] = a->m[6];
+
+    b->m[6] = a->m[8];
+    b->m[7] = a->m[9];
+    b->m[8] = a->m[10];
+}
+
+mat3 mat4_to_mat3_ret(const mat4* a) {
+    mat3 b;
+    b.m[0] = a->m[0];
+    b.m[1] = a->m[1];
+    b.m[2] = a->m[2];
+
+    b.m[3] = a->m[4];
+    b.m[4] = a->m[5];
+    b.m[5] = a->m[6];
+
+    b.m[6] = a->m[8];
+    b.m[7] = a->m[9];
+    b.m[8] = a->m[10];
+    return b;
+}
+
 /*=============== GENERAL MATH ===============*/
 double lerp(double v, double w, double t) {
     return v + t * (w - v);
@@ -298,6 +648,15 @@ vec4 vec3_to_vec4(const vec3* v) {
 }
 
 /*=============== GRAPHICS MATH ===============*/
+mat4 mat4_scale(float sx, float sy, float sz) {
+    mat4 res = mat4_identity();
+    res.m[0] = sx;   
+    res.m[5] = sy;   
+    res.m[10] = sz;  
+    res.m[15] = 1.0f; 
+    return res;
+}
+
 mat4 mat4_translate(double tx, double ty, double tz) {
     mat4 res = mat4_identity();
     res.m[3] = tx;
@@ -378,6 +737,12 @@ vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, con
     vec4 clip_pos = mat4_vec4_mul(projection, &view_pos);
     vec3 ndc = perspective_divide(&clip_pos);
     return viewport_transform(&ndc, s_width, s_height, z_near, z_far);
+}
+
+mat4 transformation_matrix(const mat4*  model, const mat4*  view, const mat4*  projection) {
+    mat4 mv_matrix = mat4_mat4_mul_ret(view, model);             // Combine model and view matrices
+    mat4 mvp_matrix = mat4_mat4_mul_ret(projection, &mv_matrix); // Combine with projection matrix
+    return mvp_matrix;
 }
 
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up) {

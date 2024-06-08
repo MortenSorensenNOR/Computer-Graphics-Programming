@@ -1,153 +1,111 @@
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "display/GAEDisplay.h"
-#include "RenderUtil.h"
+#include "display/Display.h"
+#include "rutil/RenderUtil.h"
+#include "rutil/ModelLoader.h"
 
-vec4 vert_buf[] = {
-    {-0.5f, -0.5f, -0.5f, 1.0f}, { 0.5f, -0.5f, -0.5f, 1.0f}, { 0.5f,  0.5f, -0.5f, 1.0f},
-    { 0.5f,  0.5f, -0.5f, 1.0f}, {-0.5f,  0.5f, -0.5f, 1.0f}, {-0.5f, -0.5f, -0.5f, 1.0f},
-    {-0.5f, -0.5f,  0.5f, 1.0f}, { 0.5f, -0.5f,  0.5f, 1.0f}, { 0.5f,  0.5f,  0.5f, 1.0f},
-    { 0.5f,  0.5f,  0.5f, 1.0f}, {-0.5f,  0.5f,  0.5f, 1.0f}, {-0.5f, -0.5f,  0.5f, 1.0f},
-    {-0.5f,  0.5f,  0.5f, 1.0f}, {-0.5f,  0.5f, -0.5f, 1.0f}, {-0.5f, -0.5f, -0.5f, 1.0f},
-    {-0.5f, -0.5f, -0.5f, 1.0f}, {-0.5f, -0.5f,  0.5f, 1.0f}, {-0.5f,  0.5f,  0.5f, 1.0f},
-    { 0.5f,  0.5f,  0.5f, 1.0f}, { 0.5f,  0.5f, -0.5f, 1.0f}, { 0.5f, -0.5f, -0.5f, 1.0f},
-    { 0.5f, -0.5f, -0.5f, 1.0f}, { 0.5f, -0.5f,  0.5f, 1.0f}, { 0.5f,  0.5f,  0.5f, 1.0f},
-    {-0.5f, -0.5f, -0.5f, 1.0f}, { 0.5f, -0.5f, -0.5f, 1.0f}, { 0.5f, -0.5f,  0.5f, 1.0f},
-    { 0.5f, -0.5f,  0.5f, 1.0f}, {-0.5f, -0.5f,  0.5f, 1.0f}, {-0.5f, -0.5f, -0.5f, 1.0f},
-    {-0.5f,  0.5f, -0.5f, 1.0f}, { 0.5f,  0.5f, -0.5f, 1.0f}, { 0.5f,  0.5f,  0.5f, 1.0f},
-    { 0.5f,  0.5f,  0.5f, 1.0f}, {-0.5f,  0.5f,  0.5f, 1.0f}, {-0.5f,  0.5f, -0.5f, 1.0f},
-};
-vec3 norm_buf[] = {
-    {-0.5f,  0.0f,  0.0f}, {-0.5f,  0.0f,  0.0f}, {-0.5f,  0.0f,  0.0f},
-    {-0.5f,  0.0f,  0.0f}, {-0.5f,  0.0f,  0.0f}, {-0.5f,  0.0f,  0.0f},
-    { 0.5f,  0.0f,  0.0f}, { 0.5f,  0.0f,  0.0f}, { 0.5f,  0.0f,  0.0f},
-    { 0.5f,  0.0f,  0.0f}, { 0.5f,  0.0f,  0.0f}, { 0.5f,  0.0f,  0.0f},
-    { 0.5f, -1.0f,  0.0f}, {-0.5f, -1.0f,  0.0f}, {-0.5f, -1.0f,  0.0f},
-    {-0.5f, -1.0f,  0.0f}, { 0.5f, -1.0f,  0.0f}, { 0.5f, -1.0f,  0.0f},
-    { 0.5f,  1.0f,  0.0f}, {-0.5f,  1.0f,  0.0f}, {-0.5f,  1.0f,  0.0f},
-    {-0.5f,  1.0f,  0.0f}, { 0.5f,  1.0f,  0.0f}, { 0.5f,  1.0f,  0.0f},
-    {-0.5f,  0.0f, -1.0f}, {-0.5f,  0.0f, -1.0f}, { 0.5f,  0.0f, -1.0f},
-    { 0.5f,  0.0f, -1.0f}, { 0.5f,  0.0f, -1.0f}, {-0.5f,  0.0f, -1.0f},
-    {-0.5f,  0.0f,  1.0f}, {-0.5f,  0.0f,  1.0f}, { 0.5f,  0.0f,  1.0f},
-    { 0.5f,  0.0f,  1.0f}, { 0.5f,  0.0f,  1.0f}, {-0.5f,  0.0f,  1.0f},
-};
+#include "render/renderer.h"
 
-vec2 uv_buf[] = {
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-    {0.0, 0.0}, {1.0, 0.0}, {0.5, 1.0}, 
-};
-
-color_t color_buf[] = {
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-    {125, 0, 255}, {255, 60, 0}, {0, 255, 40},
-};
+float fov = M_PI / 4;
+float znear = 0.1f;
+float zfar = 100.0f;
 
 int main(int argc, char** argv) {
     srand(time(0));
 
-    GAEDisplay_t disp;
-    GAEDisplay_init(&disp);
-    GAEDisplay_clear(&disp, 0x1C1D1E);
-
-    mesh_t mesh;
-    mesh.vert = vert_buf;
-    mesh.norm = norm_buf;
-    mesh.uv = uv_buf;
-    mesh.colors = color_buf;
-
+    // Initialize display and user input
+    Display_t disp;
+    Input_t input;
+    Display_init(&disp);
+    Input_init(&input, &disp);
+    Display_clear(&disp, 0x1C1D1E);
+    
+    // Load assets
+    texture_t test;
+    load_texture("../resources/backpack/diffuse_new.jpg", &test.diffuse, &test.diffuse_width, &test.diffuse_height);
+    
     light_t light;
-    light.pos = (vec3){1.2, 1.0, 2.0};
-    light.ambient = (vec3){0.25, 0.25, 0.25};
-    light.diffuse = (vec3){5, 0.5, 0.5};
-
-
-    vec3 up = { 0.0f, 1.0f, 0.0f };
-    vec3 eye = { 0.0f, 0.0f, 10.0f };
-    vec3 center = { 0.0f, 0.0f, 0.0f };
-    mat4 view = mat4_lookAt(eye, center, up);
-
-    float fov = M_PI / 4;
+    render_object_t object;
+    int object_load_success = parse_obj("../resources/backpack/backpack.obj", &object);
+    if (object_load_success) {
+        return 1;
+    }
+    object.textures = &test;
+    
+    render_t renderer;
+    renderer_init(&renderer, disp.width, disp.height, zfar, znear);
+    
+    // Matricies and stuff
+    vec3 camera_pos   = {0.0f, 0.0f, -3.0f};
+    vec3 camera_front = {0.0f, 0.0f, 1.0f};
+    vec3 camera_up    = {0.0f, 1.0f, 0.0f};
     float aspect = (double)disp.width / (double)disp.height;
-    float znear = 0.1f;
-    float zfar = 100.0f;
-    mat4 projection = mat4_perspective(fov, aspect, znear, zfar);
 
-    double dir = 1;
-    double dist = 7.5;
-    double angle = 0;
+    mat4 view, projection, view_proj;
+    mat4 rotation_matrix, model;
+    
+    float scale = 0.01f;
+    mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
+    mat4 scale_matrix = mat4_scale(scale, scale, scale);
+
+    // Main render/input loop
+    float angle = M_PI;
+
+    float camera_angle_pitch = 0.0f;
+    float camera_angle_roll = 0.0f;
+
+    int iter = 0;
     clock_t start, end;
     while (1) {
         start = clock();
-        GAEDisplay_clear(&disp, 0x1C1D1E);
+    
+        Input_update(&input);
+        if (Input_getKeyState(&input, 'x')) 
+            break;
 
-        /* dist += dir * 0.2; */
-        if (dist > 50 || dist < 2.5) dir = -dir;
-        mat4 model = mat4_translate(0, 0, dist);
+        if (Input_getKeyState(&input, 'h'))
+            camera_angle_roll -= M_PI * 0.1;
+        if (Input_getKeyState(&input, 'l'))
+            camera_angle_roll += M_PI * 0.1;
+        if (Input_getKeyState(&input, 'j'))
+            camera_angle_pitch -= M_PI * 0.1;
+        if (Input_getKeyState(&input, 'k'))
+            camera_angle_pitch += M_PI * 0.1;
 
-        angle = (angle + 0.01) - (int)(angle / (2 * M_PI)) * 2 * M_PI;
-        mat4 rotation = mat4_rotate(0, angle, 0);
-        mat4 model_rotated = mat4_mat4_mul_ret(&model, &rotation);
+        angle += 0.01 * M_PI;
 
-        for (int i = 0; i < 6 * 2; i++) {
-            vec3 tri_norm[3] = {
-                mesh.norm[i * 3],
-                mesh.norm[i * 3 + 1],
-                mesh.norm[i * 3 + 2],
-            };
-            vec2 tri_uv[3] = {
-                mesh.uv[i * 3],
-                mesh.uv[i * 3 + 1],
-                mesh.uv[i * 3 + 2],
-            };
-            color_t tri_col[3] = {
-                mesh.colors[i * 3],
-                mesh.colors[i * 3 + 1],
-                mesh.colors[i * 3 + 2],
-            };
-            vec4 tri_vert[3] = {
-                mesh.vert[i * 3],
-                mesh.vert[i * 3 + 1],
-                mesh.vert[i * 3 + 2],
-            };
-            vec3 tri_vert_trans[3];
-            transform_triangle(tri_vert, tri_vert_trans, &model_rotated, &view, &projection, disp.width, disp.height, znear, zfar);
-            draw_triangle_filled(&disp, tri_vert_trans, tri_uv, tri_col, tri_norm, &light);
-        }
+        // Camera
+        camera_front.x = sin(camera_angle_roll);
+        camera_front.y = sin(camera_angle_pitch);
 
-        GAEDisplay_update(&disp);
+        view = mat4_lookAt(camera_front, camera_pos, camera_up);
+        projection = mat4_perspective(fov, aspect, znear, zfar);
+        view_proj = mat4_mat4_mul_ret(&projection, &view);
+    
+        // Model
+        rotation_matrix = mat4_rotate(0, angle, 0);
+        model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
+        model = mat4_mat4_mul_ret(&translation_matrix, &model);
+    
+        renderer_reset_buffers(&renderer);    
+        renderer_render(&renderer, camera_pos, &view_proj, &model, &object, &light);
+    
+        memcpy(disp.framebuffer, renderer.frame_buffer, renderer.s_width * renderer.s_height * sizeof(int));
+        Display_update(&disp);
+
         end = clock();
-        /* printf("FPS: %f\n", 1/((double)(end - start)/CLOCKS_PER_SEC)); */
+        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
-
-    GAEDisplay_destroy(&disp);
-
-    free(mesh.prim);
-    free(mesh.vert);
-    free(mesh.uv);
-    free(mesh.colors);
+    
+    // Free assets
+    free(test.diffuse);
+    free_render_object(&object);
+    renderer_destroy(&renderer);
+    
+    // Free display
+    Display_destroy(&disp);
 
     return 0;
 }
