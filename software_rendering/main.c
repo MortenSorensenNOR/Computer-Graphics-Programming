@@ -6,6 +6,7 @@
 #include "rutil/RenderUtil.h"
 #include "rutil/ModelLoader.h"
 
+#define RASTERIZER_MULTI_THREAD
 #include "render/renderer.h"
 
 float fov = M_PI / 4;
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.0075f;
+    float scale = 0.0175f;
     mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
@@ -105,7 +106,7 @@ int main(int argc, char** argv) {
         Display_update(&disp);
 
         end = clock();
-        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
+        // printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
     
     // Free assets

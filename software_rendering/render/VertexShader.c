@@ -13,10 +13,8 @@ int vertex_shader(vertex_shader_input_t* in, vertex_shader_output_t* out) {
         out->frag_buf[i] = vec4_to_vec3(&global_vert_pos);
         out->pos_buf[i] = mat4_vec4_mul(in->view_proj, &global_vert_pos);
 
-        // printf("Before: (%f, %f, %f)\n", in->normal_buf[i].x, in->normal_buf[i].y, in->normal_buf[i].z);
         vec3 trasformed_norm = mat3_vec3_mul(&trans_inv_model_3, &in->normal_buf[i]); 
         out->normal_buf[i] = vec3_normalize(&trasformed_norm);
-        // printf("After: (%f, %f, %f)\n\n", out->normal_buf[i].x, out->normal_buf[i].y, out->normal_buf[i].z);
     }
 
     return 0;

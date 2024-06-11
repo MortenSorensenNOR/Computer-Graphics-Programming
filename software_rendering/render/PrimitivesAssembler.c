@@ -55,9 +55,9 @@ int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_
         t->uv[1] = in->uv_buf[in->index_buf[ibuf_off+1]];
         t->uv[2] = in->uv_buf[in->index_buf[ibuf_off+2]];
 
-        t->color[0] = (vec3){1.0f, 0.0f, 0.0f};
-        t->color[1] = (vec3){0.0f, 1.0f, 0.0f};
-        t->color[2] = (vec3){0.0f, 0.0f, 1.0f};
+        t->color[0] = (vec3){0.96862745098, 0.45490196078, 0.41568627451};
+        t->color[1] = (vec3){0.96862745098, 0.45490196078, 0.41568627451};
+        t->color[2] = (vec3){0.96862745098, 0.45490196078, 0.41568627451};
 
         pa_calculate_bounding_box(t->vert, &t->bb_top_left, &t->bb_bottom_right);
     }

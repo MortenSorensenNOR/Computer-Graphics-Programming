@@ -24,6 +24,8 @@ int renderer_reset_buffers(render_t* renderer) {
 }
 
 int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
+    clock_t total_start = clock();
+
     rasterizer_output_t ra_out;
 
     ra_out.buf_size = renderer->s_width * renderer->s_height;
@@ -32,6 +34,9 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     ra_out.frag = (vec3*)malloc(ra_out.buf_size * sizeof(vec3));
     ra_out.color = (vec3*)malloc(ra_out.buf_size * sizeof(vec3));
     ra_out.zbuffer = renderer->zbuffer;
+
+    double rasterizer_time = 0;
+    clock_t start, end;
 
     for (int i = 0; i < object->num_meshes; ++i) {
         // Vertex shader
@@ -98,7 +103,11 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         ra_in.tri_buf_size = pa_out.tri_buf_size;
         ra_in.tri_buf = pa_out.tri_buf;
 
+        start = clock();
         rasterizer(&ra_in, &ra_out);
+        end = clock();
+        rasterizer_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
+
         free(pa_out.tri_buf);
     }
 
@@ -121,12 +130,20 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     fs_out.buf_size = renderer->s_width * renderer->s_height;
     fs_out.framebuffer = renderer->frame_buffer;
 
+    start = clock();
     fragment_shader(&fs_in, &fs_out);
+    end = clock();
+    double fragment_shader_time = (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
     free(ra_out.uv);
     free(ra_out.norm);
     free(ra_out.frag);
     free(ra_out.color);
+
+    clock_t total_end = clock();
+    double total_time = (1000.0f * (total_end - total_start) / CLOCKS_PER_SEC);
+
+    printf("Total time: %f ms    Rasterizer time: %f ms    Fragment shader time: %f ms\n", total_time, rasterizer_time, fragment_shader_time);
 
     return 0;
 }   

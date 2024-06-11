@@ -14,8 +14,9 @@ int fragment_shader(fragment_shader_input_t* in, fragment_shader_output_t* out) 
             unsigned long long specular_texture_index = (int)( in->uv[i].x * in->textures->specular_width) + (int)(in->uv[i].y * in->textures->specular_height) * in->textures->specular_width;
             specular_texture_index = min(specular_texture_index, in->textures->specular_width * in->textures->specular_height);
 
+            // vec3 diffuse_base = in->textures->diffuse[diffuse_texture_index];
             vec3 diffuse_base = in->textures->diffuse[diffuse_texture_index];
-            vec3 metalic_roughness = in->textures->specular[diffuse_texture_index];
+            vec3 metalic_roughness = in->textures->specular[specular_texture_index];
 
             vec3 ambient = (vec3){
                 diffuse_base.x * in->light->ambient.x,
