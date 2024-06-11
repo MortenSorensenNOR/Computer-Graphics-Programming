@@ -36,8 +36,8 @@ void* rasterizer_thread_func(void* arg_ptr) {
         y_min = max(t->bb_top_left.y, thread_arg->out_batch_start_y);
         y_max = min(t->bb_bottom_right.y, thread_arg->out_batch_end_y);
 
-        for (int y = y_min; y < y_max; ++y) {
-            for (int x = x_min; x < x_max; ++x) {
+        for (int y = y_min; y <= y_max; ++y) {
+            for (int x = x_min; x <= x_max; ++x) {
                 p = (vec2){x, y};
                 v0 = (vec2){t->vert[0].x, t->vert[0].y};
                 v1 = (vec2){t->vert[1].x, t->vert[1].y};
@@ -81,9 +81,36 @@ void* rasterizer_thread_func(void* arg_ptr) {
 
 int rasterizer(rasterizer_input_t* in, rasterizer_output_t* out) {
     #ifdef RASTERIZER_MULTI_THREAD
+
     int num_threads = 4;
     pthread_t* threads = (pthread_t*)malloc(num_threads * sizeof(pthread_t));
+    rasterizer_thread_argument_t* thread_args = (rasterizer_thread_argument_t*)malloc(num_threads * sizeof(rasterizer_thread_argument_t));
     
+    int batch_size_y = in->s_height / num_threads;
+
+    for (int i = 0; i < num_threads; ++i) {
+        thread_args[i].s_width = in->s_width;
+        thread_args[i].s_height = in->s_height;
+
+        thread_args[i].in_tri_buf = in->tri_buf;
+        thread_args[i].in_tri_buf_size = in->tri_buf_size;
+
+        thread_args[i].out_batch_start_y = i * batch_size_y;
+        thread_args[i].out_batch_end_y = i * batch_size_y + batch_size_y;
+
+        thread_args[i].out_uv = out->uv;
+        thread_args[i].out_norm = out->norm;
+        thread_args[i].out_frag = out->frag;
+        thread_args[i].out_color = out->color;
+        thread_args[i].out_zbuffer = out->zbuffer;
+
+        pthread_create(&threads[i], NULL, rasterizer_thread_func, (void*)&thread_args[i]);
+    }
+
+    for (int i = 0; i < num_threads; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+ 
     #else 
     triangle_t* t;
     vec2 v0, v1, v2, p;
