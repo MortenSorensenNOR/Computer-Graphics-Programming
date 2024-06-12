@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.02f;
+    float scale = 0.0185f;
     mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
