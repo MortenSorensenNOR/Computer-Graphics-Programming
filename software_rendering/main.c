@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.0175f;
+    float scale = 0.02f;
     mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
@@ -67,9 +67,11 @@ int main(int argc, char** argv) {
     float camera_angle_roll = 0.0f;
 
     int iter = 0;
-    clock_t start, end;
+    float dt = 0;
+    clock_t start = clock(), end = clock();
     while (1) {
         start = clock();
+        dt = (float)(start - end) / CLOCKS_PER_SEC;
     
         Input_update(&input);
         if (Input_getKeyState(&input, 'x')) 
@@ -84,7 +86,7 @@ int main(int argc, char** argv) {
         if (Input_getKeyState(&input, 'k'))
             camera_angle_pitch += M_PI * 0.1;
 
-        angle += 0.01 * M_PI;
+        angle += 0.01f * M_PI;
 
         // Camera
         camera_front.x = sin(camera_angle_roll);
@@ -106,7 +108,7 @@ int main(int argc, char** argv) {
         Display_update(&disp);
 
         end = clock();
-        // printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
+        printf("FPS: %f\n", 1.0f / ((double)(end - start)/CLOCKS_PER_SEC));
     }
     
     // Free assets

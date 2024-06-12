@@ -82,7 +82,7 @@ void* rasterizer_thread_func(void* arg_ptr) {
 int rasterizer(rasterizer_input_t* in, rasterizer_output_t* out) {
     #ifdef RASTERIZER_MULTI_THREAD
 
-    int num_threads = 4;
+    int num_threads = 2;
     pthread_t* threads = (pthread_t*)malloc(num_threads * sizeof(pthread_t));
     rasterizer_thread_argument_t* thread_args = (rasterizer_thread_argument_t*)malloc(num_threads * sizeof(rasterizer_thread_argument_t));
     

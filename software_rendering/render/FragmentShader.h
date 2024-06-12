@@ -1,6 +1,7 @@
 #pragma once
 #include "../gml/GML.h"
 #include "../rutil/RenderUtil.h"
+#include <pthread.h>
 
 #define RASTERIZER_MULTI_THREAD
 #ifdef RASTERIZER_MULTI_THREAD

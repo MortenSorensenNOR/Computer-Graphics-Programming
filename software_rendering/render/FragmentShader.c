@@ -60,12 +60,29 @@ int fragment_shader(fragment_shader_input_t* in, fragment_shader_output_t* out) 
         thread_args[i].s_width = in->s_width;
         thread_args[i].s_height = in->s_height;
 
+        thread_args[i].cam_pos = in->cam_pos;
+        thread_args[i].light = in->light;
+        thread_args[i].textures = in->textures;
+
+        thread_args[i].batch_start_y = i * batch_size_y;
+        thread_args[i].batch_end_y = i * batch_size_y + batch_size_y;
+        thread_args[i].uv = in->uv;
+        thread_args[i].norm = in->norm;
+        thread_args[i].frag = in->frag;
+        thread_args[i].color = in->color;
+        thread_args[i].zbuffer = in->zbuffer;
+
+        thread_args[i].framebuffer = out->framebuffer;
+
         pthread_create(&threads[i], NULL, fragment_shader_thread_func, (void*)&thread_args[i]);
     }
 
     for (int i = 0; i < num_threads; ++i) {
         pthread_join(threads[i], NULL);
     }
+
+    free(threads);
+    free(thread_args);
 
     #else
     for (int y = 0; y < in->s_height; ++y) {

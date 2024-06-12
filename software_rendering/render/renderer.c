@@ -24,10 +24,13 @@ int renderer_reset_buffers(render_t* renderer) {
 }
 
 int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
-    clock_t total_start = clock();
+    double total_time = 0, vs_time = 0, vpp_time = 0, pa_time = 0, ra_time = 0, fs_time = 0;
+    clock_t start, end;
+    clock_t total_start, total_end;
+
+    total_start = clock();
 
     rasterizer_output_t ra_out;
-
     ra_out.buf_size = renderer->s_width * renderer->s_height;
     ra_out.uv = (vec2*)malloc(ra_out.buf_size * sizeof(vec2));
     ra_out.norm = (vec3*)malloc(ra_out.buf_size * sizeof(vec3));
@@ -35,14 +38,13 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     ra_out.color = (vec3*)malloc(ra_out.buf_size * sizeof(vec3));
     ra_out.zbuffer = renderer->zbuffer;
 
-    double rasterizer_time = 0;
-    clock_t start, end;
 
     for (int i = 0; i < object->num_meshes; ++i) {
         // Vertex shader
         vertex_shader_input_t vs_in;
         vertex_shader_output_t vs_out;
 
+        start = clock();
         vs_in.view_proj = view_proj;
         vs_in.model = model;
         vs_in.buf_size = object->meshes[i].vbuff_size;
@@ -55,11 +57,14 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         vs_out.frag_buf = (vec3*)malloc(vs_out.buf_size * sizeof(vec3));
 
         vertex_shader(&vs_in, &vs_out);
+        end = clock();
+        vs_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
         // Vertex post processor
         vertex_post_processer_input_t vpp_in;
         vertex_post_processer_output_t vpp_out;
 
+        start = clock();
         vpp_in.znear = renderer->znear;
         vpp_in.zfar = renderer->zfar;
         vpp_in.buf_size = vs_out.buf_size;
@@ -73,10 +78,14 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         vertex_post_processer(&vpp_in, &vpp_out);
         free(vs_out.pos_buf);
 
+        end = clock();
+        vpp_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
+
         // Primitives assembler
         primitives_assembler_input_t pa_in;
         primitives_assembler_output_t pa_out;
 
+        start = clock();
         pa_in.cam_pos = cam_pos;
         pa_in.vert_buf_size = vpp_out.buf_size;
         pa_in.vert_buf = vpp_out.pos_buf;
@@ -96,17 +105,22 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         free(vs_out.normal_buf);
         free(vs_out.frag_buf);
 
+        end = clock();
+        pa_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
+
         // Rasterizer
         rasterizer_input_t ra_in;
+
+        start = clock();
         ra_in.s_width = renderer->s_width;
         ra_in.s_height = renderer->s_height;
         ra_in.tri_buf_size = pa_out.tri_buf_size;
         ra_in.tri_buf = pa_out.tri_buf;
 
-        start = clock();
         rasterizer(&ra_in, &ra_out);
+
         end = clock();
-        rasterizer_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
+        ra_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
         free(pa_out.tri_buf);
     }
@@ -115,6 +129,7 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     fragment_shader_input_t fs_in;
     fragment_shader_output_t fs_out;
 
+    start = clock();
     fs_in.s_width = renderer->s_width;
     fs_in.s_height = renderer->s_height;
     fs_in.zbuffer = renderer->zbuffer;
@@ -130,20 +145,19 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     fs_out.buf_size = renderer->s_width * renderer->s_height;
     fs_out.framebuffer = renderer->frame_buffer;
 
-    start = clock();
     fragment_shader(&fs_in, &fs_out);
+
     end = clock();
-    double fragment_shader_time = (1000.0f * (end - start) / CLOCKS_PER_SEC);
+    fs_time = (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
     free(ra_out.uv);
     free(ra_out.norm);
     free(ra_out.frag);
     free(ra_out.color);
 
-    clock_t total_end = clock();
-    double total_time = (1000.0f * (total_end - total_start) / CLOCKS_PER_SEC);
-
-    printf("Total time: %f ms    Rasterizer time: %f ms    Fragment shader time: %f ms\n", total_time, rasterizer_time, fragment_shader_time);
+    total_end = clock();
+    total_time = (1000.0f * (total_end - total_start) / CLOCKS_PER_SEC);
+    printf("Total time: %f ms    vs_time: %f ms    vpp_time: %f ms    pa_time: %f ms    ra_time: %f ms    fs_time: %f ms\n", total_time, vs_time, vpp_time, pa_time, ra_time, fs_time);
 
     return 0;
 }   
