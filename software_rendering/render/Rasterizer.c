@@ -1,15 +1,15 @@
 #include "Rasterizer.h"
 
 static inline void ra_barycentric(vec2* v0, vec2* v1, vec2* v2, vec2* p, vec3* bc) {
-    vec2 v10 = vec2_sub(v1, v0);
-    vec2 v21 = vec2_sub(v2, v0);
-    vec2 vp0 = vec2_sub(p, v0);
+    vec2 v10 = {v1->x - v0->x, v1->y - v0->y};
+    vec2 v21 = {v2->x - v0->x, v2->y - v0->y};
+    vec2 vp0 = {p->x - v0->x, p->y - v0->y};
 
-    double d00 = vec2_dot(&v10, &v10);
-    double d01 = vec2_dot(&v10, &v21);
-    double d11 = vec2_dot(&v21, &v21);
-    double d20 = vec2_dot(&vp0, &v10);
-    double d21 = vec2_dot(&vp0, &v21);
+    double d00 = v10.x * v10.x + v10.y * v10.y;
+    double d01 = v10.x * v21.x + v10.y * v21.y;
+    double d11 = v21.x * v21.x + v21.y * v21.y;
+    double d20 = vp0.x * v10.x + vp0.y * v10.y;
+    double d21 = vp0.x * v21.x + vp0.y * v21.y;
 
     double det = (d00 * d11 - d01 * d01);
     bc->y = (d11 * d20 - d01 * d21) / det;

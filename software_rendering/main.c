@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.0135f;
+    float scale = 0.015f;
     mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
@@ -66,6 +66,7 @@ int main(int argc, char** argv) {
     float camera_angle_pitch = 0.0f;
     float camera_angle_roll = 0.0f;
 
+    int dir = 1;
     int iter = 0;
     float dt = 0;
     clock_t start = clock(), end = clock();
@@ -86,7 +87,9 @@ int main(int argc, char** argv) {
         if (Input_getKeyState(&input, 'k'))
             camera_angle_pitch += M_PI * 0.1;
 
-        angle += 0.01f * M_PI;
+        angle += dir * 0.001f * M_PI;
+        if (angle >= M_PI + M_PI * 0.5 || angle <= M_PI - M_PI * 0.5)
+            dir = -dir;
 
         // Camera
         camera_front.x = sin(camera_angle_roll);
@@ -97,10 +100,12 @@ int main(int argc, char** argv) {
         view_proj = mat4_mat4_mul_ret(&projection, &view);
     
         // Model
+        mat4 rotate_y_first = mat4_rotate_x(0 * M_PI);
         rotation_matrix = mat4_rotate(0, angle, 0);
-        model = mat4_mat4_mul_ret(&rotation_matrix, &scale_matrix);
+        model = mat4_mat4_mul_ret(&rotate_y_first, &scale_matrix);
+        model = mat4_mat4_mul_ret(&rotation_matrix, &model);
         model = mat4_mat4_mul_ret(&translation_matrix, &model);
-    
+
         renderer_reset_buffers(&renderer);    
         renderer_render(&renderer, camera_pos, &view_proj, &model, &object, &light);
     

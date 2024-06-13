@@ -38,7 +38,6 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     ra_out.color = (vec3*)malloc(ra_out.buf_size * sizeof(vec3));
     ra_out.zbuffer = renderer->zbuffer;
 
-
     for (int i = 0; i < object->num_meshes; ++i) {
         // Vertex shader
         vertex_shader_input_t vs_in;
@@ -76,7 +75,9 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         vpp_out.pos_buf = (vec3*)malloc(vpp_out.buf_size * sizeof(vec3));
 
         vertex_post_processer(&vpp_in, &vpp_out);
-        free(vs_out.pos_buf);
+
+        if (vs_out.pos_buf)
+            free(vs_out.pos_buf);
 
         end = clock();
         vpp_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
@@ -101,9 +102,12 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
 
         primitives_assembler(&pa_in, &pa_out);
 
-        free(vpp_out.pos_buf);
-        free(vs_out.normal_buf);
-        free(vs_out.frag_buf);
+        if (vpp_out.pos_buf)
+            free(vpp_out.pos_buf);
+        if (vs_out.normal_buf)
+            free(vs_out.normal_buf);
+        if (vs_out.frag_buf)
+            free(vs_out.frag_buf);
 
         end = clock();
         pa_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
@@ -122,7 +126,8 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
         end = clock();
         ra_time += (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
-        free(pa_out.tri_buf);
+        if (pa_out.tri_buf)
+            free(pa_out.tri_buf);
     }
 
     // Fragment shader
@@ -150,10 +155,14 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     end = clock();
     fs_time = (1000.0f * (end - start) / CLOCKS_PER_SEC);
 
-    free(ra_out.uv);
-    free(ra_out.norm);
-    free(ra_out.frag);
-    free(ra_out.color);
+    if (ra_out.uv)
+        free(ra_out.uv);
+    if (ra_out.norm)
+        free(ra_out.norm);
+    if (ra_out.frag)
+        free(ra_out.frag);
+    if (ra_out.color)
+        free(ra_out.color);
 
     total_end = clock();
     total_time = (1000.0f * (total_end - total_start) / CLOCKS_PER_SEC);
