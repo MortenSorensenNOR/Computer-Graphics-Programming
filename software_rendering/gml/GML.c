@@ -77,7 +77,10 @@ double vec3_length(const vec3* v) {
 }
 
 vec3 vec3_normalize(const vec3* v) {
-    return vec3_div(v, vec3_length(v));
+    double length = vec3_length(v);
+    if (length < 0.001)
+        return (vec3){v->x, v->y, v->z};
+    return vec3_div(v, length);
 }
 
 void swap_vec3(vec3* v, vec3* w) {
@@ -717,9 +720,9 @@ mat4 mat4_perspective(float fov, float aspect, float znear, float zfar) {
 
     res.m[0] = 1.0f / (aspect * tan_half_fov);
     res.m[5] = 1.0f / tan_half_fov;
-    res.m[10] = -(zfar + znear) / (zfar - znear);
-    res.m[11] = -(2.0 * zfar * znear) / (zfar - znear);
-    res.m[14] = -1.0;
+    res.m[10] = (zfar + znear) / (zfar - znear);
+    res.m[11] = 1.0;
+    res.m[14] = -(2.0 * zfar * znear) / (zfar - znear);
     return res;
 }
 
@@ -728,7 +731,7 @@ vec3 perspective_divide(const vec4*  v) {
 }
 
 vec3 viewport_transform(const vec3*  ndc, int width, int height, double z_near, double z_far) {
-    return (vec3){(ndc->x + 1.0) * width * 0.5, (ndc->y + 1) * height * 0.5, ndc->z / (z_near - z_far)};
+    return (vec3){(ndc->x + 1.0) * width * 0.5, (1 - ndc->y) * height * 0.5, ndc->z / (z_near - z_far)};
 }
 
 vec3 transform_vertex(const vec4*  v, const mat4*  model, const mat4*  view, const mat4*  projection, int s_width, int s_height, double z_near, double z_far) {

@@ -81,10 +81,10 @@ int Display_setFrameBufferSize(Display_t* disp) {
 
     // Set resolution to 720p
     // Uncomment for full display resolution
-    width = 1280;
-    height = 720;
-
+    width = 1920;
+    height = 1080;
     disp->width = width;
+
     disp->height = height;
 
     // Free and allocate new memory to the framebuffer

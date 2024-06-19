@@ -9,10 +9,10 @@ int vertex_post_processer(vertex_post_processer_input_t* in, vertex_post_process
         }; 
         out->pos_buf[i] = (vec3){
             (ndc.x + 1.0) * in->s_width * 0.5,
-            (ndc.y + 1.0) * in->s_height * 0.5,
-            ndc.z / (in->znear - in->zfar)
+            (1.0 - ndc.y) * in->s_height * 0.5,
+            ndc.z
         };
-        // Other z valye transform ((in->zfar - in->znear) * ndc.z + (in->zfar + in->znear)) * 0.5
+        // Other z value transform ((in->zfar - in->znear) * ndc.z + (in->zfar + in->znear)) * 0.5
     }
 
     return 0;

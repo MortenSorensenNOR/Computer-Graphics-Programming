@@ -28,11 +28,15 @@ void* fragment_shader_thread_func(void* arg_ptr) {
                 diffuse_base.z * thread_arg->light->ambient.z,
             };
 
+            printf("(%f, %f, %f)\n", thread_arg->frag[i].x, thread_arg->frag[i].y, thread_arg->frag[i].z);
+
             vec3 norm = vec3_normalize(&thread_arg->norm[i]);
             vec3 lightDir = vec3_sub(&thread_arg->light->pos, &thread_arg->frag[i]);
             lightDir = vec3_normalize(&lightDir);
 
-            float diff = max(vec3_dot(&norm, &lightDir), 0.0);
+            float diff =vec3_dot(&norm, &lightDir);
+            diff = max(diff, 0.0);
+
             vec3 diffuse = (vec3){
                 thread_arg->light->diffuse.x * diff * diffuse_base.x,
                 thread_arg->light->diffuse.y * diff * diffuse_base.y,

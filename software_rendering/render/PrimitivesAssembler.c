@@ -31,7 +31,7 @@ int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_
         vec3 c = in->frag_buf[in->index_buf[ibuf_off]];
 
         vec3 v0 = {(a.x + b.x + c.x) / 3.0f, (a.y + b.y + c.y) / 3.0f, (a.z + b.z + c.z) / 3.0f};
-        vec3 cam_to_pos_vec = vec3_sub(&in->cam_pos, &v0);
+        vec3 cam_to_pos_vec = vec3_sub(&v0, &in->cam_pos);
         float dp = vec3_dot(&cam_to_pos_vec, &n);
 
         if (dp <= 0) {

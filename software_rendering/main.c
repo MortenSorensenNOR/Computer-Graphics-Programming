@@ -48,16 +48,16 @@ int main(int argc, char** argv) {
     renderer_init(&renderer, disp.width, disp.height, zfar, znear);
     
     // Matricies and stuff
-    vec3 camera_pos   = {0.0f, 0.0f, -3.0f};
-    vec3 camera_front = {0.0f, 0.0f, 1.0f};
+    vec3 camera_pos   = {0.0f, 0.0f, -1.0f};
+    vec3 camera_front = {0.0f, 0.0f, -10.0f};
     vec3 camera_up    = {0.0f, 1.0f, 0.0f};
     float aspect = (double)disp.width / (double)disp.height;
 
     mat4 view, projection, view_proj;
     mat4 rotation_matrix, model;
     
-    float scale = 0.015f;
-    mat4 translation_matrix = mat4_translate(0, 0, 15.0f);
+    float scale = 0.00175f;
+    mat4 translation_matrix = mat4_translate(0, 0, -15.0f);
     mat4 scale_matrix = mat4_scale(scale, scale, scale);
 
     // Main render/input loop
@@ -98,6 +98,13 @@ int main(int argc, char** argv) {
         view = mat4_lookAt(camera_front, camera_pos, camera_up);
         projection = mat4_perspective(fov, aspect, znear, zfar);
         view_proj = mat4_mat4_mul_ret(&projection, &view);
+
+        printf("%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n%f, %f, %f, %f\n", 
+                view.m[0],  view.m[1],  view.m[2],  view.m[3], 
+                view.m[4],  view.m[5],  view.m[6],  view.m[7], 
+                view.m[8],  view.m[9],  view.m[10], view.m[11], 
+                view.m[12], view.m[13], view.m[14], view.m[15]
+               );
     
         // Model
         mat4 rotate_y_first = mat4_rotate_x(0 * M_PI);
