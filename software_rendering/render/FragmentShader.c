@@ -28,7 +28,7 @@ void* fragment_shader_thread_func(void* arg_ptr) {
                 diffuse_base.z * thread_arg->light->ambient.z,
             };
 
-            printf("(%f, %f, %f)\n", thread_arg->frag[i].x, thread_arg->frag[i].y, thread_arg->frag[i].z);
+            // printf("(%f, %f, %f)\n", thread_arg->frag[i].x, thread_arg->frag[i].y, thread_arg->frag[i].z);
 
             vec3 norm = vec3_normalize(&thread_arg->norm[i]);
             vec3 lightDir = vec3_sub(&thread_arg->light->pos, &thread_arg->frag[i]);
