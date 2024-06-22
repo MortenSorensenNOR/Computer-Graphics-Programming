@@ -1,7 +1,7 @@
 #include <time.h>
 #include "renderer.h"
 
-int renderer_init(render_t* renderer, int s_width, int s_height, float zfar, float znear) {
+int renderer_init(Render_t* renderer, int s_width, int s_height, float zfar, float znear) {
     renderer->s_width = s_width;
     renderer->s_height = s_height;
 
@@ -14,7 +14,7 @@ int renderer_init(render_t* renderer, int s_width, int s_height, float zfar, flo
     return 0;
 }
 
-int renderer_reset_buffers(render_t* renderer) {
+int renderer_reset_buffers(Render_t* renderer) {
     memset(renderer->frame_buffer, 0, renderer->s_width * renderer->s_height * sizeof(int));
     for (int i = 0; i < renderer->s_width * renderer->s_height; ++i) {
         renderer->zbuffer[i] = 1.0f;
@@ -23,7 +23,7 @@ int renderer_reset_buffers(render_t* renderer) {
     return 0;
 }
 
-int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
+int renderer_render(Render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* model, render_object_t* object, light_t* lights) {
     double total_time = 0, vs_time = 0, vpp_time = 0, pa_time = 0, ra_time = 0, fs_time = 0;
     clock_t start, end;
     clock_t total_start, total_end;
@@ -171,7 +171,7 @@ int renderer_render(render_t* renderer, vec3 cam_pos, mat4* view_proj, mat4* mod
     return 0;
 }   
 
-int renderer_destroy(render_t* renderer) {
+int renderer_destroy(Render_t* renderer) {
     if (renderer->frame_buffer)
         free(renderer->frame_buffer);
 

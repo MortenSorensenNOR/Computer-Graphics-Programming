@@ -1,7 +1,0 @@
-Fix everything
-
-Rewrite math
-Find working example and use that...
-This cobbled together math produces... non optimal results
-
-Also, implement clipping... its kind of important
