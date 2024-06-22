@@ -1,3 +1,3 @@
-[submodule "software_rendering/software_rendering/engine/glfw"]
-	path = software_rendering/software_rendering/engine/glfw
+[submodule "software_rendering/engine/glfw"]
+	path = software_rendering/engine/glfw
 	url = https://github.com/glfw/glfw.git
