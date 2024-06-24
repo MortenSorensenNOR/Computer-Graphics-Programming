@@ -1,0 +1,7 @@
+So, I opted to go from Xlib to GLFW for the greater ease of use in terms of window management and user input.
+However, in order to draw my framebuffer to the screen, I need to create a glTexture for the framebuffer each frame...
+I don't like this, however, it seems that this is the approach that others are using to solve this problem.
+
+This means I need to create a simple VAO, VBO and EBO for the OpenGL render backend, bind the texture, and draw a simple quad. 
+This of course, in turn, means I can opt for a different screen space coordinate system than what OpenGL is using, by simply 
+chaning the uv coordinates of the simple quad. 

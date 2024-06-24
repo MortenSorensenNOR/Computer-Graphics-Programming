@@ -1,4 +1,5 @@
 #pragma once
+#include <stdlib.h>
 #include "../gml/GML.h"
 
 /**
@@ -48,15 +49,9 @@ typedef struct {
  * @param specular              Pointer to the specular texture buffer
  */
 typedef struct {
-    int has_diffuse_buff;
-    int diffuse_width;
-    int diffuse_height;
-    vec3* diffuse;
-
-    int has_specular_buff;
-    int specular_width;
-    int specular_height;
-    vec3* specular;
+    int width;
+    int height;
+    vec3* data;
 } texture_t;
 
 /**

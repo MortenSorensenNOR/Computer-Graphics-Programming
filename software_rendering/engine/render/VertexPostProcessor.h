@@ -1,6 +1,6 @@
 #pragma once
 #include "../gml/GML.h"
-#include "../rutil/RenderUtil.h"
+#include "../utilities/RenderUtil.h"
 
 typedef struct {
     int s_width;

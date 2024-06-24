@@ -1,4 +1,4 @@
-#include "../rutil/RenderUtil.h"
+#include "../utilities/RenderUtil.h"
 
 typedef struct {
     vec3 cam_pos;
