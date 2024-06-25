@@ -30,7 +30,7 @@ int renderer_render(Render_t* renderer, size_t current_texture, texture_t* textu
             int x1 = x % test->width;
             
             int i = x1 + test->width * y1;
-            vec3 c = test->data[i];
+            glm::vec3 c = test->data[i];
 
             u_char r = (u_char)(c.x * 255);
             u_char g = (u_char)(c.y * 255);

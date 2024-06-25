@@ -6,14 +6,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "RenderUtil.h"
+#include "Types.h"
 
 /**
  * @brief Converts an assimp vector 3 to a gml vec3 
  * @param p     Assimp vector3
  * @return Returns the converted vec3
  */
-vec3 assimp_vec3_to_vec3(const aiVector3D* p);
+glm::vec3 assimp_vec3_to_vec3(const aiVector3D* p);
 
 /**
  * @brief Parses a .obj file into a model object using assimp
@@ -30,7 +30,7 @@ int parse_obj(const char* fpath, render_object_t* scene);
  * @param buffer_size   The size variable of the buffer
  * @return Returns 0 for success and 1 for failure
  */
-int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* texture_height);
+int load_texture(const char* fpath, glm::vec3** buffer, int* texture_width, int* texture_height);
 
 /**
  * @brief Frees an instance of a render object

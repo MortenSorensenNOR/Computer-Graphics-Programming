@@ -1,38 +1,18 @@
 #pragma once
 #include <stdlib.h>
-
-typedef struct {
-    double x, y;
-} vec2;
-
-typedef struct {
-    double x, y, z;
-} vec3;
-
-typedef struct {
-    double x, y, z, w;
-} vec4;
-
-
-typedef struct {
-    double m[9];
-} mat3;
-
-typedef struct {
-    double m[16];
-} mat4;
+#include <glm/glm.hpp>
 
 /**
  * @brief Basic triangle type
  */
 typedef struct {
-    vec3 vert[3];
-    vec3 frag[3];
-    vec2 uv[3];
-    vec3 color[3];
-    vec3 norm;
-    vec2 bb_top_left;
-    vec2 bb_bottom_right;
+    glm::vec3 vert[3];
+    glm::vec3 frag[3];
+    glm::vec2 uv[3];
+    glm::vec3 color[3];
+    glm::vec3 norm;
+    glm::vec2 bb_top_left;
+    glm::vec2 bb_bottom_right;
     char valid;
 } triangle_t;
 
@@ -49,9 +29,9 @@ typedef struct {
  */
 typedef struct {
     unsigned long long* index;
-    vec4* vertex;
-    vec3* normal;
-    vec2* uv;
+    glm::vec4* vertex;
+    glm::vec3* normal;
+    glm::vec2* uv;
 
     int ibuff_size;
     int vbuff_size;
@@ -71,7 +51,7 @@ typedef struct {
 typedef struct {
     int width;
     int height;
-    vec3* data;
+    glm::vec3* data;
 } texture_t;
 
 /**
@@ -81,7 +61,7 @@ typedef struct {
  * @param texture   Pointer to the texture of the object
  */
 typedef struct {
-    vec4 pos;
+    glm::vec4 pos;
 
     int num_meshes;
     mesh_t* meshes;
@@ -92,16 +72,16 @@ typedef struct {
 /**
  * @brief Basic light struct
  * @param pos       Position of the lihgt in global coordinates
- * @param ambient   Color/intensity of the ambient light - vec3
- * @param diffuse   Color/intensity of the diffuse light - vec3
- * @param specular  Color/intensity of the specular light - vec3
+ * @param ambient   Color/intensity of the ambient light - glm::vec3
+ * @param diffuse   Color/intensity of the diffuse light - glm::vec3
+ * @param specular  Color/intensity of the specular light - glm::vec3
  */
 typedef struct {
-    vec3 pos;
+    glm::vec3 pos;
 
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
 
     float constant;
     float linear;
@@ -109,17 +89,17 @@ typedef struct {
 } light_t;
 
 /**
- * @brief Convert vec3 color to an integer representation for xlib framebuffer
+ * @brief Convert glm::vec3 color to an integer representation for xlib framebuffer
  * @param c     Color to be converted
- * @returns Integer representaion in RGB 24-bit representation of the vec3 color
+ * @returns Integer representaion in RGB 24-bit representation of the glm::vec3 color
  */
-int color_v(const vec3* c);
+int color_v(const glm::vec3* c);
 
 /**
  * @brief Convert a normalized RGB color to an integer representation for xlib framebuffer
  * @param r     Red color channel
  * @param g     Green color channel
  * @param b     Blye color channel
- * @returns Integer representaion in RGB 24-bit representation of the vec3 color
+ * @returns Integer representaion in RGB 24-bit representation of the glm::vec3 color
  */
 int color_f(float r, float g, float b);

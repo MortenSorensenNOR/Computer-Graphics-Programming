@@ -4,12 +4,12 @@
 void* vertex_shader_thread_func(void* arg_ptr) {
     vertex_shader_thread_argument_t* thread_arg = (vertex_shader_thread_argument_t*)arg_ptr;
     for (int i = thread_arg->batch_start; i < thread_arg->batch_end; i++) {
-        vec4 global_vert_pos = mat4_vec4_mul(thread_arg->model, &thread_arg->in_vertex_buf[i]);
-        thread_arg->out_frag_buf[i] = vec4_to_vec3(&global_vert_pos);
-        thread_arg->out_pos_buf[i] = mat4_vec4_mul(thread_arg->proj, &global_vert_pos);
+        glm::vec4 global_vert_pos = *thread_arg->model * thread_arg->in_vertex_buf[i];
+        thread_arg->out_frag_buf[i] = global_vert_pos;
+        thread_arg->out_pos_buf[i] = *thread_arg->proj * global_vert_pos;
 
-        vec3 trasformed_norm = mat3_vec3_mul(thread_arg->inv_moodel_trans, &thread_arg->in_normal_buf[i]); 
-        thread_arg->out_normal_buf[i] = vec3_normalize(&trasformed_norm);
+        glm::vec3 trasformed_norm = *thread_arg->inv_moodel_trans * thread_arg->in_normal_buf[i]; 
+        thread_arg->out_normal_buf[i] = glm::normalize(trasformed_norm);
     } 
     return NULL;
 }
@@ -17,12 +17,9 @@ void* vertex_shader_thread_func(void* arg_ptr) {
 
 
 int vertex_shader(vertex_shader_input_t* in, vertex_shader_output_t* out) {
-    mat4 inv_model;
-    mat4 trans_inv_model;
-    mat3 trans_inv_model_3;
-    mat4_inverse(in->model, &inv_model);
-    mat4_transpose(&inv_model, &trans_inv_model);
-    mat4_to_mat3(&trans_inv_model, &trans_inv_model_3);
+    glm::mat4 inv_model = glm::inverse(*in->model);
+    glm::mat4 trans_inv_model = glm::transpose(inv_model);
+    glm::mat3 trans_inv_model_3 = glm::mat3(trans_inv_model);
 
     #ifdef VERTEX_SHADER_MULTI_THREAD
     int num_threads = 2;
@@ -53,21 +50,21 @@ int vertex_shader(vertex_shader_input_t* in, vertex_shader_output_t* out) {
 
     // Make sure all verticies are transformed
     for (int i = batch_size * num_threads; i < in->buf_size; ++i) {
-        vec4 global_vert_pos = mat4_vec4_mul(in->model, &in->vertex_buf[i]);
-        out->frag_buf[i] = vec4_to_vec3(&global_vert_pos);
-        out->pos_buf[i] = mat4_vec4_mul(in->view_proj, &global_vert_pos);
+        glm::vec4 global_vert_pos = *in->model * in->vertex_buf[i];
+        out->frag_buf[i] = global_vert_pos;
+        out->pos_buf[i] = *in->view_proj * global_vert_pos;
 
-        vec3 trasformed_norm = mat3_vec3_mul(&trans_inv_model_3, &in->normal_buf[i]); 
-        out->normal_buf[i] = vec3_normalize(&trasformed_norm);
+        glm::vec3 trasformed_norm = trans_inv_model_3 * in->normal_buf[i]; 
+        out->normal_buf[i] = glm::normalize(trasformed_norm);
     }
 
     #else
     for (int i = 0; i < in->buf_size; ++i) {
-        vec4 global_vert_pos = mat4_vec4_mul(in->model, &in->vertex_buf[i]);
+        glm::vec4 global_vert_pos = mat4_vec4_mul(in->model, &in->vertex_buf[i]);
         out->frag_buf[i] = vec4_to_vec3(&global_vert_pos);
         out->pos_buf[i] = mat4_vec4_mul(in->view_proj, &global_vert_pos);
 
-        vec3 trasformed_norm = mat3_vec3_mul(&trans_inv_model_3, &in->normal_buf[i]); 
+        glm::vec3 trasformed_norm = mat3_vec3_mul(&trans_inv_model_3, &in->normal_buf[i]); 
         out->normal_buf[i] = vec3_normalize(&trasformed_norm);
     }
     #endif

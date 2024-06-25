@@ -14,6 +14,8 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories("imgui")
 
+find_package(glm CONFIG REQUIRED)
+
 add_subdirectory(utilities)
 add_subdirectory(render)
 
@@ -27,5 +29,5 @@ add_library(engine STATIC
     imgui/backends/imgui_impl_sdlrenderer2.cpp
 )
 
-target_link_libraries(engine PRIVATE ${SDL2_LIBRARIES} utilities render)
+target_link_libraries(engine PRIVATE ${SDL2_LIBRARIES} glm::glm utilities render)
 

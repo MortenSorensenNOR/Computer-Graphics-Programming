@@ -1,7 +1,8 @@
 #pragma once
-#include "../gml/GML.h"
-#include "../utilities/RenderUtil.h"
+#include "../utilities/Types.h"
 #include <pthread.h>
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
 
 #define RASTERIZER_MULTI_THREAD
 #ifdef RASTERIZER_MULTI_THREAD
@@ -9,17 +10,17 @@ typedef struct {
     int s_width;
     int s_height;
 
-    vec3 cam_pos;
+    glm::vec3 cam_pos;
     light_t* light;
     texture_t* textures;
 
 
     int batch_start_y;
     int batch_end_y;
-    vec2* uv;
-    vec3* norm;
-    vec3* frag;
-    vec3* color;
+    glm::vec2* uv;
+    glm::vec3* norm;
+    glm::vec3* frag;
+    glm::vec3* color;
     float* zbuffer;
 
     int* framebuffer;
@@ -33,14 +34,14 @@ typedef struct {
     int s_width;
     int s_height;
 
-    vec3 cam_pos;
+    glm::vec3 cam_pos;
     light_t* light;
     texture_t* textures;
 
-    vec2* uv;
-    vec3* norm;
-    vec3* frag;
-    vec3* color;
+    glm::vec2* uv;
+    glm::vec3* norm;
+    glm::vec3* frag;
+    glm::vec3* color;
     float* zbuffer;
 } fragment_shader_input_t;
 

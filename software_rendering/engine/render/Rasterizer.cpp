@@ -1,9 +1,9 @@
 #include "Rasterizer.h"
 
-static inline void ra_barycentric(vec2* v0, vec2* v1, vec2* v2, vec2* p, vec3* bc) {
-    vec2 v10 = {v1->x - v0->x, v1->y - v0->y};
-    vec2 v21 = {v2->x - v0->x, v2->y - v0->y};
-    vec2 vp0 = {p->x - v0->x, p->y - v0->y};
+static inline void ra_barycentric(glm::vec2* v0, glm::vec2* v1, glm::vec2* v2, glm::vec2* p, glm::vec3* bc) {
+    glm::vec2 v10 = {v1->x - v0->x, v1->y - v0->y};
+    glm::vec2 v21 = {v2->x - v0->x, v2->y - v0->y};
+    glm::vec2 vp0 = {p->x - v0->x, p->y - v0->y};
 
     double d00 = v10.x * v10.x + v10.y * v10.y;
     double d01 = v10.x * v21.x + v10.y * v21.y;
@@ -21,8 +21,8 @@ static inline void ra_barycentric(vec2* v0, vec2* v1, vec2* v2, vec2* p, vec3* b
 #ifdef RASTERIZER_MULTI_THREAD
 void* rasterizer_thread_func(void* arg_ptr) {
     triangle_t* t;
-    vec2 v0, v1, v2, p;
-    vec3 bc;
+    glm::vec2 v0, v1, v2, p;
+    glm::vec3 bc;
     int index;
 
     int x_min, x_max, y_min, y_max;
@@ -31,17 +31,17 @@ void* rasterizer_thread_func(void* arg_ptr) {
         if (!t->valid)
             continue;
 
-        x_min = max(t->bb_top_left.x, 0);
-        x_max = min(t->bb_bottom_right.x, thread_arg->s_width);
-        y_min = max(t->bb_top_left.y, thread_arg->out_batch_start_y);
-        y_max = min(t->bb_bottom_right.y, thread_arg->out_batch_end_y);
+        x_min = fmax(t->bb_top_left.x, 0);
+        x_max = fmin(t->bb_bottom_right.x, thread_arg->s_width);
+        y_min = fmax(t->bb_top_left.y, thread_arg->out_batch_start_y);
+        y_max = fmin(t->bb_bottom_right.y, thread_arg->out_batch_end_y);
 
         for (int y = y_min; y <= y_max; ++y) {
             for (int x = x_min; x <= x_max; ++x) {
-                p = (vec2){x, y};
-                v0 = (vec2){t->vert[0].x, t->vert[0].y};
-                v1 = (vec2){t->vert[1].x, t->vert[1].y};
-                v2 = (vec2){t->vert[2].x, t->vert[2].y};
+                p = (glm::vec2){x, y};
+                v0 = (glm::vec2){t->vert[0].x, t->vert[0].y};
+                v1 = (glm::vec2){t->vert[1].x, t->vert[1].y};
+                v2 = (glm::vec2){t->vert[2].x, t->vert[2].y};
                 ra_barycentric(&v0, &v1, &v2, &p, &bc);
                 
                 if (bc.x < 0.0f || bc.y < 0.0f || bc.z < 0.0f)
@@ -55,16 +55,16 @@ void* rasterizer_thread_func(void* arg_ptr) {
                     continue;
 
                 thread_arg->out_zbuffer[index] = z;
-                thread_arg->out_uv[index] = (vec2){
+                thread_arg->out_uv[index] = (glm::vec2){
                     t->uv[0].x * bc.x + t->uv[1].x * bc.y + t->uv[2].x * bc.z,
                     t->uv[0].y * bc.x + t->uv[1].y * bc.y + t->uv[2].y * bc.z
                 };
-                thread_arg->out_frag[index] = (vec3){
+                thread_arg->out_frag[index] = (glm::vec3){
                     t->frag[0].x * bc.x + t->frag[1].x * bc.y + t->frag[2].x * bc.z,
                     t->frag[0].y * bc.x + t->frag[1].y * bc.y + t->frag[2].y * bc.z,
                     t->frag[0].z * bc.x + t->frag[1].z * bc.y + t->frag[2].z * bc.z,
                 };
-                thread_arg->out_color[index] = (vec3){
+                thread_arg->out_color[index] = (glm::vec3){
                     t->color[0].x * bc.x + t->color[1].x * bc.y + t->color[2].x * bc.z,
                     t->color[0].y * bc.x + t->color[1].y * bc.y + t->color[2].y * bc.z,
                     t->color[0].z * bc.x + t->color[1].z * bc.y + t->color[2].z * bc.z,
@@ -113,20 +113,20 @@ int rasterizer(rasterizer_input_t* in, rasterizer_output_t* out) {
  
     #else 
     triangle_t* t;
-    vec2 v0, v1, v2, p;
-    vec3 bc;             
+    glm::vec2 v0, v1, v2, p;
+    glm::vec3 bc;             
     int index;
 
     for (t = in->tri_buf; t < &in->tri_buf[in->tri_buf_size]; t++) {
         if (!t->valid)
             continue;
 
-        for (int y = max(t->bb_top_left.y, 0); y < min(t->bb_bottom_right.y, in->s_height); y++) {
-            for (int x = max(t->bb_top_left.x, 0); x < min(t->bb_bottom_right.x, in->s_width); x++) {
-                p = (vec2){x, y};
-                v0 = (vec2){t->vert[0].x, t->vert[0].y};
-                v1 = (vec2){t->vert[1].x, t->vert[1].y};
-                v2 = (vec2){t->vert[2].x, t->vert[2].y};
+        for (int y = fmax(t->bb_top_left.y, 0); y < fmin(t->bb_bottom_right.y, in->s_height); y++) {
+            for (int x = fmax(t->bb_top_left.x, 0); x < fmin(t->bb_bottom_right.x, in->s_width); x++) {
+                p = (glm::vec2){x, y};
+                v0 = (glm::vec2){t->vert[0].x, t->vert[0].y};
+                v1 = (glm::vec2){t->vert[1].x, t->vert[1].y};
+                v2 = (glm::vec2){t->vert[2].x, t->vert[2].y};
                 ra_barycentric(&v0, &v1, &v2, &p, &bc);
 
                 if (bc.x < 0.0f || bc.y < 0.0f || bc.z < 0.0f)
@@ -141,16 +141,16 @@ int rasterizer(rasterizer_input_t* in, rasterizer_output_t* out) {
 
                 // Set output buffer attributes
                 out->zbuffer[index] = z;
-                out->uv[index] = (vec2){
+                out->uv[index] = (glm::vec2){
                     t->uv[0].x * bc.x + t->uv[1].x * bc.y + t->uv[2].x * bc.z,
                         t->uv[0].y * bc.x + t->uv[1].y * bc.y + t->uv[2].y * bc.z
                 };
-                out->frag[index] = (vec3){
+                out->frag[index] = (glm::vec3){
                     t->frag[0].x * bc.x + t->frag[1].x * bc.y + t->frag[2].x * bc.z,
                         t->frag[0].y * bc.x + t->frag[1].y * bc.y + t->frag[2].y * bc.z,
                         t->frag[0].z * bc.x + t->frag[1].z * bc.y + t->frag[2].z * bc.z,
                 };
-                out->color[index] = (vec3){
+                out->color[index] = (glm::vec3){
                     t->color[0].x * bc.x + t->color[1].x * bc.y + t->color[2].x * bc.z,
                         t->color[0].y * bc.x + t->color[1].y * bc.y + t->color[2].y * bc.z,
                         t->color[0].z * bc.x + t->color[1].z * bc.y + t->color[2].z * bc.z,

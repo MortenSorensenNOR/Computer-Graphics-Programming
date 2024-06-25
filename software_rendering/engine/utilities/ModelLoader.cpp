@@ -2,8 +2,8 @@
 #include "ModelLoader.h"
 #include "stb_image.h"
 
-vec3 assimp_vec3_to_vec3(const aiVector3D* p) {
-    return (vec3){p->x, p->y, p->z};
+glm::vec3 assimp_vec3_to_vec3(const aiVector3D* p) {
+    return (glm::vec3){p->x, p->y, p->z};
 }
 
 int parse_obj(const char* fpath, render_object_t* object) {
@@ -23,9 +23,9 @@ int parse_obj(const char* fpath, render_object_t* object) {
         total_vert_count += mesh->mNumVertices;
 
         // Allocate space for each of the mesh buffers
-        object->meshes[i].vertex = (vec4*)malloc(mesh->mNumVertices * sizeof(vec4));
-        object->meshes[i].normal = (vec3*)malloc(mesh->mNumVertices * sizeof(vec3));
-        object->meshes[i].uv = (vec2*)malloc(mesh->mNumVertices * sizeof(vec2));
+        object->meshes[i].vertex = (glm::vec4*)malloc(mesh->mNumVertices * sizeof(glm::vec4));
+        object->meshes[i].normal = (glm::vec3*)malloc(mesh->mNumVertices * sizeof(glm::vec3));
+        object->meshes[i].uv = (glm::vec2*)malloc(mesh->mNumVertices * sizeof(glm::vec2));
 
         if (!object->meshes[i].vertex || !object->meshes[i].normal || !object->meshes[i].uv) {
             printf("Error: Could not allocate buffers.\n");
@@ -41,17 +41,17 @@ int parse_obj(const char* fpath, render_object_t* object) {
             aiVector3D position = mesh->mVertices[j];
             aiVector3D normal = mesh->mNormals[j];
     
-            vec3 position_vec3 = assimp_vec3_to_vec3(&position);
-            vec4 position_vec4 = (vec4){position_vec3.x, position_vec3.y, position_vec3.z, 1.0f};
-            vec3 normal_vec3 = assimp_vec3_to_vec3(&normal);
+            glm::vec3 position_vec3 = assimp_vec3_to_vec3(&position);
+            glm::vec4 position_vec4 = (glm::vec4){position_vec3.x, position_vec3.y, position_vec3.z, 1.0f};
+            glm::vec3 normal_vec3 = assimp_vec3_to_vec3(&normal);
 
             object->meshes[i].vertex[j] = position_vec4;
             object->meshes[i].normal[j] = normal_vec3;
 
             if (mesh->mTextureCoords[0]) {
                 aiVector3D uv = mesh->mTextureCoords[0][j];
-                vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
-                vec2 uv_vec2 = (vec2){uv_vec3.x, uv_vec3.y};
+                glm::vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
+                glm::vec2 uv_vec2 = (glm::vec2){uv_vec3.x, uv_vec3.y};
                 object->meshes[i].uv[j] = uv_vec2;
             }
         }
@@ -94,7 +94,7 @@ int parse_obj(const char* fpath, render_object_t* object) {
     return 0;
 }
 
-int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* texture_height) {
+int load_texture(const char* fpath, glm::vec3** buffer, int* texture_width, int* texture_height) {
     int width, height, channels;
     unsigned char* img = stbi_load(fpath, &width, &height, &channels, 0);
     if (img == NULL) {
@@ -116,9 +116,9 @@ int load_texture(const char* fpath, vec3** buffer, int* texture_width, int* text
 
     *texture_width = width;
     *texture_height = height;
-    *buffer = (vec3*)malloc(width * height * sizeof(vec3));
+    *buffer = (glm::vec3*)malloc(width * height * sizeof(glm::vec3));
     for (int i = 0; i < width * height; i++) {
-        (*buffer)[i] = (vec3){img[i * channels] / 255.0, img[i * channels + 1] / 255.0, img[i * channels + 2] / 255.0};
+        (*buffer)[i] = (glm::vec3){img[i * channels] / 255.0, img[i * channels + 1] / 255.0, img[i * channels + 2] / 255.0};
     }
     
     stbi_image_free(img);

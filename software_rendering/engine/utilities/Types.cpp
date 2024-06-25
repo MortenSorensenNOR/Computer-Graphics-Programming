@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "RenderUtil.h"
+#include "Types.h"
 
 int color_f(float r, float g, float b) {
     r = r < 0.0 ? 0.0 : r > 1.0 ? 1.0 : r;

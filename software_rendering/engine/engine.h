@@ -1,16 +1,22 @@
 #pragma once
 
-#include <SDL2/SDL_render.h>
 #include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
+#include <SDL2/SDL_pixels.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_video.h>
+
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_sdl2.h"
 #include "imgui/backends/imgui_impl_sdlrenderer2.h"
 
-#include "utilities/RenderUtil.h"
+#include "utilities/Types.h"
 #include "utilities/ModelLoader.h"
 #include "render/renderer.h"
 
@@ -30,6 +36,9 @@ typedef struct {
     SDL_Window* window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
+
+    Uint32 lastFrameTime;
+    double deltaTime;
 
     Render_t renderer;
     float camera_fov;

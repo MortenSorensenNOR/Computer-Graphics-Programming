@@ -12,7 +12,7 @@ link_directories (
 )
 
 add_library(utilities STATIC
-    RenderUtil.c 
+    Types.cpp
     ModelLoader.cpp
 )
 

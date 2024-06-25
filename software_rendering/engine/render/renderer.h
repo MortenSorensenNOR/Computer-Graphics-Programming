@@ -2,7 +2,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../utilities/RenderUtil.h"
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
+#include "../utilities/Types.h"
 
 typedef struct {
     int s_width;

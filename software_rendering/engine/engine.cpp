@@ -1,7 +1,4 @@
 #include "engine.h"
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_video.h>
 
 Engine_t* current_engine;
 
@@ -64,6 +61,11 @@ int engine_run(Engine_t* engine) {
     int current_texture = 0;
     bool running = true;
 
+    int i = 0;
+    double frameTimesLastFiveFrames = 0.0;
+    double averagedFPS = 0.0;
+    engine->lastFrameTime = SDL_GetPerformanceCounter();
+
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -73,13 +75,26 @@ int engine_run(Engine_t* engine) {
             }
         }
 
+        Uint32 currentFrameTime = SDL_GetPerformanceCounter();
+        engine->deltaTime = (double)((currentFrameTime - engine->lastFrameTime)) / (double)(SDL_GetPerformanceFrequency());
+        engine->lastFrameTime = currentFrameTime;
+
+        i++;
+        frameTimesLastFiveFrames += engine->deltaTime;
+
+        if (i >= 5 && frameTimesLastFiveFrames >= 0.000001) {
+            averagedFPS = 1.0 / (frameTimesLastFiveFrames / 5.0);
+            frameTimesLastFiveFrames = 0.0;
+            i = 0;
+        }
+
         // ImGui frame setup
         ImGui_ImplSDLRenderer2_NewFrame();
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::Begin("Hello, world!");
-        ImGui::Text("This is some useful text.");
+        ImGui::Begin("Settings");
+        ImGui::Text(("Current frametime: " + std::to_string(averagedFPS)).c_str());
         ImGui::SliderInt("Image num", &current_texture, 0, 1);
         ImGui::End();
 
