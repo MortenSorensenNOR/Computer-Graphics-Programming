@@ -13,7 +13,7 @@
  * @param p     Assimp vector3
  * @return Returns the converted vec3
  */
-vec3 assimp_vec3_to_vec3(const struct aiVector3D* p);
+vec3 assimp_vec3_to_vec3(const aiVector3D* p);
 
 /**
  * @brief Parses a .obj file into a model object using assimp

@@ -2,7 +2,6 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../gml/GML.h"
 #include "../utilities/RenderUtil.h"
 
 typedef struct {
@@ -19,6 +18,6 @@ int renderer_init(Render_t* renderer, int s_width, int s_height, float zfar, flo
 
 int renderer_reset_buffers(Render_t* renderer);
 
-int renderer_render(Render_t* renderer, size_t n_textures, texture_t* textures);
+int renderer_render(Render_t* renderer, size_t current_texture, texture_t* textures);
 
 int renderer_destroy(Render_t* renderer);

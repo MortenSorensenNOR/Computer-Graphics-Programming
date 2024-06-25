@@ -22,11 +22,14 @@ int renderer_reset_buffers(Render_t* renderer) {
     return 0;
 }
 
-int renderer_render(Render_t* renderer, size_t n_textures, texture_t* textures) {
-    texture_t* test = &textures[0];
-    for (int y = 0; y < test->height; y++) {
-        for (int x = 0; x < test->width; x++) {
-            int i = x + test->width * y;
+int renderer_render(Render_t* renderer, size_t current_texture, texture_t* textures) {
+    texture_t* test = &textures[current_texture];
+    for (int y = 0; y < renderer->s_height; y++) {
+        for (int x = 0; x < renderer->s_width; x++) {
+            int y1 = y % test->height;
+            int x1 = x % test->width;
+            
+            int i = x1 + test->width * y1;
             vec3 c = test->data[i];
 
             u_char r = (u_char)(c.x * 255);

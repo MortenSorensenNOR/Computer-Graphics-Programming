@@ -2,7 +2,7 @@
 #include "ModelLoader.h"
 #include "stb_image.h"
 
-vec3 assimp_vec3_to_vec3(const struct aiVector3D* p) {
+vec3 assimp_vec3_to_vec3(const aiVector3D* p) {
     return (vec3){p->x, p->y, p->z};
 }
 
@@ -38,20 +38,20 @@ int parse_obj(const char* fpath, render_object_t* object) {
         object->meshes[i].uvbuff_size = mesh->mNumVertices;
 
         for (int j = 0; j < mesh->mNumVertices; ++j) {
-            struct aiVector3D position = mesh->mVertices[j];
-            struct aiVector3D normal = mesh->mNormals[j];
+            aiVector3D position = mesh->mVertices[j];
+            aiVector3D normal = mesh->mNormals[j];
     
             vec3 position_vec3 = assimp_vec3_to_vec3(&position);
-            vec4 position_vec4 = vec3_to_vec4(&position_vec3);
+            vec4 position_vec4 = (vec4){position_vec3.x, position_vec3.y, position_vec3.z, 1.0f};
             vec3 normal_vec3 = assimp_vec3_to_vec3(&normal);
 
             object->meshes[i].vertex[j] = position_vec4;
             object->meshes[i].normal[j] = normal_vec3;
 
             if (mesh->mTextureCoords[0]) {
-                struct aiVector3D uv = mesh->mTextureCoords[0][j];
+                aiVector3D uv = mesh->mTextureCoords[0][j];
                 vec3 uv_vec3 = assimp_vec3_to_vec3(&uv);
-                vec2 uv_vec2 = vec3_to_vec2(&uv_vec3);
+                vec2 uv_vec2 = (vec2){uv_vec3.x, uv_vec3.y};
                 object->meshes[i].uv[j] = uv_vec2;
             }
         }

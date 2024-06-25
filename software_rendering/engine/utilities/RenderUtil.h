@@ -1,6 +1,26 @@
 #pragma once
 #include <stdlib.h>
-#include "../gml/GML.h"
+
+typedef struct {
+    double x, y;
+} vec2;
+
+typedef struct {
+    double x, y, z;
+} vec3;
+
+typedef struct {
+    double x, y, z, w;
+} vec4;
+
+
+typedef struct {
+    double m[9];
+} mat3;
+
+typedef struct {
+    double m[16];
+} mat4;
 
 /**
  * @brief Basic triangle type
@@ -103,21 +123,3 @@ int color_v(const vec3* c);
  * @returns Integer representaion in RGB 24-bit representation of the vec3 color
  */
 int color_f(float r, float g, float b);
-
-/**
- * @brief Computes the barycentric coordinate given the three corners of a triangle and a point inside - vec2
- * @param vert  The three verticies of the triangle
- * @param p     A point inside the triangle
- * @return The barycentric coordinate of the point - vec3
- */
-vec3 get_barycentric_coordinate2d(const vec2 vert[3], const vec2* p);
-
-/**
- * @brief Computes the barycentric coordinate given the three corners of a triangle and a point inside - vec3
- * @param vert  The three verticies of the triangle
- * @param p     A point inside the triangle
- * @return The barycentric coordinate of the point - vec3
- */
-vec3 get_barycentric_coordinate3d(const vec3 vert[3], const vec3* p);
-
-void bresenham(int* framebuffer, int s_width, int s_height, int x0, int y0, int x1, int y1, int color);

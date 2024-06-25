@@ -1,3 +1,6 @@
-[submodule "software_rendering/engine/glfw"]
-	path = software_rendering/engine/glfw
-	url = https://github.com/glfw/glfw.git
+[submodule "software_rendering/engine/sdl"]
+	path = software_rendering/engine/sdl
+	url = https://github.com/libsdl-org/SDL.git
+[submodule "software_rendering/engine/imgui"]
+	path = software_rendering/engine/imgui
+	url = https://github.com/ocornut/imgui.git
