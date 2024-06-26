@@ -15,7 +15,6 @@ int engine_init(Engine_t* engine, int width, int height, std::string window_name
     engine_imgui_init(engine);
 
     // Initialize engine assets
-    // TODO: Create better format
     engine->assets.n_textures = 2;
     engine->assets.textures = (texture_t*)malloc(engine->assets.n_textures * sizeof(texture_t));
 

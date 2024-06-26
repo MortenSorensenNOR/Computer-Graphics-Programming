@@ -1,5 +1,5 @@
 #pragma once
-#include "../utilities/Types.h"
+#include "../../utilities/Types.h"
 #include <pthread.h>
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>

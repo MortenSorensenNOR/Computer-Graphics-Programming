@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
-#include "../utilities/Types.h"
+#include "../../utilities/Types.h"
 
 typedef struct {
     int s_width;

@@ -7,6 +7,7 @@ void* fragment_shader_thread_func(void* arg_ptr) {
         for (int x = 0; x < thread_arg->s_width; x++) {
             int i = x + y * thread_arg->s_width;
             if (thread_arg->zbuffer[i] >= 0.999) {
+                thread_arg->framebuffer[i] = 0;
                 continue;
             }
             

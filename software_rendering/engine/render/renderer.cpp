@@ -15,9 +15,9 @@ int renderer_init(Render_t* renderer, int s_width, int s_height, float zfar, flo
 
 int renderer_reset_buffers(Render_t* renderer) {
     memset(renderer->frame_buffer, 0, renderer->s_width * renderer->s_height * sizeof(int));
-    for (int i = 0; i < renderer->s_width * renderer->s_height; ++i) {
-        renderer->zbuffer[i] = 1.0f;
-    }
+    // for (int i = 0; i < renderer->s_width * renderer->s_height; ++i) {
+    //     renderer->zbuffer[i] = 1.0f;
+    // }
     
     return 0;
 }
