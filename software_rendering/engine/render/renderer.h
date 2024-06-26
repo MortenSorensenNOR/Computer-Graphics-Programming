@@ -5,18 +5,16 @@
 #include <glm/glm.hpp>
 #include <glm/matrix.hpp>
 #include "../utilities/Types.h"
+#include "camera.h"
 
 typedef struct {
-    int s_width;
-    int s_height;
-    float zfar;
-    float znear;
+    Camera_t* camera;
 
     u_char* frame_buffer;
     float* zbuffer;
 } Render_t;
 
-int renderer_init(Render_t* renderer, int s_width, int s_height, float zfar, float znear);
+int renderer_init(Render_t* renderer, Camera_t* camera);
 
 int renderer_reset_buffers(Render_t* renderer);
 

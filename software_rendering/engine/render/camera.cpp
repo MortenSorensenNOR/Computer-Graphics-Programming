@@ -44,3 +44,7 @@ glm::mat4 camera_get_projection(Camera_t* camera) {
 glm::mat4 camera_get_screen_space_transform(Camera_t* camera) {
     return camera->screen_space_transform;
 }
+
+glm::ivec2 camera_get_resolution(Camera_t* camera) {
+    return glm::ivec2(camera->width, camera->height);
+}

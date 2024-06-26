@@ -14,6 +14,7 @@ link_directories (
 add_library(utilities STATIC
     Types.cpp
     ModelLoader.cpp
+    AssetManager.cpp
 )
 
 target_include_directories(utilities PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

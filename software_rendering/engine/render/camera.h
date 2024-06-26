@@ -24,3 +24,5 @@ int camera_update(Camera_t* camera, glm::vec3 new_pos, glm::vec3 new_forward, gl
 glm::mat4 camera_get_view(Camera_t* camera);
 glm::mat4 camera_get_projection(Camera_t* camera);
 glm::mat4 camera_get_screen_space_transform(Camera_t* camera);
+
+glm::ivec2 camera_get_resolution(Camera_t* camera);
