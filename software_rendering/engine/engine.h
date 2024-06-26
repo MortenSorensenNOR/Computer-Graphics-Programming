@@ -19,6 +19,7 @@
 #include "utilities/Types.h"
 #include "utilities/ModelLoader.h"
 #include "render/renderer.h"
+#include "render/camera.h"
 
 #define MAX_NUM_TEXTURES 256
 
@@ -39,6 +40,8 @@ typedef struct {
 
     Uint32 lastFrameTime;
     double deltaTime;
+
+    Camera_t camera;    
 
     Render_t renderer;
     float camera_fov;

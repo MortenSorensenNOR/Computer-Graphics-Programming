@@ -4,6 +4,7 @@ add_library(render STATIC
     backend/PrimitivesAssembler.cpp
     backend/Rasterizer.cpp
     backend/FragmentShader.cpp
+    camera.cpp
     renderer.cpp
 )
 

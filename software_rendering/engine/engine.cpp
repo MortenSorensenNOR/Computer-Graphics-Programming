@@ -25,7 +25,10 @@ int engine_init(Engine_t* engine, int width, int height, std::string window_name
     load_texture("../resources/imgs/birk.jpg", &texture_2->data, &texture_2->width, &texture_2->height);
 
 
-    // Initialize renderer
+    // Initialize camera and renderer
+    float aspect = (float)(width)/(height);
+    camera_init(&engine->camera, camera_fov, aspect, width, height, glm::vec3(0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+
     renderer_init(&engine->renderer, width, height, 0.1f, 100.0f);
     engine->camera_fov = camera_fov;
 
