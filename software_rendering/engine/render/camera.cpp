@@ -1,8 +1,8 @@
 #include "camera.h"
 
-int camera_init(Camera_t* camera, float fov, float aspect, int width, int height, glm::vec3 pos, glm::vec3 forward, glm::vec3 up) {
+int camera_init(Camera_t* camera, float fov, int width, int height, glm::vec3 pos, glm::vec3 forward, glm::vec3 up) {
     camera->fov = fov;
-    camera->aspect = aspect;
+    camera->aspect = (float)(width) / height;
 
     camera->width = width;
     camera->height = height;
@@ -20,7 +20,7 @@ int camera_init(Camera_t* camera, float fov, float aspect, int width, int height
     camera->screen_space_transform *= glm::vec4(0.5f, -0.5f, 1.0f, 1.0f);
     camera->screen_space_transform = glm::transpose(tmp * camera->screen_space_transform);
 
-    camera->projection = glm::perspective(glm::radians(fov), aspect, 0.1f, 1000.0f);
+    camera->projection = glm::perspective(glm::radians(fov), camera->aspect, 0.1f, 1000.0f);
 
     return 0;
 }

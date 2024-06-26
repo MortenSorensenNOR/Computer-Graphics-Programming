@@ -2,7 +2,7 @@
 
 Engine_t* current_engine;
 
-int engine_init(Engine_t* engine, int width, int height, std::string window_name, float camera_fov) {
+int engine_init(Engine_t* engine, int width, int height, std::string window_name, float fov) {
     current_engine = engine;
 
     // Initialize window
@@ -24,13 +24,9 @@ int engine_init(Engine_t* engine, int width, int height, std::string window_name
     texture_t* texture_2 = &engine->assets.textures[1];
     load_texture("../resources/imgs/birk.jpg", &texture_2->data, &texture_2->width, &texture_2->height);
 
-
     // Initialize camera and renderer
-    float aspect = (float)(width)/(height);
-    camera_init(&engine->camera, camera_fov, aspect, width, height, glm::vec3(0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
-
+    camera_init(&engine->camera, fov, width, height);
     renderer_init(&engine->renderer, &engine->camera);
-    engine->camera_fov = camera_fov;
 
     return 0;
 }
@@ -96,7 +92,7 @@ int engine_run(Engine_t* engine) {
         ImGui::NewFrame();
 
         ImGui::Begin("Settings");
-        ImGui::Text(("Current frametime: " + std::to_string(averagedFPS)).c_str());
+        ImGui::TextUnformatted(("Current frametime: " + std::to_string(averagedFPS)).c_str());
         ImGui::SliderInt("Image num", &current_texture, 0, 1);
         ImGui::End();
 

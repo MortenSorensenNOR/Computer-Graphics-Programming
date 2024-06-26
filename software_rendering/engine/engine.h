@@ -42,15 +42,10 @@ typedef struct {
     double deltaTime;
 
     Camera_t camera;    
-
     Render_t renderer;
-    float camera_fov;
 } Engine_t;
 
-// For external reference in glfw callbacks/hooks
-extern Engine_t* current_engine;
-
-int engine_init(Engine_t* engine, int width, int height, std::string window_name, float camera_fov);
+int engine_init(Engine_t* engine, int width, int height, std::string window_name, float fov);
 int engine_window_init(Engine_t* engine, int width, int height, std::string window_name);
 int engine_imgui_init(Engine_t* engine);
 

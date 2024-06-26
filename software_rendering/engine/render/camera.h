@@ -17,7 +17,7 @@ typedef struct {
     glm::mat4 screen_space_transform;
 } Camera_t;
 
-int camera_init(Camera_t* camera, float fov, float aspect, int width, int height, glm::vec3 pos, glm::vec3 forward, glm::vec3 up);
+int camera_init(Camera_t* camera, float fov, int width, int height, glm::vec3 pos = glm::vec3(0), glm::vec3 forward = glm::vec3(0, 0, -1), glm::vec3 up = glm::vec3(0, 1, 0));
 
 int camera_update(Camera_t* camera, glm::vec3 new_pos, glm::vec3 new_forward, glm::vec3 new_up);
 
