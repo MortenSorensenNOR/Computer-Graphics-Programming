@@ -1,2 +1,81 @@
-So, it turns out, I don't need to use OpenGL (yay).
-I'm goint to use SDL, and for ease of debugging, imgui.
+Software overview:
+
+#############################################################
+#                        APPLICATION                        #
+#############################################################
+-------------------------------------------------------------
+#################### ################### ####################
+#      ENGINE      # #     DISPLAY     # #  CORE UTILITIES  #
+#################### ################### ####################
+
+Application state:
+- Current Render Target
+- Application parameters
+    * Render backend
+    * Parameters for render backend, s.a. #threads for mult.thread.
+    * Render Target Resolution
+    * ?Enable/Disable GUI
+
+
+Display overview: 
+- Should be engine-backend agnostic
+- Currently targeting SDL, GLFW is also possible, though then OpenGL is required
+
+#######################################################################################
+#                                       DISPLAY                                       #
+#######################################################################################
+---------------------------------------------------------------------------------------
+###################### ################ ############################ ##################
+#  INIT SDL DISPLAY  # #  INIT IMGUI  # #  RENDER FRAMEBUFFER SDL  # #  RENDER IMGUI  #
+###################### ################ ############################ ##################
+
+
+Engine overview:
+
+#######################################################################
+#                               ENGINE                                #
+#######################################################################
+-----------------------------------------------------------------------
+########### ####################### ################## ################
+#  SCENE  # #  RENDERER FRONTEND  # #  ENGINE STATE  # #  GAME LOGIC  #
+########### ####################### ################## ################
+
+
+typdef struct {
+    SceneObject* parent;
+    SceneObject** children;
+    size_t num_children;
+
+    // Object paramters 
+    float pitch, yaw, roll;  // Rotation
+    float sx, sy, sz;        // Scale
+    float px, py, pz;        // Position
+
+    // Computed per frame from paramters above ^
+    mat4 model;
+    mat4 scale;
+
+    void* SceneObjectUpdateTransformFunction; // <--- void pointer to a function that is called when 
+
+} SceneObject;
+
+Scene structured as follows:
+
+root ---->                    o
+                             / \
+                            o   o
+                           / \   \
+                          o   o   o
+
+Then the transform matricies are computed per frame using this calling convension. This is very overkill, and I should 
+make all the UpdateTransform functions homogenious. I don't know why I thought this would be a good idea.
+
+void SceneUpdateTransforms(SceneObject* root) {
+    void (*UpdateTransformFunction)(SceneObject*) = root->SceneObjectUpdateTransformFunction;
+    *UpdateTransformFunction(root->parent); // <-- This utilizes it's parents transform to compute it's own
+    
+    for (int i = 0; i < root->num_children; i++) {
+        SceneUpdateTransforms(root->children[i]);
+    }
+}
+
