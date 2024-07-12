@@ -79,3 +79,31 @@ void SceneUpdateTransforms(SceneObject* root) {
     }
 }
 
+
+
+Project file structure:
+
+project/
+│
+├── src/
+│   └── main.cpp
+│
+├── Application/
+│   ├── Application.h
+│   ├── Application.cpp
+│   │
+│   ├── Core_Utilities/
+│   │
+│   ├── Engine/
+│   │   ├── engine.h
+│   │   ├── engine.cpp
+│   │   │
+│   │   ├── Scene/
+│   │   ├── Renderer_frontend/
+│   │   └── Game_logic/
+│   │
+│   ├── Display/
+│
+└── CMakeLists.txt  
+
+
