@@ -61,11 +61,15 @@ typdef struct {
 
 Scene structured as follows:
 
-root ---->                    o
-                             / \
-                            o   o
-                           / \   \
-                          o   o   o
+scene root ---->                    o
+                                   / \
+SceneObjects ---->                o   o
+                                 / \   \
+Parented to the one above -->   o   o   o
+
+This way transformation matricies are propageted to children, where one complex model can 
+consist of multiple sub-objects with their own transforms, like the rotor on a hellicopter.
+
 
 Then the transform matricies are computed per frame using this calling convension. This is very overkill, and I should 
 make all the UpdateTransform functions homogenious. I don't know why I thought this would be a good idea.

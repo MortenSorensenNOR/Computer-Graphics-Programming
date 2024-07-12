@@ -1,9 +1,6 @@
-[submodule "software_rendering/engine/sdl"]
-	path = software_rendering/engine/sdl
-	url = https://github.com/libsdl-org/SDL.git
-[submodule "software_rendering/engine/imgui"]
-	path = software_rendering/engine/imgui
+[submodule "software_rendering/application/display/imgui"]
+	path = software_rendering/application/display/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "software_rendering/engine/glm"]
-	path = software_rendering/engine/glm
-	url = https://github.com/g-truc/glm
+[submodule "software_rendering/application/display/backends/sdl"]
+	path = software_rendering/application/display/backends/sdl
+	url = https://github.com/libsdl-org/SDL.git
