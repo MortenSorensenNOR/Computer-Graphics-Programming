@@ -7,6 +7,11 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
+#include <SDL2/SDL_error.h>
+
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_sdl2.h"
+#include "imgui/backends/imgui_impl_sdlrenderer2.h"
 
 #include "../core_utils/core_utils.h"
 
@@ -14,7 +19,13 @@ typedef struct {
     size_t width;
     size_t height;
     
-    SDL_Window* render_target;
+    SDL_Window* window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
 } Display_t;
+
+int display_init(Display_t* display, int width, int height, std::string window_name, bool fullscreen = false);
+
+int display_update(Display_t* display, Buffer<glm::vec3>& fb); 
+
+int display_free(Display_t* display);
