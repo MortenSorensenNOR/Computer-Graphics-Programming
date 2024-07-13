@@ -1,6 +1,3 @@
 [submodule "software_rendering/application/display/imgui"]
 	path = software_rendering/application/display/imgui
 	url = https://github.com/ocornut/imgui.git
-[submodule "software_rendering/application/display/backends/sdl"]
-	path = software_rendering/application/display/backends/sdl
-	url = https://github.com/libsdl-org/SDL.git

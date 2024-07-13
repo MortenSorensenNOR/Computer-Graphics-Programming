@@ -1,3 +1,10 @@
+cmake_minimum_required(VERSION 3.18)
 
-# Depends upon glm 
-find_package(glm CONFIG REQUIRED)
+add_subdirectory(core_utils)
+add_subdirectory(display)
+
+add_library(application STATIC
+    application.cpp
+)
+
+target_link_libraries(application PRIVATE core_utils display)

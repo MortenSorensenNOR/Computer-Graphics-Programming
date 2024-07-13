@@ -14,6 +14,7 @@
 #include "imgui/backends/imgui_impl_sdlrenderer2.h"
 
 #include "../core_utils/core_utils.h"
+#include "../core_utils/buffer.h"
 
 typedef struct {
     size_t width;
@@ -22,9 +23,11 @@ typedef struct {
     SDL_Window* window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
+
+    Buffer<u_char> fb_intermediate;    
 } Display_t;
 
-int display_init(Display_t* display, int width, int height, std::string window_name, bool fullscreen = false);
+int display_init(Display_t* display, size_t width, size_t height, std::string window_name, bool fullscreen = false);
 
 int display_update(Display_t* display, Buffer<glm::vec3>& fb); 
 

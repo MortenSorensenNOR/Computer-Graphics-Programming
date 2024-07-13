@@ -1,6 +1,6 @@
 #include "display.h"
 
-int display_init(Display_t* display, int width, int height, std::string window_name, bool fullscreen) {
+int display_init(Display_t* display, size_t width, size_t height, std::string window_name, bool fullscreen) {
     display->width = width;
     display->height = height;
 
@@ -13,22 +13,39 @@ int display_init(Display_t* display, int width, int height, std::string window_n
     display->sdl_renderer = SDL_CreateRenderer(display->window, -1, SDL_RENDERER_SOFTWARE);
     display->fb_texture = SDL_CreateTexture(display->sdl_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, width, height);
 
+    display->fb_intermediate = buffer_allocate<u_char>(width * height);
+
     return 0;
 }
 
 int display_update(Display_t* display, Buffer<glm::vec3>& fb) {
-    int err = SDL_UpdateTexture(display->fb_texture, NULL, fb.data, display->width * 3);
-    if (err) {
-        ;
-        printf("Could not update texture (%s)\n", SDL_GetError());
+    if (fb.size != display->width * display->height) {
         return 1;
+    }
+
+    if (!fb.data) {
+        return 2;
+    }
+
+    // Convert the vec3 render buffer to a char frame buffer
+    for (size_t i = 0; i < fb.size; i++) {
+        display->fb_intermediate.data[3 * i + 0] = (u_char)((int)(fb.data[i].x * 255));
+        display->fb_intermediate.data[3 * i + 1] = (u_char)((int)(fb.data[i].y * 255));
+        display->fb_intermediate.data[3 * i + 2] = (u_char)((int)(fb.data[i].z * 255));
+    }
+
+    // Copy over the framebuffer to an SDL texture and render that to the screen
+    int err = SDL_UpdateTexture(display->fb_texture, NULL, display->fb_intermediate.data, display->width * 3);
+    if (err) {
+        printf("Could not update texture (%s)\n", SDL_GetError());
+        return 2;
     }
 
     SDL_RenderClear(display->sdl_renderer);
     SDL_RenderCopy(display->sdl_renderer, display->fb_texture, NULL, NULL);
 
     // If using imgui
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), display->sdl_renderer);
+    // ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), display->sdl_renderer);
 
     // Present the render
     SDL_RenderPresent(display->sdl_renderer);

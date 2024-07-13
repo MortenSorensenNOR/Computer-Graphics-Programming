@@ -14,11 +14,11 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -DNDEBUG")
 endif()
 
-add_subdirectory(engine)
+add_subdirectory(application)
 
 add_executable(
     app
     main.cpp
 )
 
-target_link_libraries(app PRIVATE engine)
+target_link_libraries(app PRIVATE application)
