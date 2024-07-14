@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
 find_package(OpenMP REQUIRED)
-target_link_libraries(MyTarget PUBLIC )
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})

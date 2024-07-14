@@ -1,24 +1,22 @@
 #include "application.h"
 
 int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, bool fullscreen) {
-    // Initialize display
     int err = display_init(&app->display, screen_width, screen_height, window_name, fullscreen);
     if (err) {
         printf("Could not initialize display\n");
         return 1;
     }
 
-    // Initialize GUI
     GUI_init(&app->display);
 
     return 0;
 }
 
 int application_run(Application_t* app) {
-    std::size_t buff_size = app->display.width * app->display.height;
-    Buffer<glm::vec3> test_fb = buffer_allocate<glm::vec3>(buff_size);
-    for (int i = 0; i < app->display.width * app->display.height; ++i) {
-        test_fb.data[i] = glm::vec3(0.5);
+    std::size_t buff_size = app->display.width * app->display.height * 3;
+    Buffer<u_char> test_fb = buffer_allocate<u_char>(buff_size);
+    for (int i = 0; i < buff_size; i++) {
+        test_fb.data[i] = 128;
     }
 
     time_t _last_frame, _current_frame;

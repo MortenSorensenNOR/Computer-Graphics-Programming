@@ -7,12 +7,15 @@
 #include "core_utils/core_utils.h"
 #include "display/display.h"
 #include "display/gui.h"
+#include "engine/engine.h"
 
 typedef struct {
     Display_t display;
 
     Info_t app_info;
     Settings_t app_settings;
+
+    Engine_t engine;
 } Application_t;
 
 int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, bool fullscreen = false);

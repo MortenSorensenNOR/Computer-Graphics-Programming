@@ -29,6 +29,8 @@ Display overview:
 #  INIT SDL DISPLAY  # #  INIT IMGUI  # #  RENDER FRAMEBUFFER SDL  # #  RENDER IMGUI  #
 ###################### ################ ############################ ##################
 
+STATUS: DONE (✓)
+
 
 Engine overview:
 
@@ -40,6 +42,7 @@ Engine overview:
 #  SCENE  # #  RENDERER FRONTEND  # #  ENGINE STATE  # #  GAME LOGIC  #
 ########### ####################### ################## ################
 
+STATUS: STARTING WORK
 
 typdef struct {
     SceneObject* parent;

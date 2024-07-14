@@ -24,13 +24,11 @@ typedef struct {
     SDL_Window* window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
-
-    Buffer<u_char> fb_intermediate;    
 } Display_t;
 
 int display_init(Display_t* display, size_t width, size_t height, std::string window_name, bool fullscreen = false);
 
-int display_update(Display_t* display, Buffer<glm::vec3>& fb); 
+int display_update(Display_t* display, Buffer<u_char>& fb); 
 
 int display_check_should_close(Display_t* display);
 
