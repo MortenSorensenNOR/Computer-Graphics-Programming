@@ -1,11 +1,16 @@
 #pragma once
 
+#include "../engine_utils/mesh.h"
+#include "../engine_utils/texture.h"
 #include "../../core_utils/core_utils.h"
 
 typedef struct SceneObject_t {
     SceneObject_t* parent;
     SceneObject_t** children;
     std::size_t num_children;
+
+    std::size_t mesh_index;
+    std::size_t texture_index;
 
     glm::vec3 rotation;
     glm::vec3 scale;
@@ -18,6 +23,9 @@ typedef struct SceneObject_t {
 
 typedef struct {
     SceneObject_t* scene_root;
+
+    Mesh* meshes;
+    Texture<float>* textures;
 } Scene_t;
 
 int scene_init(Scene_t* scene);
