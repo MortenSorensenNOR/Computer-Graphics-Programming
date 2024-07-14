@@ -10,7 +10,7 @@ int display_init(Display_t* display, size_t width, size_t height, std::string wi
     }
 
     display->window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, window_flags);
-    display->sdl_renderer = SDL_CreateRenderer(display->window, -1, SDL_RENDERER_SOFTWARE);
+    display->sdl_renderer = SDL_CreateRenderer(display->window, -1, SDL_RENDERER_ACCELERATED);
     display->fb_texture = SDL_CreateTexture(display->sdl_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, width, height);
 
     return 0;
