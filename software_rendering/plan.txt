@@ -123,3 +123,10 @@ project/
 └── CMakeLists.txt  
 
 
+Methods for creating a scene:
+
+1. Write a description to a file that is read on startup/change of scene 
+2. Implicitly declare it in the application layer -- a lot of code I don't 
+   want to write/difficult to have multiple scenes and to switch between different scenes
+
+

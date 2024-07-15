@@ -1,14 +1,17 @@
 #include <stdlib.h>
 #include <time.h>
+#include <filesystem>  
 
-#include "application/core_utils/core_utils.h"
 #include "application/application.h"
 
 int main(int argc, char** argv) {
     srand(time(0));
+    
+    std::filesystem::path root = std::filesystem::current_path();
+    std::filesystem::path assets = root.parent_path() / "assets/";
 
     Application_t app;
-    int err = application_init(&app, 1920, 1080, "Computer Graphics Programming");
+    int err = application_init(&app, 1280, 720, "Computer Graphics Programming", assets.string());
     if (err) {
         printf("Could not initialize application\n");
         return 1;

@@ -1,0 +1,12 @@
+<Scene>
+    <Camera position="0,0,0" forward="0,0,-10" up="0,1,0" />
+    <Lights>
+        <Light type="point" position="8,4,2" />
+    </Lights>
+    <Objects>
+        <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
+            <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
+        </Object>
+    </Objects>
+</Scene>
+

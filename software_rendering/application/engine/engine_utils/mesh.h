@@ -9,8 +9,8 @@ struct Mesh {
     std::size_t uv_buffer_size;
     std::size_t index_buffer_size;
 
-    glm::vec4* vertex;
-    glm::vec3* normal;
-    glm::vec2* uv; 
-    std::size_t* index;
+    glm::vec4* vertexes;
+    glm::vec3* normals;
+    glm::vec2* uvs; 
+    std::size_t* indices;
 };

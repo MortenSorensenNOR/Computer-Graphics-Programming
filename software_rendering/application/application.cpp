@@ -1,13 +1,22 @@
 #include "application.h"
 
-int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, bool fullscreen) {
+int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen) {
+    // Display and GUI init
     int err = display_init(&app->display, screen_width, screen_height, window_name, fullscreen);
     if (err) {
         printf("Could not initialize display\n");
         return 1;
     }
-
     GUI_init(&app->display);
+
+    // Engine and scene init
+    engine_init(&app->engine);
+    scene_init(&app->engine.scene);
+
+    if (assets_path == "")
+        return 1;
+
+    scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/cube.scene");
 
     return 0;
 }

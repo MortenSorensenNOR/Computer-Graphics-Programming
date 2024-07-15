@@ -14,10 +14,20 @@ int GUI_init(Display_t* display) {
 }
 
 int GUI_render_info(Info_t* info) {
+    static int i = 0;
+    static std::string ft;
+    static std::string fps;
+    i++;
+
     ImGui::Begin("Info");
     if (info->frame_time >= 0.0f) {
-        ImGui::TextUnformatted(("Current frametime: " + std::to_string(info->frame_time * 1000.0) + " ms").c_str());
-        ImGui::TextUnformatted(("Current FPS: " + std::to_string(1 / info->frame_time)).c_str());
+        // Make info text readable
+        if (i % 75 == 0) {
+            ft = std::to_string(info->frame_time * 1000.0f);
+            fps = std::to_string(1 / info->frame_time);
+        }
+        ImGui::TextUnformatted(("Current frametime: " + ft + " ms").c_str());
+        ImGui::TextUnformatted(("Current FPS: " + fps).c_str());
     } else {
         ImGui::TextUnformatted("Current frametime: INVALID FRAMETIME");
         ImGui::TextUnformatted("Current FPS: INVALID FRAMETIME");

@@ -16,9 +16,11 @@ typedef struct {
     Settings_t app_settings;
 
     Engine_t engine;
+
+    std::string assets_path;
 } Application_t;
 
-int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, bool fullscreen = false);
+int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen = false);
 
 int application_run(Application_t* app);
 

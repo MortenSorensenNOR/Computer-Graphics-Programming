@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.18)
+
+add_library(scene STATIC
+    scene.cpp
+    tinyxml2/tinyxml2.cpp
+)
+
+target_link_libraries(scene PRIVATE)
