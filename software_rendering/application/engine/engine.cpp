@@ -1,7 +1,7 @@
 #include "engine.h"
 
-int engine_init(Engine_t* engine) {
-    scene_init(&engine->scene);
+int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_height) {
+    scene_init(&engine->scene, screen_width, screen_height);
 
     return 0;
 }

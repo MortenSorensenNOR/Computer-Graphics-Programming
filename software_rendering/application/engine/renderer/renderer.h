@@ -6,10 +6,6 @@
 #include "../engine_utils/mesh.h"
 #include "../engine_utils/texture.h"
 
-namespace Renderer {
-
 typedef struct {
     
 } Renderer;
-
-}

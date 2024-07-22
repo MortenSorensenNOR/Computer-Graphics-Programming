@@ -4,6 +4,7 @@ find_package(glm CONFIG REQUIRED)
 
 add_library(scene STATIC
     scene.cpp
+    camera.cpp
     tinyxml2/tinyxml2.cpp
 )
 

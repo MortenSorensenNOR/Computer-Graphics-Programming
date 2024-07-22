@@ -1,5 +1,5 @@
 <Scene>
-    <Camera position="0,0,0" forward="0,0,-10" up="0,1,0" />
+    <Camera position="0,0,0" forward="0,0,-10" up="0,1,0" fov="90" />
     <Lights>
         <Light type="point" position="8,4,2" />
     </Lights>

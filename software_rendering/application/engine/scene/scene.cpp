@@ -1,12 +1,14 @@
 #include "scene.h"
 
-int scene_init(Scene_t* scene) {
+int scene_init(Scene_t* scene, std::size_t screen_width, std::size_t screen_height) {
     scene->scene_root = (SceneObject_t*)malloc(sizeof(SceneObject_t));
     scene->scene_root->parent = NULL;
     
     if (!scene->scene_root) {
         return 1;
     }
+
+    camera_init(&scene->camera, screen_width, screen_height);
 
     scene->meshes = std::vector<Mesh>();
     scene->textures = std::vector<Texture<float>>();
@@ -19,15 +21,18 @@ int scene_load_scene_from_file(Scene_t* scene, std::string assets_path, std::str
 
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(scene_path.c_str()) == tinyxml2::XML_SUCCESS) {
-        tinyxml2::XMLElement* scene = doc.FirstChildElement("Scene");
+        tinyxml2::XMLElement* scene_element = doc.FirstChildElement("Scene");
 
-        tinyxml2::XMLElement* camera = scene->FirstChildElement("Camera");
+        tinyxml2::XMLElement* camera = scene_element->FirstChildElement("Camera");
         glm::vec3 camera_position = _scene_string_to_vec3(camera->Attribute("position"));
         glm::vec3 camera_forward = _scene_string_to_vec3(camera->Attribute("forward"));
         glm::vec3 camera_up = _scene_string_to_vec3(camera->Attribute("up"));
+        float fov = (float)std::atoi(camera->Attribute("fov"));
+
+        camera_set_config(&scene->camera, camera_position, camera_forward, camera_up, fov);
         
         // TODO: Parse entire scene tree for all scene objects
-        tinyxml2::XMLElement* root = scene->FirstChildElement("Objects");
+        tinyxml2::XMLElement* root = scene_element->FirstChildElement("Objects");
 
         for (tinyxml2::XMLElement* object = root->FirstChildElement("Object"); object; object = object->NextSiblingElement("Object")) {
             glm::vec3 object_position = _scene_string_to_vec3(object->Attribute("position"));

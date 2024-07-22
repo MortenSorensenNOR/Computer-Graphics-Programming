@@ -44,48 +44,6 @@ Engine overview:
 
 STATUS: STARTING WORK
 
-typdef struct {
-    SceneObject* parent;
-    SceneObject** children;
-    size_t num_children;
-
-    // Object paramters 
-    float pitch, yaw, roll;  // Rotation
-    float sx, sy, sz;        // Scale
-    float px, py, pz;        // Position
-
-    // Computed per frame from paramters above ^
-    mat4 model;
-    mat4 scale;
-
-    void* SceneObjectUpdateTransformFunction; // <--- void pointer to a function that is called when 
-
-} SceneObject;
-
-Scene structured as follows:
-
-scene root ---->                    o
-                                   / \
-SceneObjects ---->                o   o
-                                 / \   \
-Parented to the one above -->   o   o   o
-
-This way transformation matricies are propageted to children, where one complex model can 
-consist of multiple sub-objects with their own transforms, like the rotor on a hellicopter.
-
-
-Then the transform matricies are computed per frame using this calling convension. This is very overkill, and I should 
-make all the UpdateTransform functions homogenious. I don't know why I thought this would be a good idea.
-
-void SceneUpdateTransforms(SceneObject* root) {
-    void (*UpdateTransformFunction)(SceneObject*) = root->SceneObjectUpdateTransformFunction;
-    *UpdateTransformFunction(root->parent); // <-- This utilizes it's parents transform to compute it's own
-    
-    for (int i = 0; i < root->num_children; i++) {
-        SceneUpdateTransforms(root->children[i]);
-    }
-}
-
 ############################            
 #         RENDERER         #
 ############################            
@@ -121,12 +79,3 @@ project/
 │   ├── Display/
 │
 └── CMakeLists.txt  
-
-
-Methods for creating a scene:
-
-1. Write a description to a file that is read on startup/change of scene 
-2. Implicitly declare it in the application layer -- a lot of code I don't 
-   want to write/difficult to have multiple scenes and to switch between different scenes
-
-

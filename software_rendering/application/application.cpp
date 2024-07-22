@@ -10,8 +10,7 @@ int application_init(Application_t* app, size_t screen_width, size_t screen_heig
     GUI_init(&app->display);
 
     // Engine and scene init
-    engine_init(&app->engine);
-    scene_init(&app->engine.scene);
+    engine_init(&app->engine, screen_width, screen_height);
 
     if (assets_path == "")
         return 1;

@@ -10,6 +10,7 @@
 #include "../engine_utils/texture.h"
 #include "../../core_utils/core_utils.h"
 
+#include "camera.h"
 #include "tinyxml2/tinyxml2.h"
 
 typedef struct SceneObject_t {
@@ -33,6 +34,7 @@ typedef struct SceneObject_t {
 typedef struct {
     SceneObject_t* scene_root;
 
+    Camera_t camera;
     std::vector<Mesh> meshes;
     std::vector<Texture<float>> textures;
 } Scene_t;
@@ -41,7 +43,7 @@ typedef struct {
  * @brief Initialize the scene structure
  * @param scene --- pointer to the scene to be initialized
  */
-int scene_init(Scene_t* scene);
+int scene_init(Scene_t* scene, std::size_t screen_width, std::size_t screen_height);
 
 /**
  * @brief Loads in a scene from a specific file and reads the corresponding models into the scene object tree
