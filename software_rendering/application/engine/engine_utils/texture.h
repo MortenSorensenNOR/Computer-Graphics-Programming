@@ -1,6 +1,15 @@
 #pragma once
 
+#include <algorithm>
 #include <glm/glm.hpp>
+
+enum class TextureType {
+    DIFFUSE,
+    NORMAL,
+    SPECULAR,
+    AO,
+    DISPLACEMENT
+};
 
 template <typename T>
 struct Texture {

@@ -44,7 +44,7 @@ int scene_load_scene_from_file(Scene_t* scene, std::string assets_path, std::str
         return 1;
     }
 
-    printf("Scene path: %s", scene_path.c_str());
+    printf("Scene path: %s\n", scene_path.c_str());
         
     return 0;
 }
@@ -71,6 +71,8 @@ int scene_free(Scene_t* scene) {
         if (t->size)
             free(t->data);
     }
+
+    free(scene->scene_root);
 
     return 0;
 }

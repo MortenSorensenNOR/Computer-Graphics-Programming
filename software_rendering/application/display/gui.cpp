@@ -22,7 +22,7 @@ int GUI_render_info(Info_t* info) {
     ImGui::Begin("Info");
     if (info->frame_time >= 0.0f) {
         // Make info text readable
-        if (i % 75 == 0) {
+        if (i % 100 == 0) {
             ft = std::to_string(info->frame_time * 1000.0f);
             fps = std::to_string(1 / info->frame_time);
         }

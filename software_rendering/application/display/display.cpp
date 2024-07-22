@@ -51,6 +51,10 @@ int display_check_should_close(Display_t* display) {
         ImGui_ImplSDL2_ProcessEvent(&event);
         if (event.type == SDL_QUIT) {
             return 1;
+        } else if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_w) {
+                return 1;
+            }
         }
     }
     return 0;

@@ -31,7 +31,8 @@ int application_run(Application_t* app) {
     time_t _last_frame, _current_frame;
     _last_frame = clock();
 
-    while (1) {
+    bool _quit = false;
+    while (!_quit) {
         _current_frame = clock();
         app->app_info.frame_time = (float)(_current_frame - _last_frame)/(CLOCKS_PER_SEC);
         _last_frame = _current_frame;
@@ -40,7 +41,7 @@ int application_run(Application_t* app) {
         display_update(&app->display, test_fb);
 
         if (display_check_should_close(&app->display))
-            break;
+            _quit = true;
     }
 
     buffer_free(test_fb);
@@ -51,6 +52,7 @@ int application_run(Application_t* app) {
 int application_free(Application_t* app) {
     display_free(&app->display);
     GUI_free();
+    engine_free(&app->engine);
 
     return 0;
 }

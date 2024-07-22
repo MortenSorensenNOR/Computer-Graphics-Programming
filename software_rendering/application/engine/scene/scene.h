@@ -64,5 +64,4 @@ int scene_free(Scene_t* scene);
 int _scene_propagete_and_calculate_transforms(SceneObject_t* root);
 
 glm::vec3 _scene_string_to_vec3(const std::string& string);
-
 glm::vec4 _scene_string_to_vec4(const std::string& string);
