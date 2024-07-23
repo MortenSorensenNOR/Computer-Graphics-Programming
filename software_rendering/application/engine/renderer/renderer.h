@@ -8,4 +8,4 @@
 
 typedef struct {
     
-} Renderer;
+} Renderer_t;

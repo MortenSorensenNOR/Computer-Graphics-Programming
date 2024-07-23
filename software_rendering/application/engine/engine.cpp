@@ -7,6 +7,7 @@ int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_h
 }
 
 int engine_run(Engine_t* engine, float dt) {
+    scene_update(&engine->scene);
      
     return 0;
 }

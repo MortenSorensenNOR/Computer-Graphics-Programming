@@ -6,37 +6,37 @@
 
 #include <glm/glm.hpp>
 
+#include "../../core_utils/core_utils.h"
 #include "../engine_utils/mesh.h"
 #include "../engine_utils/texture.h"
-#include "../../core_utils/core_utils.h"
+#include "../engine_utils/light.h"
 
 #include "camera.h"
 #include "tinyxml2/tinyxml2.h"
 
-typedef struct SceneObject_t {
-    SceneObject_t* parent;
-    SceneObject_t** children;
-    std::size_t num_children;
-
-    std::size_t* mesh_indices;
-    std::size_t* texture_indices;
-    std::size_t num_meshes;
-
+struct SceneObject_t {
     glm::vec3 rotation;
     glm::vec3 scale;
     glm::vec3 position;
-    glm::vec3 velocity;
 
     glm::mat4 model;
     glm::mat4 scale_matrix;
-} SceneObject_t;
+
+    std::vector<std::size_t>* mesh_indices;
+    std::vector<std::size_t>* texture_indices;
+
+    SceneObject_t* parent;
+    std::vector<SceneObject_t*>* children;
+};
 
 typedef struct {
     SceneObject_t* scene_root;
 
     Camera_t camera;
-    std::vector<Mesh> meshes;
-    std::vector<Texture<float>> textures;
+
+    std::vector<Light>* lights;
+    std::vector<Mesh>* meshes;
+    std::vector<Texture<float>>* textures;
 } Scene_t;
 
 /**
@@ -63,7 +63,11 @@ int scene_update(Scene_t* scene);
  */
 int scene_free(Scene_t* scene);
 
-int _scene_propagete_and_calculate_transforms(SceneObject_t* root);
+int _scene_free_scene_objects(SceneObject_t* object);
+
+int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, SceneObject_t* root_object);
 
 glm::vec3 _scene_string_to_vec3(const std::string& string);
 glm::vec4 _scene_string_to_vec4(const std::string& string);
+
+int _scene_propagete_and_calculate_transforms(SceneObject_t* root);

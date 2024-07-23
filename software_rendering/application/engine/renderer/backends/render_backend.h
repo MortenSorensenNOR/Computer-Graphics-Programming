@@ -7,7 +7,7 @@
 
 class RenderBackend {
 public:
-    RenderBackend();
+    RenderBackend(std::size_t render_resolution_width, std::size_t render_resolution_height);
     ~RenderBackend();
 
     /**

@@ -14,7 +14,6 @@ int application_init(Application_t* app, size_t screen_width, size_t screen_heig
 
     if (assets_path == "")
         return 1;
-
     scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/cube.scene");
 
     return 0;
@@ -27,9 +26,11 @@ int application_run(Application_t* app) {
         test_fb.data[i] = 128;
     }
 
+    // Setup time measurement
     time_t _last_frame, _current_frame;
     _last_frame = clock();
 
+    // Main application loop
     bool _quit = false;
     while (!_quit) {
         _current_frame = clock();

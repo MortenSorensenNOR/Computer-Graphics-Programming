@@ -7,6 +7,15 @@
         <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
             <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
         </Object>
+        <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
+            <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
+        </Object>
+        <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
+            <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
+            <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
+                <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
+            </Object>
+        </Object>
     </Objects>
 </Scene>
 
