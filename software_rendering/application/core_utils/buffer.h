@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdlib>
+#include <string.h>
 
 template <typename T>
 struct Buffer {

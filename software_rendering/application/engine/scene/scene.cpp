@@ -100,11 +100,11 @@ int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, 
         std::string model_texture_path = object_model->Attribute("texture");
 
         // Allocate new texture and mesh
-        Mesh object_mesh();
-        Texture<float> object_texture();
-
-        scene->meshes->push_back(object_mesh);
-        scene->textures->push_back(object_texture);
+        // Mesh object_mesh();
+        // Texture<float> object_texture();
+        //
+        // scene->meshes->push_back(object_mesh);
+        // scene->textures->push_back(object_texture);
 
         SceneObject_t* scene_object = new SceneObject_t;
         scene_object->parent = root_object;
