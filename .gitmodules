@@ -1,3 +1,0 @@
-[submodule "software_rendering/application/display/imgui"]
-	path = software_rendering/application/display/imgui
-	url = https://github.com/ocornut/imgui.git

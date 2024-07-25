@@ -1,0 +1,3 @@
+CompileFlags:
+  Add: [-nocudalib, --cuda-path=/usr/local/cuda-12.5, --cuda-gpu-arch=sm_89]
+
