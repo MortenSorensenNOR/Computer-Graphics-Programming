@@ -5,8 +5,8 @@
 #include "display.h"
 
 #include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_sdl2.h"
-#include "imgui/backends/imgui_impl_sdlrenderer2.h"
+#include "imgui/imgui_impl_sdl2.h"
+#include "imgui/imgui_impl_sdlrenderer2.h"
 
 #include "../state/info.h"
 #include "../state/settings.h"

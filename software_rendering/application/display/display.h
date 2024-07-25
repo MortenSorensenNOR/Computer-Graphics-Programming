@@ -11,8 +11,8 @@
 #include <SDL2/SDL_error.h>
 
 #include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_sdl2.h"
-#include "imgui/backends/imgui_impl_sdlrenderer2.h"
+#include "imgui/imgui_impl_sdl2.h"
+#include "imgui/imgui_impl_sdlrenderer2.h"
 
 #include "../core_utils/core_utils.h"
 #include "../core_utils/buffer.h"
