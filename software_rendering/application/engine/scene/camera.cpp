@@ -5,7 +5,6 @@ int camera_init(Camera_t* camera, std::size_t camera_res_x, std::size_t camera_r
     return 0;
 }
 
-
 int camera_set_config(Camera_t* camera, glm::vec3 pos, glm::vec3 forward, glm::vec3 up, float fov) {
     camera->pos = pos;
     camera->forward = forward;

@@ -11,7 +11,7 @@
 
 struct RenderObject {
     Mesh mesh;
-    // Texture<glm::vec3>* textures[RENDER_OBJECT_MAX_NUM_TEXTURES];
+    glm::mat4 model;
 
     RenderObject(Buffer<glm::vec4>& vertexes, Buffer<std::size_t>& indices) 
         : mesh(vertexes, indices) {}
