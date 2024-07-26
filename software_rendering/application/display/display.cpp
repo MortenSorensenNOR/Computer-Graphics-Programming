@@ -52,7 +52,7 @@ int display_check_should_close(Display_t* display) {
         if (event.type == SDL_QUIT) {
             return 1;
         } else if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_w) {
+            if (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_q) {
                 return 1;
             }
         }

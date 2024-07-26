@@ -34,8 +34,17 @@ int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_h
 
     engine->testObj = new RenderObject(vertexes, indices);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    engine->testObj->model = glm::translate(model, glm::vec3(0, 0, 2.0f));
+    engine->model1 = glm::mat4(1.0f);
+    engine->model1 = glm::translate(engine->model1, glm::vec3(0, 0, 2.0f));
+
+    engine->model2 = glm::mat4(1.0f);
+    engine->model2 = glm::translate(engine->model2, glm::vec3(-3.75f, 0, 0));
+
+    engine->model3 = glm::mat4(1.0f);
+    engine->model3 = glm::translate(engine->model3, glm::vec3(3.75f, 0, 0));
+
+    engine->model4 = glm::mat4(1.0f);
+    engine->model4 = glm::translate(engine->model4, glm::vec3(0, 0, -2.0f));
 
     buffer_free(vertexes);
     buffer_free(indices);
@@ -46,19 +55,32 @@ int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_h
 int engine_run(Engine_t* engine, float dt, Settings_t* settings) {
     scene_update(&engine->scene);
 
-    float nearPlane = 0.1f;
-    float farPlane = 100.f;
-    glm::vec3 eye(0, 3.75, 6.5);
-    glm::vec3 lookat(0, 0, 0);
-    glm::vec3 up(0, 1, 0);
+    engine->scene.camera.forward.x = settings->lookAt_x;
+    engine->scene.camera.forward.y = settings->lookAt_y;
+    engine->scene.camera.forward.z = settings->lookAt_z;
+    camera_update_view(&engine->scene.camera);
 
-    glm::mat4 view = glm::lookAt(eye, lookat, up);
-    glm::mat4 projection = glm::perspective(glm::radians(60.f), (float)engine->renderer.render_width / (float)engine->renderer.render_height, nearPlane, farPlane);
+    glm::mat4* view = camera_get_view(&engine->scene.camera);
+    glm::mat4* projection = camera_get_projection(&engine->scene.camera);
 
-    engine->testObj->model = glm::rotate(engine->testObj->model, glm::radians(45.0f * dt), glm::vec3(0, 1, 0));
-
+    engine->model1 = glm::rotate(engine->model1, glm::radians(45.f * dt), glm::vec3(0, 1, 0));
+    engine->model2 = glm::rotate(engine->model2, glm::radians(30.f * dt), glm::vec3(1, 0, 0));
+    engine->model3 = glm::rotate(engine->model3, glm::radians(60.f * dt), glm::vec3(0, 1, 0));
+    engine->model4 = glm::rotate(engine->model4, glm::radians(90.f * dt), glm::vec3(0, 0, 1));
+    
     engine->renderer.backend->ClearBuffers();
-    renderer_render_object(&engine->renderer, *engine->testObj, view, projection);
+
+    engine->testObj->model = engine->model1;
+    renderer_render_object(&engine->renderer, *engine->testObj, *view, *projection);
+
+    engine->testObj->model = engine->model2;
+    renderer_render_object(&engine->renderer, *engine->testObj, *view, *projection);
+
+    engine->testObj->model = engine->model3;
+    renderer_render_object(&engine->renderer, *engine->testObj, *view, *projection);
+
+    engine->testObj->model = engine->model4;
+    renderer_render_object(&engine->renderer, *engine->testObj, *view, *projection);
 
     return 0;
 }

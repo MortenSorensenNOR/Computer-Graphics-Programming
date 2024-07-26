@@ -88,6 +88,12 @@ public:
                             framebuffer.data[3*offset]   = colors[index_buffer->data[3 * i] % 6].x; 
                             framebuffer.data[3*offset+1] = colors[index_buffer->data[3 * i] % 6].y; 
                             framebuffer.data[3*offset+2] = colors[index_buffer->data[3 * i] % 6].z; 
+                            
+                            // char depth_value = (int)(255 * oneOverW);
+                            // framebuffer.data[3*offset]   = depth_value; 
+                            // framebuffer.data[3*offset+1] = depth_value; 
+                            // framebuffer.data[3*offset+2] = depth_value; 
+
                         }
                     }
                 }

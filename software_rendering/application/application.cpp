@@ -9,10 +9,6 @@ int application_init(Application_t* app, size_t screen_width, size_t screen_heig
         return 1;
     scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/cube.scene");
 
-    app->app_settings.r = 0;
-    app->app_settings.g = 0;
-    app->app_settings.b = 0;
-
     return 0;
 }
 

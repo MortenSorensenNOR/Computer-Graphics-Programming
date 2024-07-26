@@ -1,7 +1,7 @@
 #pragma once
 
-typedef struct {
-    int r;
-    int g;
-    int b;    
-} Settings_t;
+struct Settings_t {
+    float lookAt_x = 0.0f;
+    float lookAt_y = 0.0f;
+    float lookAt_z = 0.0f;
+};
