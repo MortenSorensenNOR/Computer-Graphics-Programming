@@ -16,17 +16,17 @@ int display_init(Display_t* display, size_t width, size_t height, std::string wi
     return 0;
 }
 
-int display_update(Display_t* display, Buffer<u_char>& fb) {
-    if (fb.size != display->width * display->height * 3) { 
+int display_update(Display_t* display, Buffer<char>* fb) {
+    if (fb->size != display->width * display->height * 3) { 
         return 1;
     }
 
-    if (!fb.data) {
+    if (!fb->data) {
         return 2;
     }
 
     // Copy over the framebuffer to an SDL texture and render that to the screen
-    int err = SDL_UpdateTexture(display->fb_texture, NULL, fb.data, display->width * 3);
+    int err = SDL_UpdateTexture(display->fb_texture, NULL, fb->data, display->width * 3);
     if (err) {
         printf("Could not update texture (%s)\n", SDL_GetError());
         return 2;

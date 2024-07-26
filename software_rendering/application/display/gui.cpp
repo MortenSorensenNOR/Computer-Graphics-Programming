@@ -38,6 +38,11 @@ int GUI_render_info(Info_t* info) {
 }
 
 int GUI_render_settings(Settings_t* settings) {
+    ImGui::Begin("Settings");
+    ImGui::SliderInt("R:", &settings->r, 0, 255);
+    ImGui::SliderInt("G:", &settings->g, 0, 255);
+    ImGui::SliderInt("B:", &settings->b, 0, 255);
+    ImGui::End();
 
     return 0; 
 }
@@ -48,6 +53,7 @@ int GUI_render(Info_t* info, Settings_t* settings) {
     ImGui::NewFrame();
 
     GUI_render_info(info);
+    GUI_render_settings(settings);
 
     return 0; 
 }

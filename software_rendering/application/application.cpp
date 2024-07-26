@@ -1,31 +1,22 @@
 #include "application.h"
 
 int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen) {
-    // Display and GUI init
-    int err = display_init(&app->display, screen_width, screen_height, window_name, fullscreen);
-    if (err) {
-        printf("Could not initialize display\n");
-        return 1;
-    }
+    display_init(&app->display, screen_width, screen_height, window_name, fullscreen);
     GUI_init(&app->display);
-
-    // Engine and scene init
     engine_init(&app->engine, screen_width, screen_height);
 
     if (assets_path == "")
         return 1;
     scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/cube.scene");
 
+    app->app_settings.r = 0;
+    app->app_settings.g = 0;
+    app->app_settings.b = 0;
+
     return 0;
 }
 
 int application_run(Application_t* app) {
-    std::size_t buff_size = app->display.width * app->display.height * 3;
-    Buffer<u_char> test_fb = buffer_allocate<u_char>(buff_size);
-    for (int i = 0; i < buff_size; i++) {
-        test_fb.data[i] = 128;
-    }
-
     // Setup time measurement
     time_t _last_frame, _current_frame;
     _last_frame = clock();
@@ -37,14 +28,15 @@ int application_run(Application_t* app) {
         app->app_info.frame_time = (float)(_current_frame - _last_frame)/(CLOCKS_PER_SEC);
         _last_frame = _current_frame;
 
+        engine_run(&app->engine, app->app_info.frame_time, &app->app_settings);
+        
+        Buffer<char>* render_fb = engine_get_fb(&app->engine);
         GUI_render(&app->app_info, &app->app_settings);
-        display_update(&app->display, test_fb);
+        display_update(&app->display, render_fb);
 
         if (display_check_should_close(&app->display))
             _quit = true;
     }
-
-    buffer_free(test_fb);
 
     return 0;
 }

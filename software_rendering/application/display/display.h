@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <omp.h>
 
@@ -18,8 +19,8 @@
 #include "../core_utils/buffer.h"
 
 typedef struct {
-    size_t width;
-    size_t height;
+    std::size_t width;
+    std::size_t height;
     
     SDL_Window* window;
     SDL_Renderer* sdl_renderer;
@@ -28,7 +29,7 @@ typedef struct {
 
 int display_init(Display_t* display, size_t width, size_t height, std::string window_name, bool fullscreen = false);
 
-int display_update(Display_t* display, Buffer<u_char>& fb); 
+int display_update(Display_t* display, Buffer<char>* fb); 
 
 int display_check_should_close(Display_t* display);
 

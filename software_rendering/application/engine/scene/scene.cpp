@@ -41,7 +41,7 @@ int scene_load_scene_from_file(Scene_t* scene, std::string assets_path, std::str
         return 1;
     }
 
-    printf("Scene path: %s\n", scene_path.c_str());
+    printf("Scene loaded: %s\n", scene_file_name.c_str());
         
     return 0;
 }
@@ -54,9 +54,9 @@ int scene_free(Scene_t* scene) {
     for (int i = 0; i < scene->meshes->size(); ++i) {
         Mesh* m = &scene->meshes->at(i);
         buffer_free(m->vertexes);
-        buffer_free(m->normals);
-        buffer_free(m->uvs);
         buffer_free(m->indices);
+        // buffer_free(m->normals); // TODO: Add back in
+        // buffer_free(m->uvs);
     }
 
     for (int i = 0; i < scene->textures->size(); ++i) {
@@ -74,8 +74,6 @@ int scene_free(Scene_t* scene) {
 }
 
 int _scene_free_scene_objects(SceneObject_t* object) {
-    printf("Hi %ld\n", object->children->size());
-
     for (std::size_t i = 0; i < object->children->size(); i++) {
         _scene_free_scene_objects(object->children->at(i));
     }
