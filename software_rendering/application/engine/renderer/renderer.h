@@ -17,7 +17,7 @@ int renderer_init(Renderer* renderer, std::size_t render_width, std::size_t rend
 
 int renderer_set_backend(Renderer* renderer, std::unique_ptr<RenderBackend> backend);
 
-int renderer_render_object(Renderer* renderer, RenderObject& object);
+int renderer_render_object(Renderer* renderer, RenderObject& object, const glm::mat4& view, const glm::mat4& projection);
 
 Buffer<char>* renderer_get_fb(Renderer* renderer);
 

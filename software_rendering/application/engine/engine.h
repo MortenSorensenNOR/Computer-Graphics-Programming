@@ -4,9 +4,9 @@
 
 #include "../state/settings.h"
 #include "scene/scene.h"
+#include "scene/camera.h"
 #include "renderer/renderer.h"
 #include "renderer/backends/simple_renderer.h"
-
 
 typedef struct {
     Scene_t scene;

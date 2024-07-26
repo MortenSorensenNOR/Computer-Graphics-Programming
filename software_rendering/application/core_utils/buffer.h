@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdexcept>
 #include <cstddef>
 #include <cstdlib>
 #include <string.h>
@@ -23,19 +24,30 @@ Buffer<T> buffer_allocate(std::size_t size) {
 template <typename T>
 int buffer_copy(Buffer<T>& from, Buffer<T>& to) {
     if (from.size == 0 || to.size == 0){
+        throw std::runtime_error("buffer_copy: Buffer size equal to zero");
         return 1;
     }
 
     if (from.size != to.size) {
+        throw std::runtime_error("buffer_copy: From size not equal to to size");
         return 2;
     }
 
     if (!to.data || !from.data) {
+        throw std::runtime_error("buffer_copy: uninitialized buffers");
         return 3;
     }
 
-    memcpy(to.data, from.data, to.size);
+    memcpy(to.data, from.data, to.size * sizeof(T));
 
+    return 0;
+}
+
+template <typename T>
+int buffer_fill(Buffer<T>& buffer, T value) {
+    for (std::size_t i = 0; i < buffer.size; ++i) {
+        buffer.data[i] = value;
+    }
     return 0;
 }
 

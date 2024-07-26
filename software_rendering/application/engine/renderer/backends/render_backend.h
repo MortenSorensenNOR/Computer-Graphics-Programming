@@ -33,6 +33,12 @@ public:
         return &framebuffer;
     }
 
+    int ClearBuffers() {
+        buffer_fill<char>(framebuffer, 0x00);
+        buffer_fill<float>(depth_buffer, 0.0f);
+        return 0;
+    }
+
     /**
      * @brief Renders a RenderObject to the framebuffer 
      * @return Returns 0 if success, else returns error code
