@@ -47,6 +47,25 @@ if (NOT SDL2_FOUND)
     set_property(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_deps/sdl2-src" PROPERTY EXCLUDE_FROM_ALL TRUE)
 endif()
 
+find_package(assimp REQUIRED)
+if (assimp_FOUND)
+    message(STATUS "Using assimp via find_package")
+endif()
+
+if (NOT assimp_FOUND)
+    include(FetchContent)
+
+    FetchContent_Declare(
+        assimp
+        GIT_REPOSITORY https://github.com/assimp/assimp
+        GIT_TAG v5.4.2
+        GIT_SHALLOW TRUE 
+        GIT_PROGRESS TRUE 
+    )
+    message(STATUS "Using assimp via FetchContent")
+    FetchContent_MakeAvailable(assimp)
+endif()
+  
 set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Og -g")
@@ -63,4 +82,4 @@ add_executable(
     main.cpp
 )
 
-target_link_libraries(app PRIVATE application glm::glm SDL2::SDL2 OpenMP::OpenMP_CXX)
+target_link_libraries(app PRIVATE application glm::glm SDL2::SDL2 OpenMP::OpenMP_CXX assimp)

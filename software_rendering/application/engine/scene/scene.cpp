@@ -34,7 +34,7 @@ int scene_load_scene_from_file(Scene_t* scene, std::string assets_path, std::str
         
         // TODO: Parse entire scene tree for all scene objects
         tinyxml2::XMLElement* root = scene_element->FirstChildElement("Objects");
-        _scene_load_object_tree(scene, root, scene->scene_root);
+        _scene_load_object_tree(scene, assets_path, root, scene->scene_root);
 
     } else {
         printf("Could not load scene from file\n");
@@ -86,7 +86,7 @@ int _scene_free_scene_objects(SceneObject_t* object) {
     return 0;
 }
 
-int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, SceneObject_t* root_object) {
+int _scene_load_object_tree(Scene_t* scene, std::string assets_path, tinyxml2::XMLElement* root_element, SceneObject_t* root_object) {
     for (tinyxml2::XMLElement* object = root_element->FirstChildElement("Object"); object; object = object->NextSiblingElement("Object")) {
         glm::vec3 object_position = _scene_string_to_vec3(object->Attribute("position"));
         glm::vec3 object_rotation = _scene_string_to_vec3(object->Attribute("rotation"));
@@ -98,11 +98,8 @@ int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, 
         std::string model_texture_path = object_model->Attribute("texture");
 
         // Allocate new texture and mesh
-        // Mesh object_mesh();
-        // Texture<float> object_texture();
-        //
-        // scene->meshes->push_back(object_mesh);
-        // scene->textures->push_back(object_texture);
+        std::vector<std::size_t> mesh_indices = model_load_from_path(*scene->meshes, assets_path + model_mesh_path);
+        printf("Mesh indexes: %ld\n", mesh_indices.size());
 
         SceneObject_t* scene_object = new SceneObject_t;
         scene_object->parent = root_object;
@@ -111,11 +108,14 @@ int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, 
         scene_object->position = object_position;
         scene_object->scale = object_scale;
         scene_object->rotation = object_rotation;
+        scene_object->model = glm::translate(glm::mat4(1.0f), scene_object->position);
         scene_object->mesh_indices = new std::vector<std::size_t>();
         scene_object->texture_indices = new std::vector<std::size_t>();
+
+        *scene_object->mesh_indices = mesh_indices;
         
         root_object->children->push_back(scene_object);
-        _scene_load_object_tree(scene, object, scene_object);
+        _scene_load_object_tree(scene, assets_path, object, scene_object);
     }
 
     return 0;

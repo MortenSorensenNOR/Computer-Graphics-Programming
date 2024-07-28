@@ -10,9 +10,10 @@
 #include "texture.h"
 
 struct RenderObject {
-    Mesh mesh;
+    Mesh* mesh;
     glm::mat4 model;
 
-    RenderObject(Buffer<glm::vec4>& vertexes, Buffer<std::size_t>& indices) 
-        : mesh(vertexes, indices) {}
+    RenderObject(Mesh* m) {
+        mesh = m;
+    }
 };

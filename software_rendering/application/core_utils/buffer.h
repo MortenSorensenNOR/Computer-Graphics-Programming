@@ -15,8 +15,10 @@ template <typename T>
 Buffer<T> buffer_allocate(std::size_t size) {
     Buffer<T> buffer;
     buffer.data = (T*)malloc(size * sizeof(T));
-    if (buffer.data) {
+    if (buffer.data != NULL) {
         buffer.size = size;
+    } else {
+        throw std::runtime_error("Could not allocate buffer of size " + std::to_string(size));
     }
     return buffer;
 }

@@ -2,6 +2,7 @@
 
 #include "render_backend.h"
 #include "../../engine_utils/render_object.h"
+#include <cmath>
 
 namespace SimpleRender {
 static inline glm::vec4 vertex_shader(const glm::vec4& pos, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
@@ -31,9 +32,9 @@ public:
     }
 
     int RenderObject(struct RenderObject& object, const glm::mat4& view, const glm::mat4& projection) override {
-        std::size_t num_tris = object.mesh.indices.size / 3;
-        Buffer<glm::vec4>* vertex_buffer = &object.mesh.vertexes;
-        Buffer<std::size_t>* index_buffer = &object.mesh.indices;
+        std::size_t num_tris = object.mesh->indices.size / 3;
+        Buffer<glm::vec4>* vertex_buffer = &object.mesh->vertexes;
+        Buffer<std::size_t>* index_buffer = &object.mesh->indices;
 
         for (std::size_t i = 0; i < num_tris; ++i) {
             std::size_t offset = 3 * i;
@@ -85,15 +86,14 @@ public:
                         if (oneOverW >= depth_buffer.data[offset]) {
                             depth_buffer.data[offset] = oneOverW;
             
-                            framebuffer.data[3*offset]   = colors[index_buffer->data[3 * i] % 6].x; 
-                            framebuffer.data[3*offset+1] = colors[index_buffer->data[3 * i] % 6].y; 
-                            framebuffer.data[3*offset+2] = colors[index_buffer->data[3 * i] % 6].z; 
+                            framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
+                            framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
+                            framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
                             
                             // char depth_value = (int)(255 * oneOverW);
                             // framebuffer.data[3*offset]   = depth_value; 
                             // framebuffer.data[3*offset+1] = depth_value; 
                             // framebuffer.data[3*offset+2] = depth_value; 
-
                         }
                     }
                 }
@@ -119,13 +119,6 @@ public:
         return 0;
     }
 };
-
-static inline void printMatrix(const glm::mat4& m) {
-    printf("%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n", m[0][0], m[0][1], m[0][2], m[0][3], 
-                                                                     m[1][0], m[1][1], m[1][2], m[1][3], 
-                                                                     m[2][0], m[2][1], m[2][2], m[2][3], 
-                                                                     m[3][0], m[3][1], m[3][2], m[3][3]);
-}
 
 static inline glm::vec4 SimpleRender::vertex_shader(const glm::vec4& pos, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
     return projection * view * model * pos;

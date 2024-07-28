@@ -7,5 +7,5 @@ add_library(engine STATIC
     engine.cpp
 )
 
-target_link_libraries(engine PRIVATE scene renderer glm::glm)
+target_link_libraries(engine PRIVATE scene renderer glm::glm assimp)
 

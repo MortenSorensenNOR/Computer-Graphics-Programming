@@ -12,6 +12,7 @@
 #include "../engine_utils/light.h"
 
 #include "camera.h"
+#include "asset_load.h"
 #include "tinyxml2/tinyxml2.h"
 
 struct SceneObject_t {
@@ -65,7 +66,7 @@ int scene_free(Scene_t* scene);
 
 int _scene_free_scene_objects(SceneObject_t* object);
 
-int _scene_load_object_tree(Scene_t* scene, tinyxml2::XMLElement* root_element, SceneObject_t* root_object);
+int _scene_load_object_tree(Scene_t* scene, std::string assets_path, tinyxml2::XMLElement* root_element, SceneObject_t* root_object);
 
 glm::vec3 _scene_string_to_vec3(const std::string& string);
 glm::vec4 _scene_string_to_vec4(const std::string& string);
