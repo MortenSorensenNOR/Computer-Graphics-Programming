@@ -3,7 +3,9 @@
 #include <memory>
 #include <queue>
 
+#include "../state/state.h"
 #include "../state/settings.h"
+#include "../state/input.h"
 #include "scene/scene.h"
 #include "scene/camera.h"
 #include "renderer/renderer.h"
@@ -16,7 +18,7 @@ typedef struct {
 
 int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_height);
 
-int engine_run(Engine_t* engine, float dt, Settings_t* settings);
+int engine_run(Engine_t* engine, float dt, State_t* app_state, Settings_t* settings, InputState* input);
 
 Buffer<char>* engine_get_fb(Engine_t* engine);
 

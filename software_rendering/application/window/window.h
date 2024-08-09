@@ -50,6 +50,10 @@ int window_get_mouse_state(Window_t* window, int& mouse_x, int& mouse_y, int& mo
 
 int window_check_should_close(Window_t* window);
 
+int window_capture_mouse(Window_t* window);
+
+int window_release_mouse(Window_t* window);
+
 int window_free(Window_t* window);
 
 SDL_KeyCode _window_get_sdl_keycode(char key);

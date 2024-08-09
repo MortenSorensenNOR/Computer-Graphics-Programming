@@ -30,7 +30,7 @@ int scene_load_scene_from_file(Scene_t* scene, std::string assets_path, std::str
         glm::vec3 camera_up = _scene_string_to_vec3(camera->Attribute("up"));
         float fov = (float)std::atoi(camera->Attribute("fov"));
 
-        camera_set_config(&scene->camera, camera_position, camera_forward, camera_up, fov);
+        camera_set_config(&scene->camera, camera_position, glm::vec3(0.0, 1.0, 0.0), 0.0, 0.0, fov);
         
         // TODO: Parse entire scene tree for all scene objects
         tinyxml2::XMLElement* root = scene_element->FirstChildElement("Objects");

@@ -2,6 +2,7 @@
 
 #include <time.h>
 
+#include "state/state.h"
 #include "state/settings.h"
 #include "state/info.h"
 #include "state/input.h"
@@ -13,6 +14,7 @@
 typedef struct {
     Window_t window;
 
+    State_t app_state;
     Info_t app_info;
     Settings_t app_settings;
     InputState input_state;

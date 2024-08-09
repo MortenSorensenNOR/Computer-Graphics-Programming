@@ -53,8 +53,8 @@ int window_update_key_state(Window_t* window) {
 
 int window_update_mouse_state(Window_t* window) {
     Uint32 mouseState = SDL_GetMouseState(&window->mouse_pos_x, &window->mouse_pos_y); 
-    bool mouse_left_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_LEFT);
-    bool mouse_right_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT);
+    window->mouse_left_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_LEFT);
+    window->mouse_right_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT);
     SDL_GetRelativeMouseState(&window->mouse_delta_x, &window->mouse_delta_y);
 
     return 0;
@@ -95,6 +95,18 @@ int window_check_should_close(Window_t* window) {
             }
         }
     }
+    return 0;
+}
+
+int window_capture_mouse(Window_t* window) {
+    SDL_SetWindowGrab(window->sdl_window, SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
+    return 0;
+}
+
+int window_release_mouse(Window_t* window) {
+    SDL_SetWindowGrab(window->sdl_window, SDL_FALSE);
+    SDL_SetRelativeMouseMode(SDL_FALSE);
     return 0;
 }
 

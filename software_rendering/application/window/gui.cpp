@@ -39,9 +39,8 @@ int GUI_render_info(Info_t* info) {
 
 int GUI_render_settings(Settings_t* settings) {
     ImGui::Begin("Settings");
-    ImGui::SliderFloat("LookAt.x:", &settings->lookAt_x, -10.0f, 10.0f);
-    ImGui::SliderFloat("LookAt.y:", &settings->lookAt_y, -10.0f, 10.0f);
-    ImGui::SliderFloat("LookAt.z:", &settings->lookAt_z, -10.0f, 10.0f);
+    ImGui::SliderFloat("Pitch:", &settings->pitch, -180, 180);
+    ImGui::SliderFloat("Yaw:", &settings->yaw, -180, 180);
     ImGui::End();
 
     return 0; 

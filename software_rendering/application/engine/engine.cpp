@@ -16,12 +16,35 @@ int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_h
     return 0;
 }
 
-int engine_run(Engine_t* engine, float dt, Settings_t* settings) {
+int engine_run(Engine_t* engine, float dt, State_t* app_state, Settings_t* settings, InputState* input) {
     scene_update(&engine->scene);
 
-    engine->scene.camera.forward.x = settings->lookAt_x;
-    engine->scene.camera.forward.y = settings->lookAt_y;
-    engine->scene.camera.forward.z = settings->lookAt_z;
+    // TODO: Put camera movement into a seperate file -> prob. inside an engine logic submodule
+    if (input->getKeyState('w')) {
+        engine->scene.camera.pos += 8 * dt * glm::normalize(engine->scene.camera.forward);
+    }
+    if (input->getKeyState('s')) {
+        engine->scene.camera.pos -= 8 * dt * glm::normalize(engine->scene.camera.forward);
+    }
+    if (input->getKeyState('a')) {
+        engine->scene.camera.pos -= 8 * dt * glm::normalize(engine->scene.camera.right);
+    }
+    if (input->getKeyState('d')) {
+        engine->scene.camera.pos += 8 * dt * glm::normalize(engine->scene.camera.right);
+    }
+
+    float xoffset = input->mouse_delta_x * camera_mouse_sensitivity;
+    float yoffset = -input->mouse_delta_y * camera_mouse_sensitivity;
+
+    engine->scene.camera.yaw += xoffset;
+    engine->scene.camera.pitch += yoffset;
+
+    if (engine->scene.camera.pitch > 89.0f)
+        engine->scene.camera.pitch = 89.0f;
+    if (engine->scene.camera.pitch < -89.0f)
+        engine->scene.camera.pitch = -89.0f;
+
+    camera_update_vectors(&engine->scene.camera);
     camera_update_view(&engine->scene.camera);
 
     glm::mat4* view = camera_get_view(&engine->scene.camera);
@@ -39,9 +62,6 @@ int engine_run(Engine_t* engine, float dt, Settings_t* settings) {
         SceneObject_t* so = render_queue.front();
         render_queue.pop();
 
-        so->model = glm::rotate(so->model, glm::radians(45.0f * dt), glm::vec3(0, 1, 0));
-        so->model = glm::rotate(so->model, glm::radians(25.0f * dt), glm::vec3(1, 0, 0));
-        so->model = glm::rotate(so->model, glm::radians(-55.0f * dt), glm::vec3(0, 0, 1));
         for (std::size_t i = 0; i < so->mesh_indices->size(); i++) {
             Mesh* mesh = &engine->scene.meshes->at(so->mesh_indices->at(i));
             RenderObject ro(mesh);
