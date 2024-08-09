@@ -48,7 +48,9 @@ int engine_run(Engine_t* engine, float dt, Settings_t* settings) {
             ro.model = so->model;
 
             renderer_render_object(&engine->renderer, ro, *view, *projection);
+            break;
         }
+        break;
     }
 
     return 0;

@@ -5,12 +5,12 @@
 #include "state/settings.h"
 #include "state/info.h"
 #include "core_utils/core_utils.h"
-#include "display/display.h"
-#include "display/gui.h"
+#include "window/window.h"
+#include "window/gui.h"
 #include "engine/engine.h"
 
 typedef struct {
-    Display_t display;
+    Window_t window;
 
     Info_t app_info;
     Settings_t app_settings;

@@ -108,9 +108,11 @@ int _scene_load_object_tree(Scene_t* scene, std::string assets_path, tinyxml2::X
         scene_object->position = object_position;
         scene_object->scale = object_scale;
         scene_object->rotation = object_rotation;
-        scene_object->model = glm::translate(glm::mat4(1.0f), scene_object->position);
         scene_object->mesh_indices = new std::vector<std::size_t>();
         scene_object->texture_indices = new std::vector<std::size_t>();
+
+        scene_object->model = glm::scale(glm::mat4(1.0f), object_scale);
+        scene_object->model = glm::translate(scene_object->model, scene_object->position);
 
         *scene_object->mesh_indices = mesh_indices;
         

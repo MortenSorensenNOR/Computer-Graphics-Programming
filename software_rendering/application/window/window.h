@@ -22,15 +22,15 @@ typedef struct {
     std::size_t width;
     std::size_t height;
     
-    SDL_Window* window;
+    SDL_Window* sdl_window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
-} Display_t;
+} Window_t;
 
-int display_init(Display_t* display, size_t width, size_t height, std::string window_name, bool fullscreen = false);
+int display_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen = false);
 
-int display_update(Display_t* display, Buffer<char>* fb); 
+int display_update(Window_t* window, Buffer<char>* fb); 
 
-int display_check_should_close(Display_t* display);
+int display_check_should_close(Window_t* window);
 
-int display_free(Display_t* display);
+int display_free(Window_t* window);

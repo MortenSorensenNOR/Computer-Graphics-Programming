@@ -1,13 +1,13 @@
 #include "gui.h"
 
-int GUI_init(Display_t* display) {
+int GUI_init(Window_t* display) {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     ImGui::StyleColorsDark();
 
-    ImGui_ImplSDL2_InitForSDLRenderer(display->window, display->sdl_renderer);
+    ImGui_ImplSDL2_InitForSDLRenderer(display->sdl_window, display->sdl_renderer);
     ImGui_ImplSDLRenderer2_Init(display->sdl_renderer);
 
     return 0;

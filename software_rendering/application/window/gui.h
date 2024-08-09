@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "display.h"
+#include "window.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_sdl2.h"
@@ -11,7 +11,7 @@
 #include "../state/info.h"
 #include "../state/settings.h"
 
-int GUI_init(Display_t* display);
+int GUI_init(Window_t* window);
 
 int GUI_render_info(Info_t* info);
 

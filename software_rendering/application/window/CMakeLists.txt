@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
-add_library(display
-    display.cpp
+add_library(window
+    window.cpp
     gui.cpp
     imgui/imgui.cpp
     imgui/imgui_draw.cpp
@@ -11,4 +11,4 @@ add_library(display
     imgui/imgui_impl_sdlrenderer2.cpp
 )
 
-target_link_libraries(display PRIVATE SDL2::SDL2 OpenMP::OpenMP_CXX)
+target_link_libraries(window PRIVATE SDL2::SDL2 OpenMP::OpenMP_CXX)
