@@ -1,6 +1,7 @@
 #include "window.h"
+#include <SDL2/SDL_scancode.h>
 
-int display_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen) {
+int window_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen) {
     window->width = width;
     window->height = height;
 
@@ -16,7 +17,7 @@ int display_init(Window_t* window, size_t width, size_t height, std::string wind
     return 0;
 }
 
-int display_update(Window_t* window, Buffer<char>* fb) {
+int window_update(Window_t* window, Buffer<char>* fb) {
     if (fb->size != window->width * window->height * 3) { 
         return 1;
     }
@@ -45,7 +46,44 @@ int display_update(Window_t* window, Buffer<char>* fb) {
     return 0;
 } 
 
-int display_check_should_close(Window_t* window) {
+int window_update_key_state(Window_t* window) {
+    window->keystate = SDL_GetKeyboardState(NULL);
+    return 0;
+}
+
+int window_update_mouse_state(Window_t* window) {
+    Uint32 mouseState = SDL_GetMouseState(&window->mouse_pos_x, &window->mouse_pos_y); 
+    bool mouse_left_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_LEFT);
+    bool mouse_right_btn_pressed = mouseState & SDL_BUTTON(SDL_BUTTON_RIGHT);
+    SDL_GetRelativeMouseState(&window->mouse_delta_x, &window->mouse_delta_y);
+
+    return 0;
+}
+
+int window_get_key_state(Window_t* window, char key) {
+    SDL_KeyCode keycode = _window_get_sdl_keycode(key);
+    if (keycode == SDLK_UNKNOWN) {
+        return -1;
+    }
+
+    SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode);
+    if (window->keystate[scancode])
+        return 1;
+
+    return 0;
+}
+
+int window_get_mouse_state(Window_t* window, int& mouse_x, int& mouse_y, int& mouse_delta_x, int& mouse_delta_y, bool& mouse_left, bool& mouse_right) {
+    mouse_x = window->mouse_pos_x;
+    mouse_y = window->mouse_pos_y;
+    mouse_delta_x = window->mouse_delta_x;
+    mouse_delta_y = window->mouse_delta_y;
+    mouse_left = window->mouse_left_btn_pressed;
+    mouse_right = window->mouse_right_btn_pressed;
+    return 0;
+}
+
+int window_check_should_close(Window_t* window) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         ImGui_ImplSDL2_ProcessEvent(&event);
@@ -60,7 +98,7 @@ int display_check_should_close(Window_t* window) {
     return 0;
 }
 
-int display_free(Window_t* window) {
+int window_free(Window_t* window) {
     SDL_DestroyTexture(window->fb_texture);
     SDL_DestroyRenderer(window->sdl_renderer);
     SDL_DestroyWindow(window->sdl_window);
@@ -69,3 +107,21 @@ int display_free(Window_t* window) {
     return 0;
 }
 
+SDL_KeyCode _window_get_sdl_keycode(char key) {
+    static std::unordered_map<char, SDL_KeyCode> key_to_keycode_map = {
+        {'a', SDLK_a}, {'b', SDLK_b}, {'c', SDLK_c}, {'d', SDLK_d},
+        {'e', SDLK_e}, {'f', SDLK_f}, {'g', SDLK_g}, {'h', SDLK_h},
+        {'i', SDLK_i}, {'j', SDLK_j}, {'k', SDLK_k}, {'l', SDLK_l},
+        {'m', SDLK_m}, {'n', SDLK_n}, {'o', SDLK_o}, {'p', SDLK_p},
+        {'q', SDLK_q}, {'r', SDLK_r}, {'s', SDLK_s}, {'t', SDLK_t},
+        {'u', SDLK_u}, {'v', SDLK_v}, {'w', SDLK_w}, {'x', SDLK_x},
+        {'y', SDLK_y}, {'z', SDLK_z}, {'0', SDLK_0}, {'1', SDLK_1},
+        {'2', SDLK_2}, {'3', SDLK_3}, {'4', SDLK_4}, {'5', SDLK_5},
+        {'6', SDLK_6}, {'7', SDLK_7}, {'8', SDLK_8}, {'9', SDLK_9},
+    };
+
+    if (key_to_keycode_map.find(key) != key_to_keycode_map.end()) {
+        return key_to_keycode_map[key];
+    }
+    return SDLK_UNKNOWN;
+}

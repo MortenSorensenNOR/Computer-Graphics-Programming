@@ -4,6 +4,7 @@
 
 #include "state/settings.h"
 #include "state/info.h"
+#include "state/input.h"
 #include "core_utils/core_utils.h"
 #include "window/window.h"
 #include "window/gui.h"
@@ -14,9 +15,9 @@ typedef struct {
 
     Info_t app_info;
     Settings_t app_settings;
+    InputState input_state;
 
     Engine_t engine;
-
     std::string assets_path;
 } Application_t;
 

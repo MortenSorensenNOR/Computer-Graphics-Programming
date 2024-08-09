@@ -79,3 +79,9 @@ project/
 │   ├── Display/
 │
 └── CMakeLists.txt  
+
+
+TODO:
+1. Add key input to window component in order to extract active keys to application layer
+    - Will add functions for checking input events on the sdl window
+    - Map inputs to application state -> add header file in state module to access input state and add it to the application struct

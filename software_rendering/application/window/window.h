@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <omp.h>
+#include <unordered_map>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -25,12 +26,30 @@ typedef struct {
     SDL_Window* sdl_window;
     SDL_Renderer* sdl_renderer;
     SDL_Texture* fb_texture;
+
+    const Uint8* keystate;
+    int mouse_pos_x;
+    int mouse_pos_y;
+    int mouse_delta_x;
+    int mouse_delta_y;
+    bool mouse_left_btn_pressed;
+    bool mouse_right_btn_pressed;
 } Window_t;
 
-int display_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen = false);
+int window_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen = false);
 
-int display_update(Window_t* window, Buffer<char>* fb); 
+int window_update(Window_t* window, Buffer<char>* fb); 
 
-int display_check_should_close(Window_t* window);
+int window_update_key_state(Window_t* window);
 
-int display_free(Window_t* window);
+int window_update_mouse_state(Window_t* window);
+
+int window_get_key_state(Window_t* window, char key);
+
+int window_get_mouse_state(Window_t* window, int& mouse_x, int& mouse_y, int& mouse_delta_x, int& mouse_delta_y, bool& mouse_left, bool& mouse_right);
+
+int window_check_should_close(Window_t* window);
+
+int window_free(Window_t* window);
+
+SDL_KeyCode _window_get_sdl_keycode(char key);

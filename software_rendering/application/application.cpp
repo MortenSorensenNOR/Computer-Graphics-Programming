@@ -1,7 +1,7 @@
 #include "application.h"
 
 int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen) {
-    display_init(&app->window, screen_width, screen_height, window_name, fullscreen);
+    window_init(&app->window, screen_width, screen_height, window_name, fullscreen);
     GUI_init(&app->window);
     engine_init(&app->engine, screen_width, screen_height);
 
@@ -28,9 +28,9 @@ int application_run(Application_t* app) {
         
         Buffer<char>* render_fb = engine_get_fb(&app->engine);
         GUI_render(&app->app_info, &app->app_settings);
-        display_update(&app->window, render_fb);
+        window_update(&app->window, render_fb);
 
-        if (display_check_should_close(&app->window))
+        if (window_check_should_close(&app->window))
             _quit = true;
     }
 
@@ -38,7 +38,7 @@ int application_run(Application_t* app) {
 }
 
 int application_free(Application_t* app) {
-    display_free(&app->window);
+    window_free(&app->window);
     GUI_free();
     engine_free(&app->engine);
 
