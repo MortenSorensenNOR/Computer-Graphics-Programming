@@ -7,12 +7,6 @@ int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_h
     std::unique_ptr<RenderBackend> backend = std::make_unique<SimpleRenderer>(screen_width, screen_height);
     renderer_set_backend(&engine->renderer, std::move(backend));
 
-    Buffer<glm::vec4> vertexes = buffer_allocate<glm::vec4>(8);
-    Buffer<std::size_t> indices = buffer_allocate<std::size_t>(36);
-
-    buffer_free(vertexes);
-    buffer_free(indices);
-
     return 0;
 }
 
@@ -32,17 +26,25 @@ int engine_run(Engine_t* engine, float dt, State_t* app_state, Settings_t* setti
     if (input->getKeyState('d')) {
         engine->scene.camera.pos += 8 * dt * glm::normalize(engine->scene.camera.right);
     }
+    if (input->getModifierKeyState(WindowModifierKeys::SPACE)) {
+        engine->scene.camera.pos += 4 * dt * glm::normalize(engine->scene.camera.world_up); 
+    }
+    if (input->getModifierKeyState(WindowModifierKeys::LSHIFT)) {
+        engine->scene.camera.pos -= 4 * dt * glm::normalize(engine->scene.camera.world_up); 
+    }
 
-    float xoffset = input->mouse_delta_x * camera_mouse_sensitivity;
-    float yoffset = -input->mouse_delta_y * camera_mouse_sensitivity;
+    if (app_state->mouse_captured) {
+        float xoffset = input->mouse_delta_x * camera_mouse_sensitivity;
+        float yoffset = -input->mouse_delta_y * camera_mouse_sensitivity;
 
-    engine->scene.camera.yaw += xoffset;
-    engine->scene.camera.pitch += yoffset;
+        engine->scene.camera.yaw += xoffset;
+        engine->scene.camera.pitch += yoffset;
 
-    if (engine->scene.camera.pitch > 89.0f)
-        engine->scene.camera.pitch = 89.0f;
-    if (engine->scene.camera.pitch < -89.0f)
-        engine->scene.camera.pitch = -89.0f;
+        if (engine->scene.camera.pitch > 89.0f)
+            engine->scene.camera.pitch = 89.0f;
+        if (engine->scene.camera.pitch < -89.0f)
+            engine->scene.camera.pitch = -89.0f;
+    }
 
     camera_update_vectors(&engine->scene.camera);
     camera_update_view(&engine->scene.camera);
@@ -68,9 +70,7 @@ int engine_run(Engine_t* engine, float dt, State_t* app_state, Settings_t* setti
             ro.model = so->model;
 
             renderer_render_object(&engine->renderer, ro, *view, *projection);
-            break;
         }
-        break;
     }
 
     return 0;

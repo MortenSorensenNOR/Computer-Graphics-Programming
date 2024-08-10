@@ -1,10 +1,10 @@
 <Scene>
-    <Camera position="0,3.75,6.5" forward="0,0,0" up="0,1,0" fov="60" />
+    <Camera position="0,0,3" forward="0,0,0" up="0,1,0" fov="60" />
     <Lights>
         <Light type="point" position="8,4,2" />
     </Lights>
     <Objects>
-        <Object name="Cube" position="0,0,2" rotation="0,0,0" scale="1,1,1">
+        <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
             <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
         </Object>
         <Object name="Cube" position="-3.75,0,0" rotation="0,0,0" scale="1,1,1">
@@ -13,7 +13,7 @@
         <Object name="Cube" position="3.75,0,0" rotation="0,0,0" scale="1,1,1">
             <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
         </Object>
-        <Object name="Cube" position="0,0,-2" rotation="0,0,0" scale="1,1,1">
+        <Object name="Cube" position="0,0,2" rotation="0,0,0" scale="1,1,1">
             <Model mesh="misc/cube.obj" texture="textures/brick/brick.png" />
         </Object>
     </Objects>

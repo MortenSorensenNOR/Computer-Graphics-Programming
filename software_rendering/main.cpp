@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     std::filesystem::path assets = root.parent_path() / "assets/";
 
     Application_t app;
-    int err = application_init(&app, 1280, 720, "Computer Graphics Programming", assets.string());
+    int err = application_init(&app, 854, 480, "Computer Graphics Programming", assets.string());
     if (err) {
         printf("Could not initialize application\n");
         return 1;

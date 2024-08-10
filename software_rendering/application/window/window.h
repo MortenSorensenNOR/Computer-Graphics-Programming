@@ -19,6 +19,15 @@
 #include "../core_utils/core_utils.h"
 #include "../core_utils/buffer.h"
 
+enum class WindowModifierKeys {
+    LSHIFT,
+    LCTRL,
+    RSHIFT,
+    RCTRL,
+    SPACE,
+    ESCAPE,
+};
+
 typedef struct {
     std::size_t width;
     std::size_t height;
@@ -45,6 +54,8 @@ int window_update_key_state(Window_t* window);
 int window_update_mouse_state(Window_t* window);
 
 int window_get_key_state(Window_t* window, char key);
+
+int window_get_modifier_key_state(Window_t* window, WindowModifierKeys modifier);
 
 int window_get_mouse_state(Window_t* window, int& mouse_x, int& mouse_y, int& mouse_delta_x, int& mouse_delta_y, bool& mouse_left, bool& mouse_right);
 

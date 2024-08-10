@@ -9,6 +9,8 @@ add_library(window
     imgui/imgui_tables.cpp
     imgui/imgui_impl_sdl2.cpp
     imgui/imgui_impl_sdlrenderer2.cpp
+    imgui/implot.cpp
+    imgui/implot_items.cpp
 )
 
 target_link_libraries(window PRIVATE SDL2::SDL2 OpenMP::OpenMP_CXX)

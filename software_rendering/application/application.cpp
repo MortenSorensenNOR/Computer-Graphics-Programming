@@ -8,7 +8,7 @@ int application_init(Application_t* app, size_t screen_width, size_t screen_heig
 
     if (assets_path == "")
         return 1;
-    scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/diamond.scene");
+    scene_load_scene_from_file(&app->engine.scene, assets_path, "scenes/cube.scene");
 
     return 0;
 }
@@ -34,7 +34,7 @@ int application_run(Application_t* app) {
             window_capture_mouse(&app->window);
             app->app_state.mouse_captured = true;
         }
-        else if (app->input_state.mouse_right) {
+        else if (app->input_state.getModifierKeyState(WindowModifierKeys::ESCAPE)) {
             window_release_mouse(&app->window);
             app->app_state.mouse_captured = false;
         }

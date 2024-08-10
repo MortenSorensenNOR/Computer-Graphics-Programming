@@ -34,4 +34,8 @@ struct InputState {
     int getKeyState(char key) {
         return window_get_key_state(active_window, key);
     }
+
+    int getModifierKeyState(WindowModifierKeys modifier) {
+        return window_get_modifier_key_state(active_window, modifier);
+    }
 };

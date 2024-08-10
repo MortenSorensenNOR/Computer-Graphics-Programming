@@ -73,6 +73,23 @@ int window_get_key_state(Window_t* window, char key) {
     return 0;
 }
 
+int window_get_modifier_key_state(Window_t* window, WindowModifierKeys modifier) {
+    static std::unordered_map<WindowModifierKeys, SDL_KeyCode> keycode_map {
+        {WindowModifierKeys::LSHIFT, SDLK_LSHIFT},
+        {WindowModifierKeys::RSHIFT, SDLK_RSHIFT},
+        {WindowModifierKeys::LCTRL, SDLK_LCTRL},
+        {WindowModifierKeys::RCTRL, SDLK_RCTRL},
+        {WindowModifierKeys::SPACE, SDLK_SPACE},
+        {WindowModifierKeys::ESCAPE, SDLK_ESCAPE},
+    };
+
+    if (keycode_map.find(modifier) != keycode_map.end()) {
+        SDL_Scancode scancode = SDL_GetScancodeFromKey(keycode_map[modifier]);
+        return window->keystate[scancode];
+    }
+    return -1;
+}
+
 int window_get_mouse_state(Window_t* window, int& mouse_x, int& mouse_y, int& mouse_delta_x, int& mouse_delta_y, bool& mouse_left, bool& mouse_right) {
     mouse_x = window->mouse_pos_x;
     mouse_y = window->mouse_pos_y;
@@ -90,7 +107,7 @@ int window_check_should_close(Window_t* window) {
         if (event.type == SDL_QUIT) {
             return 1;
         } else if (event.type == SDL_KEYDOWN) {
-            if (event.key.keysym.sym == SDLK_ESCAPE || event.key.keysym.sym == SDLK_q) {
+            if (event.key.keysym.sym == SDLK_q) {
                 return 1;
             }
         }
@@ -101,12 +118,16 @@ int window_check_should_close(Window_t* window) {
 int window_capture_mouse(Window_t* window) {
     SDL_SetWindowGrab(window->sdl_window, SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_TRUE);
+    // SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_TRUE);
     return 0;
 }
 
 int window_release_mouse(Window_t* window) {
     SDL_SetWindowGrab(window->sdl_window, SDL_FALSE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
+    
+    // TODO: fix left ctrl not working
+    // SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_FALSE);
     return 0;
 }
 

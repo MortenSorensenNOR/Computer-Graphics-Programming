@@ -6,12 +6,17 @@ int camera_init(Camera_t* camera, std::size_t camera_res_x, std::size_t camera_r
 }
 
 int camera_set_config(Camera_t* camera, glm::vec3 pos, glm::vec3 world_up, float pitch, float yaw, float fov) {
-    camera->pos = glm::vec3(0,0,3);
-    camera->world_up = glm::vec3(0, 1, 0);
-    camera->forward = glm::vec3(0, 0, -1);
+    camera->pos = pos;
+    camera->world_up = world_up;
     camera->fov = fov;
-    camera->yaw = -90.0;
-    camera->pitch = 0.0;
+    camera->yaw = yaw;
+    camera->pitch = pitch;
+
+    glm::vec3 forward;
+    forward.x = cos(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
+    forward.y = sin(glm::radians(camera->pitch));
+    forward.z = sin(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
+    camera->forward = glm::normalize(forward);
 
     camera->projection = glm::perspective(glm::radians(fov), (float)camera->resolution.x / (float)camera->resolution.y, 0.1f, 100.0f);
     camera_update_vectors(camera);
