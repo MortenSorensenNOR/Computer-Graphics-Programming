@@ -5,8 +5,6 @@ project(
     VERSION 1.0
 )
 
-find_package(OpenMP REQUIRED)
-
 find_package(glm QUIET)
 if (glm_FOUND)
     message(STATUS "Using glm via find_package")
@@ -82,4 +80,4 @@ add_executable(
     main.cpp
 )
 
-target_link_libraries(app PRIVATE application glm::glm SDL2::SDL2 OpenMP::OpenMP_CXX assimp)
+target_link_libraries(app PRIVATE application glm::glm SDL2::SDL2 assimp)
