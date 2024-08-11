@@ -55,7 +55,7 @@ if (NOT assimp_FOUND)
 
     FetchContent_Declare(
         assimp
-        GIT_REPOSITORY https://github.com/assimp/assimp
+        GIT_REPOSITORY https://github.com/assimp/assimp.git
         GIT_TAG v5.4.2
         GIT_SHALLOW TRUE 
         GIT_PROGRESS TRUE 
