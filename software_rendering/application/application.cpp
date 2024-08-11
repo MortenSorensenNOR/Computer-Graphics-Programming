@@ -55,8 +55,8 @@ int application_run(Application_t* app) {
 }
 
 int application_free(Application_t* app) {
-    window_free(&app->window);
     GUI_free();
+    window_free(&app->window);
     engine_free(&app->engine);
 
     return 0;

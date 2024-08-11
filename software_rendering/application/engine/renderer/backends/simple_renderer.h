@@ -31,69 +31,78 @@ public:
         buffer_free(framebuffer);
     }
 
-    int RenderObject(struct RenderObject& object, const glm::mat4& view, const glm::mat4& projection) override {
-        std::size_t num_tris = object.mesh->indices.size / 3;
-        Buffer<glm::vec4>* vertex_buffer = &object.mesh->vertexes;
-        Buffer<std::size_t>* index_buffer = &object.mesh->indices;
+    int RenderQueueAdd(struct RenderObject& object) override {
+        render_queue.push_back(object);
+        return 0;
+    }
 
-        for (std::size_t i = 0; i < num_tris; ++i) {
-            std::size_t offset = 3 * i;
-            const glm::vec4& v0 = vertex_buffer->data[index_buffer->data[offset]];
-            const glm::vec4& v1 = vertex_buffer->data[index_buffer->data[offset + 1]];
-            const glm::vec4& v2 = vertex_buffer->data[index_buffer->data[offset + 2]];
+    int Render(const glm::mat4& view, const glm::mat4& projection) override {
+        for (std::size_t obj_index = 0; obj_index < render_queue.size(); obj_index++) {
+            RenderObject object = render_queue.at(obj_index); 
 
-            glm::vec4 v0Clip = SimpleRender::vertex_shader(v0, object.model, view, projection);
-            glm::vec4 v1Clip = SimpleRender::vertex_shader(v1, object.model, view, projection);
-            glm::vec4 v2Clip = SimpleRender::vertex_shader(v2, object.model, view, projection);
+            std::size_t num_tris = object.mesh->indices.size / 3;
+            Buffer<glm::vec4>* vertex_buffer = &object.mesh->vertexes;
+            Buffer<std::size_t>* index_buffer = &object.mesh->indices;
 
-            glm::vec4 v0Homogen = SimpleRender::viewport_transform(v0Clip, view_width, view_height);
-            glm::vec4 v1Homogen = SimpleRender::viewport_transform(v1Clip, view_width, view_height);
-            glm::vec4 v2Homogen = SimpleRender::viewport_transform(v2Clip, view_width, view_height);
-            
-            glm::mat3 M = {
-                { v0Homogen.x, v1Homogen.x, v2Homogen.x},
-                { v0Homogen.y, v1Homogen.y, v2Homogen.y},
-                { v0Homogen.w, v1Homogen.w, v2Homogen.w},
-            };
-            
-            // Back-face culling
-            float det = glm::determinant(M);
-            if (det >= 0.0f)
-                continue;
-            
-            M = glm::inverse(M);
-            
-            // Edge function
-            glm::vec3 E0 = M[0];
-            glm::vec3 E1 = M[1];
-            glm::vec3 E2 = M[2];
-            
-            // Constant to interpolate 1/w
-            glm::vec3 C = M * glm::vec3(1, 1, 1);
-            
-            for (int y = 0; y < view_height; y++) {
-                for (int x = 0; x < view_width; x++) {
-                    glm::vec3 sample = {x + 0.5, y + 0.5, 1.0};
-            
-                    bool inside0 = SimpleRender::EdgeFunction(E0, sample);
-                    bool inside1 = SimpleRender::EdgeFunction(E1, sample);
-                    bool inside2 = SimpleRender::EdgeFunction(E2, sample);
-                   
-                    if (inside0 && inside1 && inside2) {
-                        float oneOverW = (C.x * sample.x) + (C.y * sample.y) + C.z;
-            
-                        std::size_t offset = x + y * view_width;
-                        if (oneOverW >= depth_buffer.data[offset]) {
-                            depth_buffer.data[offset] = oneOverW;
-            
-                            framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
-                            framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
-                            framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
-                            
-                            // char depth_value = (int)(255 * oneOverW);
-                            // framebuffer.data[3*offset]   = depth_value; 
-                            // framebuffer.data[3*offset+1] = depth_value; 
-                            // framebuffer.data[3*offset+2] = depth_value; 
+            for (std::size_t i = 0; i < num_tris; ++i) {
+                std::size_t offset = 3 * i;
+                const glm::vec4& v0 = vertex_buffer->data[index_buffer->data[offset]];
+                const glm::vec4& v1 = vertex_buffer->data[index_buffer->data[offset + 1]];
+                const glm::vec4& v2 = vertex_buffer->data[index_buffer->data[offset + 2]];
+
+                glm::vec4 v0Clip = SimpleRender::vertex_shader(v0, object.model, view, projection);
+                glm::vec4 v1Clip = SimpleRender::vertex_shader(v1, object.model, view, projection);
+                glm::vec4 v2Clip = SimpleRender::vertex_shader(v2, object.model, view, projection);
+
+                glm::vec4 v0Homogen = SimpleRender::viewport_transform(v0Clip, view_width, view_height);
+                glm::vec4 v1Homogen = SimpleRender::viewport_transform(v1Clip, view_width, view_height);
+                glm::vec4 v2Homogen = SimpleRender::viewport_transform(v2Clip, view_width, view_height);
+
+                glm::mat3 M = {
+                    { v0Homogen.x, v1Homogen.x, v2Homogen.x},
+                    { v0Homogen.y, v1Homogen.y, v2Homogen.y},
+                    { v0Homogen.w, v1Homogen.w, v2Homogen.w},
+                };
+
+                // Back-face culling
+                float det = glm::determinant(M);
+                if (det >= 0.0f)
+                    continue;
+
+                M = glm::inverse(M);
+
+                // Edge function
+                glm::vec3 E0 = M[0];
+                glm::vec3 E1 = M[1];
+                glm::vec3 E2 = M[2];
+
+                // Constant to interpolate 1/w
+                glm::vec3 C = M * glm::vec3(1, 1, 1);
+
+                for (int y = 0; y < view_height; y++) {
+                    for (int x = 0; x < view_width; x++) {
+                        glm::vec3 sample = {x + 0.5, y + 0.5, 1.0};
+
+                        bool inside0 = SimpleRender::EdgeFunction(E0, sample);
+                        bool inside1 = SimpleRender::EdgeFunction(E1, sample);
+                        bool inside2 = SimpleRender::EdgeFunction(E2, sample);
+
+                        if (inside0 && inside1 && inside2) {
+                            float oneOverW = (C.x * sample.x) + (C.y * sample.y) + C.z;
+
+                            std::size_t offset = x + y * view_width;
+                            if (oneOverW >= depth_buffer.data[offset]) {
+                                depth_buffer.data[offset] = oneOverW;
+
+                                framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
+                                framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
+                                framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
+
+                                // char depth_value = (int)(255 * oneOverW);
+                                // framebuffer.data[3*offset]   = depth_value; 
+                                // framebuffer.data[3*offset+1] = depth_value; 
+                                // framebuffer.data[3*offset+2] = depth_value; 
+                            }
                         }
                     }
                 }

@@ -11,8 +11,12 @@ int renderer_set_backend(Renderer* renderer, std::unique_ptr<RenderBackend> back
     return 0;
 }
 
-int renderer_render_object(Renderer* renderer, RenderObject& object, const glm::mat4& view, const glm::mat4& projection) {
-    return renderer->backend->RenderObject(object, view, projection);
+int renderer_add_to_render_queue(Renderer* renderer, RenderObject& object) {
+    return renderer->backend->RenderQueueAdd(object);
+}
+
+int renderer_render(Renderer* renderer, const glm::mat4& view, const glm::mat4& projection) {
+    return renderer->backend->Render(view, projection);
 }
 
 Buffer<char>* renderer_get_fb(Renderer* renderer) {

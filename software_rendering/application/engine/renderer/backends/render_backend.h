@@ -15,6 +15,8 @@ public:
     Buffer<char> framebuffer;
     Buffer<float> depth_buffer;
 
+    std::vector<RenderObject> render_queue;
+
 public:
     RenderBackend(std::size_t render_resolution_width, std::size_t render_resolution_height) {
         view_width = render_resolution_width;
@@ -36,6 +38,7 @@ public:
     int ClearBuffers() {
         buffer_fill<char>(framebuffer, 0x00);
         buffer_fill<float>(depth_buffer, 0.0f);
+        render_queue.clear();
         return 0;
     }
 
@@ -43,7 +46,9 @@ public:
      * @brief Renders a RenderObject to the framebuffer 
      * @return Returns 0 if success, else returns error code
      */
-    int virtual RenderObject(struct RenderObject& object, const glm::mat4& view, const glm::mat4& projection) = 0;
+    int virtual RenderQueueAdd(struct RenderObject& object) = 0;
+
+    int virtual Render(const glm::mat4& view, const glm::mat4& projection) = 0;
 
     /**
      * @brief Creates a texture and loads it into the memory of the render device, i.e. either CPU or GPU memory
