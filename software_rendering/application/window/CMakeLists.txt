@@ -13,4 +13,4 @@ add_library(window
     imgui/implot_items.cpp
 )
 
-target_link_libraries(window PRIVATE SDL2::SDL2 OpenMP::OpenMP_CXX)
+target_link_libraries(window PRIVATE SDL2::SDL2)

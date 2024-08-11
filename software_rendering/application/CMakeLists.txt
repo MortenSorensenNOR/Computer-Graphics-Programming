@@ -8,4 +8,4 @@ add_library(application STATIC
     application.cpp
 )
 
-target_link_libraries(application PRIVATE core_utils window engine glm::glm SDL2::SDL2 OpenMP::OpenMP_CXX assimp)
+target_link_libraries(application PRIVATE core_utils window engine glm::glm SDL2::SDL2 assimp)
