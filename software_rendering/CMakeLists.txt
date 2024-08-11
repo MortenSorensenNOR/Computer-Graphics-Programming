@@ -45,7 +45,7 @@ if (NOT SDL2_FOUND)
     set_property(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/_deps/sdl2-src" PROPERTY EXCLUDE_FROM_ALL TRUE)
 endif()
 
-find_package(assimp REQUIRED)
+find_package(assimp QUIET)
 if (assimp_FOUND)
     message(STATUS "Using assimp via find_package")
 endif()
