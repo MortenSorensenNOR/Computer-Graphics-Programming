@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <queue>
+
 #include <glm/glm.hpp>
 #include "../../../core_utils/core_utils.h"
 #include "../../engine_utils/texture.h"
@@ -17,6 +19,8 @@ public:
 
     std::vector<RenderObject> render_queue;
 
+    std::vector<glm::vec<3, char, glm::lowp>> colors;
+
 public:
     RenderBackend(std::size_t render_resolution_width, std::size_t render_resolution_height) {
         view_width = render_resolution_width;
@@ -27,6 +31,15 @@ public:
 
         std::size_t depth_buffer_size = render_resolution_width * render_resolution_height;
         depth_buffer = buffer_allocate<float>(depth_buffer_size);
+
+        // Used for debugging
+        colors.push_back(glm::vec<3, char, glm::lowp>(0xdc, 0x14, 0x3c));
+        colors.push_back(glm::vec<3, char, glm::lowp>(0x41, 0x69, 0xe1));
+        colors.push_back(glm::vec<3, char, glm::lowp>(0x32, 0xcd, 0x32));
+        colors.push_back(glm::vec<3, char, glm::lowp>(0xda, 0xa5, 0x20));
+        colors.push_back(glm::vec<3, char, glm::lowp>(0xba, 0x55, 0xd3));
+        colors.push_back(glm::vec<3, char, glm::lowp>(0x2f, 0x4f, 0x4f));
+
     }
 
     virtual ~RenderBackend() = default;
@@ -38,7 +51,10 @@ public:
     int ClearBuffers() {
         buffer_fill<char>(framebuffer, 0x00);
         buffer_fill<float>(depth_buffer, 0.0f);
-        render_queue.clear();
+
+        std::vector<RenderObject> empty;
+        std::swap(render_queue, empty);
+        
         return 0;
     }
 
@@ -46,7 +62,10 @@ public:
      * @brief Renders a RenderObject to the framebuffer 
      * @return Returns 0 if success, else returns error code
      */
-    int virtual RenderQueueAdd(struct RenderObject& object) = 0;
+    int RenderQueueAdd(struct RenderObject& object) {
+        render_queue.push_back(object);
+        return 0;
+    }
 
     int virtual Render(const glm::mat4& view, const glm::mat4& projection) = 0;
 

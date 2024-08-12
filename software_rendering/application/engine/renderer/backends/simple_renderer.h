@@ -14,31 +14,18 @@ static inline int fragment_shader();
 
 class SimpleRenderer : public RenderBackend {
 private:
-    std::vector<glm::vec<3, char, glm::lowp>> colors;
 
 public:
     SimpleRenderer(std::size_t render_resolution_width, std::size_t render_resolution_height) 
-        : RenderBackend(render_resolution_width, render_resolution_height) {
-            colors.push_back(glm::vec<3, char, glm::lowp>(0xdc, 0x14, 0x3c));
-            colors.push_back(glm::vec<3, char, glm::lowp>(0x41, 0x69, 0xe1));
-            colors.push_back(glm::vec<3, char, glm::lowp>(0x32, 0xcd, 0x32));
-            colors.push_back(glm::vec<3, char, glm::lowp>(0xda, 0xa5, 0x20));
-            colors.push_back(glm::vec<3, char, glm::lowp>(0xba, 0x55, 0xd3));
-            colors.push_back(glm::vec<3, char, glm::lowp>(0x2f, 0x4f, 0x4f));
-        }
+        : RenderBackend(render_resolution_width, render_resolution_height) {}
 
     ~SimpleRenderer() override {
         buffer_free(framebuffer);
     }
 
-    int RenderQueueAdd(struct RenderObject& object) override {
-        render_queue.push_back(object);
-        return 0;
-    }
-
     int Render(const glm::mat4& view, const glm::mat4& projection) override {
-        for (std::size_t obj_index = 0; obj_index < render_queue.size(); obj_index++) {
-            RenderObject object = render_queue.at(obj_index); 
+        for (std::size_t i = 0; i < render_queue.size(); i++) {
+            RenderObject object = render_queue.at(i); 
 
             std::size_t num_tris = object.mesh->indices.size / 3;
             Buffer<glm::vec4>* vertex_buffer = &object.mesh->vertexes;
@@ -108,6 +95,9 @@ public:
                 }
             }
         }
+
+        std::vector<RenderObject> empty;
+        std::swap(render_queue, empty);
 
         return 0;
     }
