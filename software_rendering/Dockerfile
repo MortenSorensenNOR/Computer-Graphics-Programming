@@ -24,7 +24,7 @@ COPY . .
 # Assuming you have a CMakeLists.txt file configured for FetchContent
 RUN mkdir build && cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    make
+    make -j 12
 
 # The following line is optional if you want to run tests or the application directly
 CMD ["./app"]
