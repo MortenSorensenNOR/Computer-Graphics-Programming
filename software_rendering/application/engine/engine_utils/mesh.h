@@ -20,4 +20,9 @@ struct Mesh {
         buffer_copy(v, vertexes);
         buffer_copy(i, indices);
     }
+
+    ~Mesh() {
+        buffer_free(vertexes);
+        buffer_free(indices);
+    }
 };

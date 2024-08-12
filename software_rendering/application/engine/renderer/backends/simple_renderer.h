@@ -21,6 +21,7 @@ public:
 
     ~SimpleRenderer() override {
         buffer_free(framebuffer);
+        buffer_free(depth_buffer);
     }
 
     int Render(const glm::mat4& view, const glm::mat4& projection) override {
@@ -110,11 +111,11 @@ public:
         return 0;
     }
 
-    int BindTexture(int texture_id, TextureType type) override {
+    int BindTexture(std::size_t texture_id, TextureType type) override {
         return 0;
     }
 
-    int BindMesh(int mesh_id) override {
+    int BindMesh(std::size_t mesh_id) override {
         return 0;
     }
 };

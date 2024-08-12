@@ -9,7 +9,8 @@ enum class TextureType {
     NORMAL,
     SPECULAR,
     AO,
-    DISPLACEMENT
+    DISPLACEMENT,
+    END
 };
 
 template <typename T>
@@ -21,5 +22,9 @@ struct Texture {
         this->width = texture_width;
         this->height = texture_height;
         buffer_copy(texture_data, this->data);
+    }
+
+    ~Texture() {
+        buffer_free(data);
     }
 };

@@ -17,6 +17,9 @@ public:
     Buffer<char> framebuffer;
     Buffer<float> depth_buffer;
 
+    std::size_t render_queue_vertex_size;
+    std::size_t render_queue_index_size;
+    std::size_t render_queue_triangle_count;
     std::vector<RenderObject> render_queue;
 
     std::vector<glm::vec<3, char, glm::lowp>> colors;
@@ -54,6 +57,9 @@ public:
 
         std::vector<RenderObject> empty;
         std::swap(render_queue, empty);
+        render_queue_index_size = 0;
+        render_queue_vertex_size = 0;
+        render_queue_triangle_count = 0;
         
         return 0;
     }
@@ -62,9 +68,15 @@ public:
      * @brief Renders a RenderObject to the framebuffer 
      * @return Returns 0 if success, else returns error code
      */
-    int RenderQueueAdd(struct RenderObject& object) {
-        render_queue.push_back(object);
-        return 0;
+    void RenderQueueAdd(RenderObject& object) {
+        RenderObject render_object_local = object;
+        render_object_local.id = render_queue.size();
+
+        render_queue_index_size += render_object_local.mesh->indices.size;
+        render_queue_vertex_size = render_object_local.mesh->vertexes.size;
+        render_queue_triangle_count = render_object_local.mesh->indices.size / 3;
+
+        render_queue.push_back(render_object_local);
     }
 
     int virtual Render(const glm::mat4& view, const glm::mat4& projection) = 0;
@@ -77,7 +89,7 @@ public:
 
     int virtual CreateMeshBuffer(Mesh& mesh) = 0;
 
-    int virtual BindTexture(int texture_id, TextureType type) = 0;
+    int virtual BindTexture(std::size_t texture_id, TextureType type) = 0;
 
-    int virtual BindMesh(int mesh_id) = 0;
+    int virtual BindMesh(std::size_t mesh_id) = 0;
 };

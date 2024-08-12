@@ -17,7 +17,7 @@ int renderer_init(Renderer* renderer, std::size_t render_width, std::size_t rend
 
 int renderer_set_backend(Renderer* renderer, std::unique_ptr<RenderBackend> backend);
 
-int renderer_add_to_render_queue(Renderer* renderer, RenderObject& object);
+void renderer_add_to_render_queue(Renderer* renderer, RenderObject& object);
 
 int renderer_render(Renderer* renderer, const glm::mat4& view, const glm::mat4& projection);
 

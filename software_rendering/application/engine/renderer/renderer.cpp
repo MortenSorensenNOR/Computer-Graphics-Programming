@@ -11,7 +11,7 @@ int renderer_set_backend(Renderer* renderer, std::unique_ptr<RenderBackend> back
     return 0;
 }
 
-int renderer_add_to_render_queue(Renderer* renderer, RenderObject& object) {
+void renderer_add_to_render_queue(Renderer* renderer, RenderObject& object) {
     return renderer->backend->RenderQueueAdd(object);
 }
 

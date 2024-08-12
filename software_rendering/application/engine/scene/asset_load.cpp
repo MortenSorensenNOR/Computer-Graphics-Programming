@@ -46,7 +46,12 @@ std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::st
         Mesh loaded_mesh(vertexes, indices);
         meshes.push_back(loaded_mesh);
         res.push_back(meshes.size() - 1);
+
+        buffer_free(vertexes);
+        buffer_free(indices);
     }
+
+    aiReleaseImport(scene);
 
     return res;
 }

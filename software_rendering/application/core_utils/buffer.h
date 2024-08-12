@@ -12,7 +12,7 @@ struct Buffer {
 };
 
 template <typename T>
-Buffer<T> buffer_allocate(std::size_t size) {
+[[nodiscard]] Buffer<T> buffer_allocate(std::size_t size) {
     Buffer<T> buffer;
     buffer.data = (T*)malloc(size * sizeof(T));
     if (buffer.data != NULL) {

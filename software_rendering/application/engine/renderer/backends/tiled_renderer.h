@@ -51,23 +51,24 @@ public:
 
     ~TiledRenderer() override {
         buffer_free(framebuffer);
+        buffer_free(depth_buffer);
     }
 
-    int Render(const glm::mat4& view, const glm::mat4& projection) override {
-        for (std::size_t i = 0; i < tiles.size(); i++) {
-            TileRender::Tile* tile = &tiles[i];
+    int Render(const glm::mat4& view, const glm::mat4& proj) override {
+        std::vector<Buffer<glm::vec4>> projected_vertex_data = {};
+        projected_vertex_data.reserve(render_queue.size());
+        // Buffer<glm::vec4> index_data = buffer_allocate<glm::vec4>(render_queue_index_size);
 
-            for (std::size_t y = tile->min_y; y < tile->max_y; y++) {
-                for (std::size_t x = tile->min_x; x < tile->max_x; x++) {
-                    if (x > view_width || y > view_height) {
-                        continue;
-                    }
-                    std::size_t index = 3 * (x + y * view_width);
-                    framebuffer.data[index + 0] = colors[tile->id % colors.size()].x;
-                    framebuffer.data[index + 1] = colors[tile->id % colors.size()].y;
-                    framebuffer.data[index + 2] = colors[tile->id % colors.size()].z;
-                }
-            }
+        for (std::size_t i = 0; i < render_queue.size(); i++) {
+            RenderObject* object = &render_queue.at(i);
+            Buffer<glm::vec4> projected_vertex_buffer = buffer_allocate<glm::vec4>(object->mesh->vertexes.size);
+
+            TileRender::vertex_shader(object->mesh->vertexes, object->model, view, proj, projected_vertex_buffer); 
+            projected_vertex_data.push_back(projected_vertex_buffer);
+        }
+
+        for (std::size_t i = 0; i < projected_vertex_data.size(); i++) {
+            buffer_free<glm::vec4>(projected_vertex_data.at(i));
         }
 
         std::vector<RenderObject> empty;
@@ -83,12 +84,12 @@ public:
     int CreateMeshBuffer(Mesh& mesh) final {
         return 0;
     }
-
-    int BindTexture(int texture_id, TextureType type) final {
+    
+    int BindTexture(std::size_t texture_id, TextureType type) final {
         return 0;
     }
 
-    int BindMesh(int mesh_id) final {
+    int BindMesh(std::size_t mesh_id) final {
         return 0;
     }
 };

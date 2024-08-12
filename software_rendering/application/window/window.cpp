@@ -118,14 +118,14 @@ int window_check_should_close(Window_t* window) {
 int window_capture_mouse(Window_t* window) {
     SDL_SetWindowGrab(window->sdl_window, SDL_TRUE);
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_TRUE);
+    // SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_TRUE); // Makes it annoying to fullscreen in i3
     return 0;
 }
 
 int window_release_mouse(Window_t* window) {
     SDL_SetWindowGrab(window->sdl_window, SDL_FALSE);
     SDL_SetRelativeMouseMode(SDL_FALSE);
-    SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_FALSE);
+    // SDL_SetWindowKeyboardGrab(window->sdl_window, SDL_FALSE);
     return 0;
 }
 

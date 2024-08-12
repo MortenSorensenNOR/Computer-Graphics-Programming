@@ -1,7 +1,5 @@
 #pragma once
 
-#define RENDER_OBJECT_MAX_NUM_TEXTURES 5
-
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -13,7 +11,10 @@ struct RenderObject {
     Mesh* mesh;
     glm::mat4 model;
 
-    RenderObject(Mesh* m) {
-        mesh = m;
+    std::size_t id;
+
+    RenderObject(Mesh* m, std::size_t id = -1) {
+        this->mesh = m;
+        this->id = id;
     }
 };

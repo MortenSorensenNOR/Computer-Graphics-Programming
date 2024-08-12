@@ -56,9 +56,9 @@ int scene_free(Scene_t* scene) {
         Mesh* m = &scene->meshes->at(i);
         buffer_free(m->vertexes);
         buffer_free(m->indices);
-        // buffer_free(m->normals); // TODO: Add back in
-        // buffer_free(m->uvs);
     }
+
+    // TODO: fix mismatched free() / delete / delete [] here
 
     for (int i = 0; i < scene->textures->size(); ++i) {
         Texture<float>* t = &scene->textures->at(i);
@@ -71,6 +71,12 @@ int scene_free(Scene_t* scene) {
     free(scene->scene_root->children);
     free(scene->scene_root);
 
+    delete scene->scene_root->children;
+    delete scene->scene_root;
+
+    delete scene->meshes;
+    delete scene->textures;
+
     return 0;
 }
 
@@ -78,11 +84,10 @@ int _scene_free_scene_objects(SceneObject_t* object) {
     for (std::size_t i = 0; i < object->children->size(); i++) {
         _scene_free_scene_objects(object->children->at(i));
     }
-
-    free(object->children);
-    free(object->mesh_indices);
-    free(object->texture_indices);
-    free(object);
+    delete object->mesh_indices;
+    delete object->texture_indices;
+    delete object->children;
+    delete object;
 
     return 0;
 }
