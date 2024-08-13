@@ -81,20 +81,22 @@ public:
 
     int virtual Render(const glm::mat4& view, const glm::mat4& projection) = 0;
 
-    /**
-     * @brief Creates a texture and loads it into the memory of the render device, i.e. either CPU or GPU memory
-     * @return The texture ID of the created texture
-     */
-    int virtual CreateTexture(Texture<glm::vec3>& texture) = 0;
-
-    int virtual CreateMeshBuffer(Mesh& mesh) = 0;
-
-    int virtual BindTexture(std::size_t texture_id, TextureType type) = 0;
-
-    int virtual BindMesh(std::size_t mesh_id) = 0;
+    void print_vec2(const glm::vec2& v, char* txt = NULL) {
+        if (txt != NULL)
+            printf("(%f, %f)\n", v.x, v.y);
+        else
+            printf("%s: (%f, %f)\n", txt, v.x, v.y);
+    }
+    
+    void print_ivec2(const glm::ivec2& v, char* txt = NULL) {
+        if (txt != NULL)
+            printf("(%d, %d)\n", v.x, v.y);
+        else
+            printf("%s: (%d, %d)\n", txt, v.x, v.y);
+    }
 
     template <typename T>
-        void print_vec3(const glm::vec<3, T>& v, char* txt) {
+        void print_vec3(const glm::vec<3, T>& v, char* txt = NULL) {
             if (txt != NULL)
                 printf("(%f, %f, %f)\n", v.x, v.y, v.z);
             else
@@ -102,7 +104,7 @@ public:
         }
 
     template <typename T>
-        void print_vec4(const glm::vec<4, T>& v, char* txt) {
+        void print_vec4(const glm::vec<4, T>& v, char* txt = NULL) {
             if (txt != NULL)
                 printf("(%f, %f, %f, %f)\n", v.x, v.y, v.z, v.w);
             else
@@ -110,7 +112,7 @@ public:
         }
 
     template <typename T>
-        void print_mat4(const glm::mat<4, 4, T>& m, char* txt) {
+        void print_mat4(const glm::mat<4, 4, T>& m, char* txt = NULL) {
             if (txt != NULL)
                 printf("(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n\n", m[0][0], m[0][1], m[0][2], m[0][3], 
                         m[1][0], m[1][1], m[1][2], m[1][3],

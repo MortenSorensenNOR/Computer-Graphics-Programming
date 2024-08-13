@@ -102,22 +102,6 @@ public:
 
         return 0;
     }
-
-    int CreateTexture(Texture<glm::vec3>& texture) override {
-        return 0;
-    }
-
-    int CreateMeshBuffer(Mesh& mesh) override {
-        return 0;
-    }
-
-    int BindTexture(std::size_t texture_id, TextureType type) override {
-        return 0;
-    }
-
-    int BindMesh(std::size_t mesh_id) override {
-        return 0;
-    }
 };
 
 static inline glm::vec4 SimpleRender::vertex_shader(const glm::vec4& pos, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection) {
