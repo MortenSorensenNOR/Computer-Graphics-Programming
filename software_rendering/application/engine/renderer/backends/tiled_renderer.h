@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../../core_utils/core_utils.h"
 #include "render_backend.h"
 
 namespace TileRender {
@@ -57,14 +58,19 @@ public:
     int Render(const glm::mat4& view, const glm::mat4& proj) override {
         std::vector<Buffer<glm::vec4>> projected_vertex_data = {};
         projected_vertex_data.reserve(render_queue.size());
-        // Buffer<glm::vec4> index_data = buffer_allocate<glm::vec4>(render_queue_index_size);
 
         for (std::size_t i = 0; i < render_queue.size(); i++) {
             RenderObject* object = &render_queue.at(i);
-            Buffer<glm::vec4> projected_vertex_buffer = buffer_allocate<glm::vec4>(object->mesh->vertexes.size);
+            Buffer<glm::vec4> projected_vertex_buffer = buffer_allocate<glm::vec4>(object->mesh->vertexes.size());
 
             TileRender::vertex_shader(object->mesh->vertexes, object->model, view, proj, projected_vertex_buffer); 
             projected_vertex_data.push_back(projected_vertex_buffer);
+        }
+
+        for (std::size_t i = 0; i < projected_vertex_data.size(); i++) {
+            for (std::size_t j = 0; j < projected_vertex_data.at(i).size(); j++) {
+
+            }
         }
 
         for (std::size_t i = 0; i < projected_vertex_data.size(); i++) {
@@ -95,7 +101,7 @@ public:
 };
 
 static void TileRender::vertex_shader(Buffer<glm::vec4>& vertex_in, const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj, Buffer<glm::vec4>& vertex_out) {
-    for (std::size_t i = 0; i < vertex_out.size; i++) {
+    for (std::size_t i = 0; i < vertex_out.size(); i++) {
         vertex_out.data[i] = proj * view * model * vertex_in.data[i];
     }
 };

@@ -10,16 +10,8 @@ int main(int argc, char** argv) {
     std::filesystem::path root = std::filesystem::current_path();
     std::filesystem::path assets = root.parent_path() / "assets/";
 
-    Application_t app;
-    int err = application_init(&app, 854, 480, "Computer Graphics Programming", assets.string());
-    if (err) {
-        printf("Could not initialize application\n");
-        return 1;
-    }
-
-    application_run(&app);
-
-    application_free(&app);
+    Application application(854, 480, "Computer Graphics Programming", assets.string());
+    application.run();
 
     return 0;
 }

@@ -11,7 +11,8 @@
 #include "window/gui.h"
 #include "engine/engine.h"
 
-typedef struct {
+class Application {
+private:
     Window_t window;
 
     State_t app_state;
@@ -19,12 +20,17 @@ typedef struct {
     Settings_t app_settings;
     InputState input_state;
 
-    Engine_t engine;
+    Engine engine;
     std::string assets_path;
-} Application_t;
 
-int application_init(Application_t* app, size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen = false);
+public:
+    Application(size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen = false);
+    ~Application();
 
-int application_run(Application_t* app);
+    /**
+     * @brief Main function of the project ~~~ Will run until window is closed
+     * @return Error code
+     */
+    int run();
+};
 
-int application_free(Application_t* app);

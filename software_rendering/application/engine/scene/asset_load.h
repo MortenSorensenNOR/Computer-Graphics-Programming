@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@
  * @param path      The path to the object which is being parsed
  * @return A vector of all the indicies of the loaded meshes
  */
-std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::string path);
+std::vector<std::size_t> model_load_from_path(std::vector<std::shared_ptr<Mesh>>& meshes, std::string path);
 
 /**
  * @brief Loads a texture from a path and pushes it into the vector of all textures in the scene.
@@ -29,4 +30,4 @@ std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::st
  * @param type      The type of texture that is being loaded, i.e. DIFFUSE, NORMAL, SPECULAR, AO or DISPLACEMENT
  * @return The index of the texture into the textures vector.
  */
-std::size_t texture_load_from_path(std::vector<Texture<float>>& textures, std::string path, TextureType type);
+std::size_t texture_load_from_path(std::vector<std::shared_ptr<Texture<float>>>& textures, std::string path, TextureType type);

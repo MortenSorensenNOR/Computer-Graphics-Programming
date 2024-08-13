@@ -13,17 +13,35 @@
 #include "renderer/backends/simple_renderer.h"
 #include "renderer/backends/tiled_renderer.h"
 
-typedef struct {
-    Scene_t scene;
+class Engine {
+private:
+    Scene scene;
     Renderer renderer;
 
     std::unique_ptr<CameraController> camera_controller;
-} Engine_t;
 
-int engine_init(Engine_t* engine, std::size_t screen_width, std::size_t screen_height);
+public:
+    Engine(std::size_t screen_width, std::size_t screen_height);
 
-int engine_run(Engine_t* engine, float dt, State_t* app_state, Settings_t* settings, InputState* input);
+    /**
+     * @brief Load in a scene from a file
+     * @return Error code
+     */
+    int load_scene_from_file(std::string assets_path, std::string file_name);
 
-Buffer<char>* engine_get_fb(Engine_t* engine);
+    /**
+     * @brief Run the engine ~~~ update the scene, run game logic and render to framebuffer
+     * @param dt            The time since last ran
+     * @param app_state     A pointer to the current app state
+     * @param settings      A pointer to the current app settings
+     * @param input         A pointer to the current app input state
+     * @return Error code
+     */
+    int run(float dt, State_t* app_state, Settings_t* settings, InputState* input);
 
-int engine_free(Engine_t* engine);
+    /**
+     * @brief Retrieves a pointer to the current renderers framebuffer
+     * @return The pointer to the framebuffer, i.e. a char buffer of size 3 * screen_width * screen_height
+     */
+    Buffer<char>* get_fb();
+};

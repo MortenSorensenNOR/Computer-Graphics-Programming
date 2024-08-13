@@ -18,7 +18,7 @@ int window_init(Window_t* window, size_t width, size_t height, std::string windo
 }
 
 int window_update(Window_t* window, Buffer<char>* fb) {
-    if (fb->size != window->width * window->height * 3) { 
+    if (fb->size() != window->width * window->height * 3) { 
         return 1;
     }
 

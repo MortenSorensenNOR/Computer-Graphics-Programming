@@ -5,14 +5,15 @@
 
 #include "../../core_utils/core_utils.h"
 
-const float camera_mouse_sensitivity = 0.1f;
 
-typedef struct {
+class Camera {
+public:
+    glm::vec3 pos; 
+    float pitch, yaw;
+    
+private:
     glm::ivec2 resolution;
 
-    float pitch, yaw;
-
-    glm::vec3 pos; 
     glm::vec3 forward;
     glm::vec3 right;
     glm::vec3 up;
@@ -21,16 +22,34 @@ typedef struct {
 
     glm::mat4 view;
     glm::mat4 projection;
-} Camera_t;
 
-int camera_init(Camera_t* camera, std::size_t camera_res_x, std::size_t camera_res_y);
+public:
+    Camera(std::size_t res_x, std::size_t res_y);
 
-int camera_set_config(Camera_t* camera, glm::vec3 pos, glm::vec3 world_up, float pitch, float yaw, float fov);
+    /**
+     * @brief Set a new configuration for the camera
+     * @param pos       The position of the camera
+     * @param world_up  The global world up vector
+     * @param pitch     The pitch ange of the camera relative to world_up
+     * @param yaw       The yaw angle of the camera relative to world_up
+     * @param fov       The fov of the camera
+     */
+    int set_config(glm::vec3 pos, glm::vec3 world_up, float pitch, float yaw, float fov);
 
-int camera_update_vectors(Camera_t* camera);
+    int update_vectors();
 
-int camera_update_view(Camera_t* camera);
+    int update_view();
 
-glm::mat4* camera_get_view(Camera_t* camera);
+    glm::mat4 get_view() const;
 
-glm::mat4* camera_get_projection(Camera_t* camera);
+    glm::mat4 get_projection() const;
+
+    glm::vec3 get_forward() const;
+
+    glm::vec3 get_right() const;
+
+    glm::vec3 get_world_up() const;
+};
+
+
+

@@ -1,6 +1,6 @@
 #include "asset_load.h"
 
-std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::string path) {
+std::vector<std::size_t> model_load_from_path(std::vector<std::shared_ptr<Mesh>>& meshes, std::string path) {
     std::vector<std::size_t> res = {}; 
 
     printf("Loading mesh from path: %s\n", path.c_str());
@@ -42,9 +42,9 @@ std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::st
             indices.data[j] = index_buffer_data.at(j);;
         }
 
+
         // Create mesh from buffers and push to meshes vector
-        Mesh loaded_mesh(vertexes, indices);
-        meshes.push_back(loaded_mesh);
+        meshes.push_back(std::make_shared<Mesh>(vertexes, indices));
         res.push_back(meshes.size() - 1);
 
         buffer_free(vertexes);
@@ -56,13 +56,11 @@ std::vector<std::size_t> model_load_from_path(std::vector<Mesh>& meshes, std::st
     return res;
 }
 
-std::size_t texture_load_from_path(std::vector<Texture<float>>& textures, std::string path, TextureType type) {
+std::size_t texture_load_from_path(std::vector<std::shared_ptr<Texture<float>>>& textures, std::string path, TextureType type) {
     std::size_t width, height;
     Buffer<glm::vec<3, float, glm::lowp>> texture_data;
 
-    Texture<float> texture(width, height, texture_data);
-
-    textures.push_back(texture);
+    textures.push_back(std::make_unique<Texture<float>>(width, height, texture_data, type));
     return textures.size() - 1;
 }
 

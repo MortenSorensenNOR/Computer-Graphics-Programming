@@ -28,7 +28,7 @@ public:
         for (std::size_t i = 0; i < render_queue.size(); i++) {
             RenderObject object = render_queue.at(i); 
 
-            std::size_t num_tris = object.mesh->indices.size / 3;
+            std::size_t num_tris = object.mesh->indices.size() / 3;
             Buffer<glm::vec4>* vertex_buffer = &object.mesh->vertexes;
             Buffer<std::size_t>* index_buffer = &object.mesh->indices;
 

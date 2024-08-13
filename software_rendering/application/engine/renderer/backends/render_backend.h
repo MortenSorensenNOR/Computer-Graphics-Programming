@@ -72,9 +72,9 @@ public:
         RenderObject render_object_local = object;
         render_object_local.id = render_queue.size();
 
-        render_queue_index_size += render_object_local.mesh->indices.size;
-        render_queue_vertex_size = render_object_local.mesh->vertexes.size;
-        render_queue_triangle_count = render_object_local.mesh->indices.size / 3;
+        render_queue_index_size += render_object_local.mesh->indices.size();
+        render_queue_vertex_size = render_object_local.mesh->vertexes.size();
+        render_queue_triangle_count = render_object_local.mesh->indices.size() / 3;
 
         render_queue.push_back(render_object_local);
     }
@@ -92,4 +92,34 @@ public:
     int virtual BindTexture(std::size_t texture_id, TextureType type) = 0;
 
     int virtual BindMesh(std::size_t mesh_id) = 0;
+
+    template <typename T>
+        void print_vec3(const glm::vec<3, T>& v, char* txt) {
+            if (txt != NULL)
+                printf("(%f, %f, %f)\n", v.x, v.y, v.z);
+            else
+                printf("%s: (%f, %f, %f)\n", txt, v.x, v.y, v.z);
+        }
+
+    template <typename T>
+        void print_vec4(const glm::vec<4, T>& v, char* txt) {
+            if (txt != NULL)
+                printf("(%f, %f, %f, %f)\n", v.x, v.y, v.z, v.w);
+            else
+                printf("%s: (%f, %f, %f, %f)\n", txt, v.x, v.y, v.z, v.w);
+        }
+
+    template <typename T>
+        void print_mat4(const glm::mat<4, 4, T>& m, char* txt) {
+            if (txt != NULL)
+                printf("(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n\n", m[0][0], m[0][1], m[0][2], m[0][3], 
+                        m[1][0], m[1][1], m[1][2], m[1][3],
+                        m[2][0], m[2][1], m[2][2], m[2][3],
+                        m[3][0], m[3][1], m[3][2], m[3][3]);
+            else
+                printf("%s: (%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n(%f, %f, %f, %f)\n\n", txt, m[0][0], m[0][1], m[0][2], m[0][3], 
+                        m[1][0], m[1][1], m[1][2], m[1][3],
+                        m[2][0], m[2][1], m[2][2], m[2][3],
+                        m[3][0], m[3][1], m[3][2], m[3][3]);
+        }
 };
