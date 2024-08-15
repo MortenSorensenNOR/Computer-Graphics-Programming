@@ -1,3 +1,4 @@
+*This file does not render well, so it might be easier to read the raw markdown*
 # Software overview:
 
 ## Project file structure:
@@ -44,16 +45,16 @@ https://github.com/NotCamelCase/Tyler
 Looking at the code for PipelineThread  
 
 ### Datastructures  
-RenderEngine* m_pRenderEngine  
-~ Framebuffers, vertexbuffers, indexbuffers, bound shader programs and holds all the pipeline threads  
-RasterizerConfig m_RenderConfig   
-~ Num threads, max primitives per iteration, tile size  
-std::atomic<ThreadStatus> m_CurrentState   
-~ Holds the state of each worker thread  
-VertexCache  
-~ Caches processed vertexes  
-DrawParams m_ActiveDrawParams  
-~ Start and end of the current primitives to be processed  
+~ RenderEngine* m_pRenderEngine  
+  - Framebuffers, vertexbuffers, indexbuffers, bound shader programs and holds all the pipeline threads  
+~ RasterizerConfig m_RenderConfig   
+  - Num threads, max primitives per iteration, tile size  
+~ std::atomic<ThreadStatus> m_CurrentState   
+  - Holds the state of each worker thread  
+~ VertexCache  
+  - Caches processed vertexes  
+~ DrawParams m_ActiveDrawParams  
+  - Start and end of the current primitives to be processed  
 
 ### Functions  
 #### ProcessDrawcall()  
@@ -61,12 +62,12 @@ DrawParams m_ActiveDrawParams
 ~ Loops over all the primitives it has been assigned through DrawParams and:  
     1. Runs the vertex shader on all the primitives -> returns the vertexes in clip space  
     2. Runs the clipper on the vertexes in clip space and assigns a bounding box to the triangle  
-        - Will remove all triangles outside the view frustum  
+       - Will remove all triangles outside the view frustum  
     3. Runs a triangle setup and cull function on the triangle  
-        - Will remove triangles if back-face culled  
+       - Will remove triangles if back-face culled  
     4. Binns all triangles into tiles  
-    *** This will be done for all primitives, followed by stalling until all other threads are finished ***  
 
+***This will be done for all primitives, followed by stalling until all other threads are finished***  
 ~ It then executes the rasterizer    
 ~ Followed by executing the fragment shader  
 
@@ -77,7 +78,7 @@ DrawParams m_ActiveDrawParams
 @param pV1Clip --- Pointer to the second vertex of the processed triangle output  
 @param pV2Clip --- Pointer to the third vertex of the processed triangle output  
   
-*** I will not include the vertex cache for now ***  
+***I will not include the vertex cache for now***  
 
 ~ Retrieves the input vertexes from a common vertexbuffer based on  
     1. vertexStride  
@@ -85,7 +86,7 @@ DrawParams m_ActiveDrawParams
         i.  vertexOffset --- constant, assuming this is related to the packing of vertexes, normals and uvs  
         ii. drawIdx  
     The equation becomes   
-    * vertexBufferIndex = vertexStride * indexBuffer[vertexOffset + (3 * drawIdx + x)]*  
+    *vertexBufferIndex = vertexStride * indexBuffer[vertexOffset + (3 * drawIdx + x)]*  
     where x depends on if it is the first, second or third vertex being accessed  
 ~ Instansiates the VS (vertex shader) program that is bound to the engine on each of the vertexes,  
   and assigns it to each of the output vertexes, now correctly in clip space  
