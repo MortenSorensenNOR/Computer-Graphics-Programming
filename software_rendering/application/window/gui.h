@@ -21,4 +21,6 @@ int GUI_render_settings(Settings_t* settings);
 
 int GUI_render(Info_t* info, Settings_t* settings);
 
+bool GUI_is_any_window_hovered();
+
 int GUI_free();

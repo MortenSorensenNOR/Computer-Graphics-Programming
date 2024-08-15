@@ -52,27 +52,26 @@ int GUI_render_info(Info_t* info) {
         time_elapsed -= 0.2;
     }
 
-    ImGui::Begin("Info");
+    ImGui::BeginChild("Info", ImVec2(367, 140 + 4 * ImGui::GetTextLineHeight()), true);
     ImGui::TextUnformatted(("Current frametime: " + ft + " ms").c_str());
     ImGui::TextUnformatted(("Current FPS: " + fps).c_str());
 
-    if (ImPlot::BeginPlot("Frametime/ms", ImVec2(0, 140))) {
+    if (ImPlot::BeginPlot("Frametime/frame", ImVec2(350, 140))) {
         ImPlot::StyleColorsDark();
         ImPlot::SetupAxisLimits(ImAxis_Y1, frame_time_min * 0.65, frame_time_max * 1.35, ImGuiCond_Always);
         ImPlot::PlotLine("", frame_time_data, HISTORY_SIZE, 1, 0, 0, frame_index);
         ImPlot::EndPlot();
     }
 
-    ImGui::End();
+    ImGui::EndChild();
 
     return 0; 
 }
 
 int GUI_render_settings(Settings_t* settings) {
-    ImGui::Begin("Settings");
-    ImGui::SliderFloat("Pitch:", &settings->pitch, -180, 180);
-    ImGui::SliderFloat("Yaw:", &settings->yaw, -180, 180);
-    ImGui::End();
+    ImGui::BeginChild("Settings", ImVec2(0, 3*ImGui::GetTextLineHeight()), true);
+    ImGui::Checkbox("Depth view", &settings->depthView);
+    ImGui::EndChild();
 
     return 0; 
 }
@@ -82,10 +81,25 @@ int GUI_render(Info_t* info, Settings_t* settings) {
     ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::Begin("Settings + Info");
+
+    ImGui::BeginChild("Instructions", ImVec2(0, 5 * ImGui::GetTextLineHeight()), true);
+    ImGui::Text("Instructions:");
+    ImGui::BulletText("Click on the render view to capture the mouse.");
+    ImGui::BulletText("Press ESC to release the mouse.");
+    ImGui::EndChild();
+
     GUI_render_info(info);
-    // GUI_render_settings(settings);
+    GUI_render_settings(settings);
+
+    ImGui::End();
 
     return 0; 
+}
+
+bool GUI_is_any_window_hovered() {
+    // Check if any ImGui window is hovered, including any child windows or popups
+    return ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow | ImGuiHoveredFlags_RootAndChildWindows) || ImGui::IsAnyItemHovered();
 }
 
 int GUI_free() {

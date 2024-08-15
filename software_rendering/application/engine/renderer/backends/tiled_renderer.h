@@ -72,8 +72,8 @@ private:
     std::size_t max_num_tris = 0;
 
 public:
-    TiledRenderer(std::size_t render_width, std::size_t render_height) 
-        : RenderBackend(render_width, render_height) {
+    TiledRenderer(std::size_t render_width, std::size_t render_height, Settings_t* app_settings) 
+        : RenderBackend(render_width, render_height, app_settings) {
         num_horizontal_tiles = std::round((float)(render_width) / tileDim.x);
         num_vertical_tiles = std::round((float)(render_height) / tileDim.y);
         num_tiles = num_vertical_tiles * num_horizontal_tiles;

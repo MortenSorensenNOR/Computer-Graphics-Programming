@@ -21,7 +21,7 @@ private:
     std::unique_ptr<CameraController> camera_controller;
 
 public:
-    Engine(std::size_t screen_width, std::size_t screen_height);
+    Engine(std::size_t screen_width, std::size_t screen_height, Settings_t* app_settings);
 
     /**
      * @brief Load in a scene from a file

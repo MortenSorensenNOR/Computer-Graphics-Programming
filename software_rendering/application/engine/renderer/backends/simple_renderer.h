@@ -14,8 +14,8 @@ class SimpleRenderer : public RenderBackend {
 private:
 
 public:
-    SimpleRenderer(std::size_t render_resolution_width, std::size_t render_resolution_height) 
-        : RenderBackend(render_resolution_width, render_resolution_height) {}
+    SimpleRenderer(std::size_t render_resolution_width, std::size_t render_resolution_height, Settings_t* app_settings) 
+        : RenderBackend(render_resolution_width, render_resolution_height, app_settings) {}
 
     ~SimpleRenderer() override {
         buffer_free(framebuffer);
@@ -80,14 +80,17 @@ public:
                             if (oneOverW >= depth_buffer.data[offset]) {
                                 depth_buffer.data[offset] = oneOverW;
 
-                                framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
-                                framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
-                                framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
+                                if (!app_settings->depthView) {
+                                    framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
+                                    framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
+                                    framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
+                                } else {
+                                    char depth_value = (int)(255 * oneOverW);
+                                    framebuffer.data[3*offset]   = depth_value; 
+                                    framebuffer.data[3*offset+1] = depth_value; 
+                                    framebuffer.data[3*offset+2] = depth_value; 
+                                }
 
-                                // char depth_value = (int)(255 * oneOverW);
-                                // framebuffer.data[3*offset]   = depth_value; 
-                                // framebuffer.data[3*offset+1] = depth_value; 
-                                // framebuffer.data[3*offset+2] = depth_value; 
                             }
                         }
                     }

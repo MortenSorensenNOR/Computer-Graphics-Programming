@@ -1,7 +1,7 @@
 #include "application.h"
 
 Application::Application(size_t screen_width, size_t screen_height, std::string window_name, std::string assets_path, bool fullscreen) 
-    : engine(screen_width, screen_height) {
+    : engine(screen_width, screen_height, &app_settings) {
     
     input_state.active_window = &window;
     window_init(&window, screen_width, screen_height, window_name, fullscreen);
@@ -36,7 +36,7 @@ int Application::run() {
         input_state.updateMouseState();
 
         // Capture mouse to interact with camera through mouse movement
-        if (input_state.mouse_left) {
+        if (input_state.mouse_left && !GUI_is_any_window_hovered()) {
             window_capture_mouse(&window);
             app_state.mouse_captured = true;
         }

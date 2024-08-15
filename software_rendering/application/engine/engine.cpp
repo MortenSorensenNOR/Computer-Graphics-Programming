@@ -1,10 +1,10 @@
 #include "engine.h"
 
-Engine::Engine(std::size_t screen_width, std::size_t screen_height) : scene(screen_width, screen_height) {
+Engine::Engine(std::size_t screen_width, std::size_t screen_height, Settings_t* app_settings) : scene(screen_width, screen_height) {
     renderer_init(&renderer, screen_width, screen_height);
 
     // Create a new renderer and assign it as the render backend
-    std::unique_ptr<RenderBackend> backend = std::make_unique<SimpleRenderer>(screen_width, screen_height);
+    std::unique_ptr<RenderBackend> backend = std::make_unique<SimpleRenderer>(screen_width, screen_height, app_settings);
     renderer_set_backend(&renderer, std::move(backend));
 
     // Create a new camera controller

@@ -10,7 +10,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/vector3.h>
 
-#include "stb_image/stb_image.h"
+// #include "stb_image/stb_image.h"
 #include "../../core_utils/buffer.h"
 #include "../engine_utils/mesh.h"
 #include "../engine_utils/texture.h"

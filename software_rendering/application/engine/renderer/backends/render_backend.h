@@ -8,6 +8,7 @@
 #include "../../engine_utils/texture.h"
 #include "../../engine_utils/mesh.h"
 #include "../../engine_utils/render_object.h"
+#include "../../../state/settings.h"
 
 class RenderBackend {
 public:
@@ -24,8 +25,10 @@ public:
 
     std::vector<glm::vec<3, char, glm::lowp>> colors;
 
+    Settings_t* app_settings;
+
 public:
-    RenderBackend(std::size_t render_resolution_width, std::size_t render_resolution_height) {
+    RenderBackend(std::size_t render_resolution_width, std::size_t render_resolution_height, Settings_t* app_settings) {
         view_width = render_resolution_width;
         view_height = render_resolution_height;
 
@@ -43,6 +46,7 @@ public:
         colors.push_back(glm::vec<3, char, glm::lowp>(0xba, 0x55, 0xd3));
         colors.push_back(glm::vec<3, char, glm::lowp>(0x2f, 0x4f, 0x4f));
 
+        this->app_settings = app_settings;
     }
 
     virtual ~RenderBackend() = default;
