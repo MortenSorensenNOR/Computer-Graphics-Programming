@@ -8,8 +8,6 @@ namespace SimpleRender {
 static inline glm::vec4 vertex_shader(const glm::vec4& pos, const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
 static inline glm::vec4 viewport_transform(const glm::vec4& pos, std::size_t view_width, std::size_t view_height);
 static inline bool EdgeFunction(const glm::vec3& E, const glm::vec3& sample);
-static inline int rasterizer();
-static inline int fragment_shader();
 }
 
 class SimpleRenderer : public RenderBackend {
@@ -109,7 +107,7 @@ static inline glm::vec4 SimpleRender::vertex_shader(const glm::vec4& pos, const 
 };
 
 static inline glm::vec4 SimpleRender::viewport_transform(const glm::vec4& pos, std::size_t view_width, std::size_t view_height) {
-    return glm::vec4((view_width * (pos.x + pos.w) / 2.0), view_height * (pos.w - pos.y) / 2, pos.y, pos.w);
+    return glm::vec4((view_width * (pos.x + pos.w) / 2.0), view_height * (pos.w - pos.y) / 2, pos.z, pos.w);
 }
 
 static inline bool SimpleRender::EdgeFunction(const glm::vec3& E, const glm::vec3& sample) {
@@ -124,9 +122,4 @@ static inline bool SimpleRender::EdgeFunction(const glm::vec3& E, const glm::vec
     if ((E.x == 0.0f) && (E.y < 0.0f)) return false;
 
     return true;
-}
-
-static inline int SimpleRender::rasterizer() {
-
-    return 0;
 }

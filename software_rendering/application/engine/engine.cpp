@@ -29,6 +29,11 @@ int Engine::run(float dt, State_t* app_state, Settings_t* settings, InputState* 
     // Clear render buffers
     renderer.backend->ClearBuffers();
 
+    static glm::vec3 angle = {0, 0, 0};
+    angle.x += glm::radians(dt * 30.0f);
+    angle.y += glm::radians(dt * 45.0f);
+    angle.z -= glm::radians(dt * 25.0f);
+
     // Add scene objects to the render queue
     std::shared_ptr<SceneObject> scene_root = scene.get_scene_root();
     for (std::size_t i = 0; i < scene_root->children.size(); i++) {
@@ -40,7 +45,9 @@ int Engine::run(float dt, State_t* app_state, Settings_t* settings, InputState* 
             std::shared_ptr<Mesh> mesh = scene.get_mesh(mesh_idx);
 
             RenderObject ro(mesh.get());
-            ro.model = so->model;
+            ro.model = glm::rotate(glm::rotate(
+                            glm::rotate(so->model, (float)std::pow(-1, i) * angle.x, glm::vec3(1,0,0)), 
+                            (float)std::pow(-1, i+1) * angle.y, glm::vec3(0,1,0)), angle.z, glm::vec3(0,0,1));
     
             renderer_add_to_render_queue(&renderer, ro);
         }
