@@ -30,9 +30,9 @@ int Engine::run(float dt, State_t* app_state, Settings_t* settings, InputState* 
     renderer.backend->ClearBuffers();
 
     static glm::vec3 angle = {0, 0, 0};
-    angle.x += glm::radians(dt * 30.0f);
-    angle.y += glm::radians(dt * 45.0f);
-    angle.z -= glm::radians(dt * 25.0f);
+    // angle.x += glm::radians(dt * 30.0f);
+    // angle.y += glm::radians(dt * 45.0f);
+    // angle.z -= glm::radians(dt * 25.0f);
 
     // Add scene objects to the render queue
     std::shared_ptr<SceneObject> scene_root = scene.get_scene_root();

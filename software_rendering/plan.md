@@ -137,6 +137,22 @@ Looking at the code for PipelineThread
 ~ returns detM > 0.0f as it represents whether or not the triangle should be ommitted due to back-face culling  
 
 #### ExecuteBinner(primIdx, bbox)  
-~   
+~    
 
+#### ExecuteRasterizer()  
+~    
 
+#### ExecuteFragmentShader()  
+~    
+
+#### CalculateInterpolationCoefficients(drawIDx, vertexAttribs0, vertexAttribs1, vertexAttribs2)  
+~    
+
+#### ComputeParameterBasisFunctions(sampleX, sampleY, simdEERegs, pSSEf0XY, pSSEf1XY)  
+~    
+
+#### InterpolateDepthValues(primIdx, ssef0XY, ssef1XY)  
+~    
+
+#### InterpolateVertexAttributes(primIdx, ssef0XY, ssef1XY, pInterpolatedAttributes)  
+~    

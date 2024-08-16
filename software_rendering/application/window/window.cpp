@@ -1,4 +1,5 @@
 #include "window.h"
+#include <SDL2/SDL_blendmode.h>
 #include <SDL2/SDL_scancode.h>
 
 int window_init(Window_t* window, size_t width, size_t height, std::string window_name, bool fullscreen) {
@@ -33,7 +34,7 @@ int window_update(Window_t* window, Buffer<char>* fb) {
         return 2;
     }
 
-    SDL_RenderClear(window->sdl_renderer);
+    // SDL_RenderClear(window->sdl_renderer);
     SDL_RenderCopy(window->sdl_renderer, window->fb_texture, NULL, NULL);
 
     // If using imgui
