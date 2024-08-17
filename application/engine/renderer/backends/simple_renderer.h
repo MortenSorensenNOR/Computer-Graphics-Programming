@@ -81,14 +81,10 @@ public:
                                 depth_buffer.data[offset] = oneOverW;
 
                                 if (!app_settings->depthView) {
-                                    framebuffer.data[3*offset]   = colors[index_buffer->data[i] % 6].x; 
-                                    framebuffer.data[3*offset+1] = colors[index_buffer->data[i] % 6].y; 
-                                    framebuffer.data[3*offset+2] = colors[index_buffer->data[i] % 6].z; 
+                                    framebuffer.data[offset]   = colors[index_buffer->data[i] % 6]; 
                                 } else {
-                                    char depth_value = (int)(255 * oneOverW);
-                                    framebuffer.data[3*offset]   = depth_value; 
-                                    framebuffer.data[3*offset+1] = depth_value; 
-                                    framebuffer.data[3*offset+2] = depth_value; 
+                                    char depth_value = (int)(oneOverW);
+                                    framebuffer.data[offset] = {depth_value, depth_value, depth_value}; 
                                 }
 
                             }

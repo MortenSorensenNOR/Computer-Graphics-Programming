@@ -19,7 +19,7 @@ int renderer_render(Renderer* renderer, const glm::mat4& view, const glm::mat4& 
     return renderer->backend->Render(view, projection);
 }
 
-Buffer<char>* renderer_get_fb(Renderer* renderer) {
+Buffer<glm::vec3>* renderer_get_fb(Renderer* renderer) {
     return renderer->backend->GetFramebuffer();
 }
 

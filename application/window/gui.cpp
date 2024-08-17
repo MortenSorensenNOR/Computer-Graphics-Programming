@@ -69,8 +69,10 @@ int GUI_render_info(Info_t* info) {
 }
 
 int GUI_render_settings(Settings_t* settings) {
-    ImGui::BeginChild("Settings", ImVec2(0, 3*ImGui::GetTextLineHeight()), true);
+    ImGui::BeginChild("Settings", ImVec2(0, 7*ImGui::GetTextLineHeight()), true);
     ImGui::Checkbox("Depth view", &settings->depthView);
+    ImGui::Checkbox("FXAA", &settings->enableFXAA);
+    ImGui::SliderFloat("FXAA Threshold", &settings->fxaa_threshold, 0.05, 0.2);
     ImGui::EndChild();
 
     return 0; 

@@ -3,12 +3,28 @@
 Engine::Engine(std::size_t screen_width, std::size_t screen_height, Settings_t* app_settings) : scene(screen_width, screen_height) {
     renderer_init(&renderer, screen_width, screen_height);
 
+    // TODO: Make this part of instansiation of application and the rest of the systems
+    std::size_t low_res_render_width = screen_width;
+    std::size_t low_res_render_height = screen_height;
+
     // Create a new renderer and assign it as the render backend
-    std::unique_ptr<RenderBackend> backend = std::make_unique<SimpleRenderer>(screen_width, screen_height, app_settings);
+    std::unique_ptr<RenderBackend> backend = std::make_unique<SimpleRenderer>(low_res_render_width, low_res_render_height, app_settings);
     renderer_set_backend(&renderer, std::move(backend));
+
+    std::unique_ptr<Bilinear> upscaler = std::make_unique<Bilinear>(low_res_render_width, low_res_render_height, screen_width, screen_height);
+    renderer.upscaler = std::move(upscaler);
+
+    std::unique_ptr<FXAA> fxaa = std::make_unique<FXAA>(screen_width, screen_height);
+    renderer.fxaa = std::move(fxaa);
+
+    output_frame_buffer = buffer_allocate<char>(3 * screen_width * screen_height);
 
     // Create a new camera controller
     camera_controller = std::make_unique<CameraController>(scene.get_camera());
+}
+
+Engine::~Engine() {
+    buffer_free(output_frame_buffer);
 }
 
 int Engine::load_scene_from_file(std::string assets_path, std::string file_name) {
@@ -27,7 +43,7 @@ int Engine::run(float dt, State_t* app_state, Settings_t* settings, InputState* 
     glm::mat4 projection = scene.get_camera()->get_projection();
 
     // Clear render buffers
-    renderer.backend->ClearBuffers();
+    renderer.backend->ClearBuffers(glm::vec3(0.0314, 0.0941, 0.2078));
 
     static glm::vec3 angle = {0, 0, 0};
     // angle.x += glm::radians(dt * 30.0f);
@@ -56,9 +72,36 @@ int Engine::run(float dt, State_t* app_state, Settings_t* settings, InputState* 
     // Render
     renderer_render(&renderer, view, projection);
 
+
+    // Upscale
+    Buffer<glm::vec3>* upscaled_fb = renderer.upscaler->upscale(*renderer_get_fb(&renderer));
+
+    if (settings->enableFXAA) {
+        // Anti-aliasing
+        static Timer timer;
+        timer.start();
+        Buffer<glm::vec3>* fxaa_fb = renderer.fxaa->fxaa(*upscaled_fb, settings->fxaa_threshold);
+        timer.stop();
+        printf("FXAA took: %f us\n", timer.get());
+
+        // TODO: Make this better
+        for (std::size_t i = 0; i < upscaled_fb->size(); i++) {
+            output_frame_buffer.data[3 * i + 0] = static_cast<char>(255 * fxaa_fb->data[i].x);
+            output_frame_buffer.data[3 * i + 1] = static_cast<char>(255 * fxaa_fb->data[i].y);
+            output_frame_buffer.data[3 * i + 2] = static_cast<char>(255 * fxaa_fb->data[i].z);
+        }
+    } else {
+        for (std::size_t i = 0; i < upscaled_fb->size(); i++) {
+            output_frame_buffer.data[3 * i + 0] = static_cast<char>(255 * upscaled_fb->data[i].x);
+            output_frame_buffer.data[3 * i + 1] = static_cast<char>(255 * upscaled_fb->data[i].y);
+            output_frame_buffer.data[3 * i + 2] = static_cast<char>(255 * upscaled_fb->data[i].z);
+        }
+    }
+
+
     return 0;
 }
 
 Buffer<char>* Engine::get_fb() {
-    return renderer_get_fb(&renderer);
+    return &output_frame_buffer;
 }

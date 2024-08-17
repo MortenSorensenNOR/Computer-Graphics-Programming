@@ -15,7 +15,7 @@ public:
     std::size_t view_width;
     std::size_t view_height;
 
-    Buffer<char> framebuffer;
+    Buffer<glm::vec3> framebuffer;
     Buffer<float> depth_buffer;
 
     std::size_t render_queue_vertex_size;
@@ -23,7 +23,7 @@ public:
     std::size_t render_queue_triangle_count;
     std::vector<RenderObject> render_queue;
 
-    std::vector<glm::vec<3, char, glm::lowp>> colors;
+    std::vector<glm::vec3> colors;
 
     Settings_t* app_settings;
 
@@ -33,30 +33,30 @@ public:
         view_height = render_resolution_height;
 
         std::size_t fb_size = render_resolution_width * render_resolution_height * 3;
-        framebuffer = buffer_allocate<char>(fb_size); 
+        framebuffer = buffer_allocate<glm::vec3>(fb_size); 
 
         std::size_t depth_buffer_size = render_resolution_width * render_resolution_height;
         depth_buffer = buffer_allocate<float>(depth_buffer_size);
 
         // Used for debugging
-        colors.push_back(glm::vec<3, char, glm::lowp>(0xdc, 0x14, 0x3c));
-        colors.push_back(glm::vec<3, char, glm::lowp>(0x41, 0x69, 0xe1));
-        colors.push_back(glm::vec<3, char, glm::lowp>(0x32, 0xcd, 0x32));
-        colors.push_back(glm::vec<3, char, glm::lowp>(0xda, 0xa5, 0x20));
-        colors.push_back(glm::vec<3, char, glm::lowp>(0xba, 0x55, 0xd3));
-        colors.push_back(glm::vec<3, char, glm::lowp>(0x2f, 0x4f, 0x4f));
+        colors.push_back(glm::vec3(0.8627, 0.0784, 0.2353));
+        colors.push_back(glm::vec3(0.2549, 0.4118, 0.8824));
+        colors.push_back(glm::vec3(0.1961, 0.8039, 0.1961));
+        colors.push_back(glm::vec3(0.8549, 0.6471, 0.1255));
+        colors.push_back(glm::vec3(0.7294, 0.3333, 0.8275));
+        colors.push_back(glm::vec3(0.1843, 0.3098, 0.3098));
 
         this->app_settings = app_settings;
     }
 
     virtual ~RenderBackend() = default;
 
-    Buffer<char>* GetFramebuffer() {
+    Buffer<glm::vec3>* GetFramebuffer() {
         return &framebuffer;
     }
 
-    int ClearBuffers() {
-        buffer_fill<char>(framebuffer, 0x00);
+    int ClearBuffers(glm::vec3 clear_color = glm::vec3(0.0)) {
+        buffer_fill<glm::vec3>(framebuffer, clear_color);
         buffer_fill<float>(depth_buffer, 0.0f);
 
         std::vector<RenderObject> empty;

@@ -3,6 +3,7 @@
 #include <memory>
 #include <queue>
 
+#include "../core_utils/timer.h"
 #include "../state/state.h"
 #include "../state/settings.h"
 #include "../state/input.h"
@@ -12,6 +13,9 @@
 #include "renderer/renderer.h"
 #include "renderer/backends/simple_renderer.h"
 #include "renderer/backends/tiled_renderer.h"
+#include "renderer/post_process/lanczos_upscale.h"
+#include "renderer/post_process/bilinear_upscale.h"
+#include "renderer/post_process/fxaa.h"
 
 class Engine {
 private:
@@ -20,8 +24,12 @@ private:
 
     std::unique_ptr<CameraController> camera_controller;
 
+    Buffer<char> output_frame_buffer;
+
 public:
     Engine(std::size_t screen_width, std::size_t screen_height, Settings_t* app_settings);
+
+    ~Engine();
 
     /**
      * @brief Load in a scene from a file
