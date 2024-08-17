@@ -1,2 +1,6 @@
 # Include all model files 
 !*.obj
+
+# Temp
+*.png
+*.jpg
