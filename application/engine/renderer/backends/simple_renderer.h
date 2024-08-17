@@ -83,8 +83,7 @@ public:
                                 if (!app_settings->depthView) {
                                     framebuffer.data[offset]   = colors[index_buffer->data[i] % 6]; 
                                 } else {
-                                    char depth_value = (int)(oneOverW);
-                                    framebuffer.data[offset] = {depth_value, depth_value, depth_value}; 
+                                    framebuffer.data[offset] = {oneOverW, oneOverW, oneOverW}; 
                                 }
 
                             }
