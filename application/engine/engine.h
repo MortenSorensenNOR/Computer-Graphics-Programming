@@ -12,7 +12,7 @@
 #include "scene/camera.h"
 #include "renderer/renderer.h"
 #include "renderer/backends/simple_renderer.h"
-#include "renderer/backends/tiled_renderer.h"
+#include "renderer/backends/tiled_renderer/tiled_renderer.h"
 #include "renderer/post_process/lanczos_upscale.h"
 #include "renderer/post_process/bilinear_upscale.h"
 #include "renderer/post_process/fxaa.h"
