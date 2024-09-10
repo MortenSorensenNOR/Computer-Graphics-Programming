@@ -1,5 +1,0 @@
-Things needed:
-1. A way to show the result of the pipeline to the screen
-2. A way to send commands to the graphics pipeline
-3. A system for converting commands to execution
-4. An implementation of gpu threads

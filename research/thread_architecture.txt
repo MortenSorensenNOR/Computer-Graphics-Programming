@@ -1,8 +1,0 @@
-What is needed for a GPU thread:
-1. A program
-    1. Stack -> Stack pointer
-    2. Program counter
-    3. Code
-2. Register
-3. Cache?
-

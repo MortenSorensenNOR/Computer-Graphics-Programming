@@ -1,0 +1,9 @@
+I need to write the rest of the render pipeline.
+
+I have read some of the mesa implementation. A lot of cool code, but not very usefull to me. 
+
+In terms of textures, im thinking of having a "global" array of all the pointers to textures, and simply delegate a pointer or array index to all 
+instances of triangles after the primitives assembler. Seems cleaner this way.
+
+Still not quite sure how I want to do the rest of the pipeline. Vertex shader was the easy part. I think I will let the vertex post processor take 
+care of perspective devide, viewport transformation and perhaps, if I dont renege on it, clipping.
