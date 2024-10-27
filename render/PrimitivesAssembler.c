@@ -27,8 +27,8 @@ int primitives_assembler(primitives_assembler_input_t* in, primitives_assembler_
         // Culling
         vec3 n = in->norm_buf[in->index_buf[ibuf_off]]; 
         vec3 a = in->frag_buf[in->index_buf[ibuf_off]];
-        vec3 b = in->frag_buf[in->index_buf[ibuf_off]];
-        vec3 c = in->frag_buf[in->index_buf[ibuf_off]];
+        vec3 b = in->frag_buf[in->index_buf[ibuf_off+1]];
+        vec3 c = in->frag_buf[in->index_buf[ibuf_off+2]];
 
         vec3 v0 = {(a.x + b.x + c.x) / 3.0f, (a.y + b.y + c.y) / 3.0f, (a.z + b.z + c.z) / 3.0f};
         vec3 cam_to_pos_vec = vec3_sub(&in->cam_pos, &v0);
